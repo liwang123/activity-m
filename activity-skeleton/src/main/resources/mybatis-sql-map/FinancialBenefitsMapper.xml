@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.trustnote.activity.skeleton.mybatis.mapper.FinancialBenefitsMapper">
+    <resultMap id="BaseResultMap" type="org.trustnote.activity.common.pojo.FinancialBenefits">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="financial_id" jdbcType="INTEGER" property="financialId"/>
+        <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="panic_start_time" jdbcType="TIMESTAMP" property="panicStartTime"/>
+        <result column="panic_end_time" jdbcType="TIMESTAMP" property="panicEndTime"/>
+        <result column="interest_start_time" jdbcType="TIMESTAMP" property="interestStartTime"/>
+        <result column="interest_end_time" jdbcType="TIMESTAMP" property="interestEndTime"/>
+        <result column="unlock_time" jdbcType="TIMESTAMP" property="unlockTime"/>
+        <result column="panic_total_limit" jdbcType="DECIMAL" property="panicTotalLimit"/>
+        <result column="min_amount" jdbcType="DECIMAL" property="minAmount"/>
+        <result column="purchase_limit" jdbcType="DECIMAL" property="purchaseLimit"/>
+        <result column="remain_limit" jdbcType="DECIMAL" property="remainLimit"/>
+        <result column="financial_status" jdbcType="INTEGER" property="financialStatus"/>
+        <result column="crt_time" jdbcType="TIMESTAMP" property="crtTime"/>
+        <result column="upt_time" jdbcType="TIMESTAMP" property="uptTime"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    id, financial_id, product_name, panic_start_time, panic_end_time, interest_start_time, 
+    interest_end_time, unlock_time, panic_total_limit, min_amount, purchase_limit, remain_limit, 
+    financial_status, crt_time, upt_time
+  </sql>
+    <select id="selectByExample" parameterType="org.trustnote.activity.common.example.FinancialBenefitsExample"
+            resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from financial_benefits
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from financial_benefits
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from financial_benefits
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteByExample" parameterType="org.trustnote.activity.common.example.FinancialBenefitsExample">
+        delete from financial_benefits
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="org.trustnote.activity.common.pojo.FinancialBenefits">
+    insert into financial_benefits (id, financial_id, product_name, 
+      panic_start_time, panic_end_time, interest_start_time, 
+      interest_end_time, unlock_time, panic_total_limit, 
+      min_amount, purchase_limit, remain_limit, 
+      financial_status, crt_time, upt_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{financialId,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR}, 
+      #{panicStartTime,jdbcType=TIMESTAMP}, #{panicEndTime,jdbcType=TIMESTAMP}, #{interestStartTime,jdbcType=TIMESTAMP}, 
+      #{interestEndTime,jdbcType=TIMESTAMP}, #{unlockTime,jdbcType=TIMESTAMP}, #{panicTotalLimit,jdbcType=DECIMAL}, 
+      #{minAmount,jdbcType=DECIMAL}, #{purchaseLimit,jdbcType=DECIMAL}, #{remainLimit,jdbcType=DECIMAL}, 
+      #{financialStatus,jdbcType=INTEGER}, #{crtTime,jdbcType=TIMESTAMP}, #{uptTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.FinancialBenefits">
+        insert into financial_benefits
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="financialId != null">
+                financial_id,
+            </if>
+            <if test="productName != null">
+                product_name,
+            </if>
+            <if test="panicStartTime != null">
+                panic_start_time,
+            </if>
+            <if test="panicEndTime != null">
+                panic_end_time,
+            </if>
+            <if test="interestStartTime != null">
+                interest_start_time,
+            </if>
+            <if test="interestEndTime != null">
+                interest_end_time,
+            </if>
+            <if test="unlockTime != null">
+                unlock_time,
+            </if>
+            <if test="panicTotalLimit != null">
+                panic_total_limit,
+            </if>
+            <if test="minAmount != null">
+                min_amount,
+            </if>
+            <if test="purchaseLimit != null">
+                purchase_limit,
+            </if>
+            <if test="remainLimit != null">
+                remain_limit,
+            </if>
+            <if test="financialStatus != null">
+                financial_status,
+            </if>
+            <if test="crtTime != null">
+                crt_time,
+            </if>
+            <if test="uptTime != null">
+                upt_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="financialId != null">
+                #{financialId,jdbcType=INTEGER},
+            </if>
+            <if test="productName != null">
+                #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="panicStartTime != null">
+                #{panicStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="panicEndTime != null">
+                #{panicEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="interestStartTime != null">
+                #{interestStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="interestEndTime != null">
+                #{interestEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="unlockTime != null">
+                #{unlockTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="panicTotalLimit != null">
+                #{panicTotalLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="minAmount != null">
+                #{minAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="purchaseLimit != null">
+                #{purchaseLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="remainLimit != null">
+                #{remainLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="financialStatus != null">
+                #{financialStatus,jdbcType=INTEGER},
+            </if>
+            <if test="crtTime != null">
+                #{crtTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="uptTime != null">
+                #{uptTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="org.trustnote.activity.common.example.FinancialBenefitsExample"
+            resultType="java.lang.Long">
+        select count(*) from financial_benefits
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update financial_benefits
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.financialId != null">
+                financial_id = #{record.financialId,jdbcType=INTEGER},
+            </if>
+            <if test="record.productName != null">
+                product_name = #{record.productName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.panicStartTime != null">
+                panic_start_time = #{record.panicStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.panicEndTime != null">
+                panic_end_time = #{record.panicEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.interestStartTime != null">
+                interest_start_time = #{record.interestStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.interestEndTime != null">
+                interest_end_time = #{record.interestEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.unlockTime != null">
+                unlock_time = #{record.unlockTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.panicTotalLimit != null">
+                panic_total_limit = #{record.panicTotalLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="record.minAmount != null">
+                min_amount = #{record.minAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="record.purchaseLimit != null">
+                purchase_limit = #{record.purchaseLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="record.remainLimit != null">
+                remain_limit = #{record.remainLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="record.financialStatus != null">
+                financial_status = #{record.financialStatus,jdbcType=INTEGER},
+            </if>
+            <if test="record.crtTime != null">
+                crt_time = #{record.crtTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.uptTime != null">
+                upt_time = #{record.uptTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update financial_benefits
+        set id = #{record.id,jdbcType=INTEGER},
+        financial_id = #{record.financialId,jdbcType=INTEGER},
+        product_name = #{record.productName,jdbcType=VARCHAR},
+        panic_start_time = #{record.panicStartTime,jdbcType=TIMESTAMP},
+        panic_end_time = #{record.panicEndTime,jdbcType=TIMESTAMP},
+        interest_start_time = #{record.interestStartTime,jdbcType=TIMESTAMP},
+        interest_end_time = #{record.interestEndTime,jdbcType=TIMESTAMP},
+        unlock_time = #{record.unlockTime,jdbcType=TIMESTAMP},
+        panic_total_limit = #{record.panicTotalLimit,jdbcType=DECIMAL},
+        min_amount = #{record.minAmount,jdbcType=DECIMAL},
+        purchase_limit = #{record.purchaseLimit,jdbcType=DECIMAL},
+        remain_limit = #{record.remainLimit,jdbcType=DECIMAL},
+        financial_status = #{record.financialStatus,jdbcType=INTEGER},
+        crt_time = #{record.crtTime,jdbcType=TIMESTAMP},
+        upt_time = #{record.uptTime,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="org.trustnote.activity.common.pojo.FinancialBenefits">
+        update financial_benefits
+        <set>
+            <if test="financialId != null">
+                financial_id = #{financialId,jdbcType=INTEGER},
+            </if>
+            <if test="productName != null">
+                product_name = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="panicStartTime != null">
+                panic_start_time = #{panicStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="panicEndTime != null">
+                panic_end_time = #{panicEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="interestStartTime != null">
+                interest_start_time = #{interestStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="interestEndTime != null">
+                interest_end_time = #{interestEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="unlockTime != null">
+                unlock_time = #{unlockTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="panicTotalLimit != null">
+                panic_total_limit = #{panicTotalLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="minAmount != null">
+                min_amount = #{minAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="purchaseLimit != null">
+                purchase_limit = #{purchaseLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="remainLimit != null">
+                remain_limit = #{remainLimit,jdbcType=DECIMAL},
+            </if>
+            <if test="financialStatus != null">
+                financial_status = #{financialStatus,jdbcType=INTEGER},
+            </if>
+            <if test="crtTime != null">
+                crt_time = #{crtTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="uptTime != null">
+                upt_time = #{uptTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="org.trustnote.activity.common.pojo.FinancialBenefits">
+    update financial_benefits
+    set financial_id = #{financialId,jdbcType=INTEGER},
+      product_name = #{productName,jdbcType=VARCHAR},
+      panic_start_time = #{panicStartTime,jdbcType=TIMESTAMP},
+      panic_end_time = #{panicEndTime,jdbcType=TIMESTAMP},
+      interest_start_time = #{interestStartTime,jdbcType=TIMESTAMP},
+      interest_end_time = #{interestEndTime,jdbcType=TIMESTAMP},
+      unlock_time = #{unlockTime,jdbcType=TIMESTAMP},
+      panic_total_limit = #{panicTotalLimit,jdbcType=DECIMAL},
+      min_amount = #{minAmount,jdbcType=DECIMAL},
+      purchase_limit = #{purchaseLimit,jdbcType=DECIMAL},
+      remain_limit = #{remainLimit,jdbcType=DECIMAL},
+      financial_status = #{financialStatus,jdbcType=INTEGER},
+      crt_time = #{crtTime,jdbcType=TIMESTAMP},
+      upt_time = #{uptTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
