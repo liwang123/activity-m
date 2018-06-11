@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.trustnote.activity.skeleton.mybatis.mapper.DownloadStatisticsMapper">
+  <resultMap id="BaseResultMap" type="org.trustnote.activity.common.pojo.DownloadStatistics">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="android_sum" jdbcType="INTEGER" property="androidSum" />
+    <result column="ios_sum" jdbcType="INTEGER" property="iosSum" />
+    <result column="windows_sum" jdbcType="INTEGER" property="windowsSum" />
+    <result column="mac_sum" jdbcType="INTEGER" property="macSum" />
+    <result column="linux_sum" jdbcType="INTEGER" property="linuxSum" />
+    <result column="github_sum" jdbcType="INTEGER" property="githubSum" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, android_sum, ios_sum, windows_sum, mac_sum, linux_sum, github_sum
+  </sql>
+  <select id="selectByExample" parameterType="org.trustnote.activity.common.example.DownloadStatisticsExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from download_statistics
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from download_statistics
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from download_statistics
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.trustnote.activity.common.example.DownloadStatisticsExample">
+    delete from download_statistics
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.trustnote.activity.common.pojo.DownloadStatistics">
+    insert into download_statistics (id, android_sum, ios_sum, 
+      windows_sum, mac_sum, linux_sum, 
+      github_sum)
+    values (#{id,jdbcType=INTEGER}, #{androidSum,jdbcType=INTEGER}, #{iosSum,jdbcType=INTEGER}, 
+      #{windowsSum,jdbcType=INTEGER}, #{macSum,jdbcType=INTEGER}, #{linuxSum,jdbcType=INTEGER}, 
+      #{githubSum,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.DownloadStatistics">
+    insert into download_statistics
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="androidSum != null">
+        android_sum,
+      </if>
+      <if test="iosSum != null">
+        ios_sum,
+      </if>
+      <if test="windowsSum != null">
+        windows_sum,
+      </if>
+      <if test="macSum != null">
+        mac_sum,
+      </if>
+      <if test="linuxSum != null">
+        linux_sum,
+      </if>
+      <if test="githubSum != null">
+        github_sum,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="androidSum != null">
+        #{androidSum,jdbcType=INTEGER},
+      </if>
+      <if test="iosSum != null">
+        #{iosSum,jdbcType=INTEGER},
+      </if>
+      <if test="windowsSum != null">
+        #{windowsSum,jdbcType=INTEGER},
+      </if>
+      <if test="macSum != null">
+        #{macSum,jdbcType=INTEGER},
+      </if>
+      <if test="linuxSum != null">
+        #{linuxSum,jdbcType=INTEGER},
+      </if>
+      <if test="githubSum != null">
+        #{githubSum,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.trustnote.activity.common.example.DownloadStatisticsExample" resultType="java.lang.Long">
+    select count(*) from download_statistics
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update download_statistics
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.androidSum != null">
+        android_sum = #{record.androidSum,jdbcType=INTEGER},
+      </if>
+      <if test="record.iosSum != null">
+        ios_sum = #{record.iosSum,jdbcType=INTEGER},
+      </if>
+      <if test="record.windowsSum != null">
+        windows_sum = #{record.windowsSum,jdbcType=INTEGER},
+      </if>
+      <if test="record.macSum != null">
+        mac_sum = #{record.macSum,jdbcType=INTEGER},
+      </if>
+      <if test="record.linuxSum != null">
+        linux_sum = #{record.linuxSum,jdbcType=INTEGER},
+      </if>
+      <if test="record.githubSum != null">
+        github_sum = #{record.githubSum,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update download_statistics
+    set id = #{record.id,jdbcType=INTEGER},
+      android_sum = #{record.androidSum,jdbcType=INTEGER},
+      ios_sum = #{record.iosSum,jdbcType=INTEGER},
+      windows_sum = #{record.windowsSum,jdbcType=INTEGER},
+      mac_sum = #{record.macSum,jdbcType=INTEGER},
+      linux_sum = #{record.linuxSum,jdbcType=INTEGER},
+      github_sum = #{record.githubSum,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.trustnote.activity.common.pojo.DownloadStatistics">
+    update download_statistics
+    <set>
+      <if test="androidSum != null">
+        android_sum = #{androidSum,jdbcType=INTEGER},
+      </if>
+      <if test="iosSum != null">
+        ios_sum = #{iosSum,jdbcType=INTEGER},
+      </if>
+      <if test="windowsSum != null">
+        windows_sum = #{windowsSum,jdbcType=INTEGER},
+      </if>
+      <if test="macSum != null">
+        mac_sum = #{macSum,jdbcType=INTEGER},
+      </if>
+      <if test="linuxSum != null">
+        linux_sum = #{linuxSum,jdbcType=INTEGER},
+      </if>
+      <if test="githubSum != null">
+        github_sum = #{githubSum,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.trustnote.activity.common.pojo.DownloadStatistics">
+    update download_statistics
+    set android_sum = #{androidSum,jdbcType=INTEGER},
+      ios_sum = #{iosSum,jdbcType=INTEGER},
+      windows_sum = #{windowsSum,jdbcType=INTEGER},
+      mac_sum = #{macSum,jdbcType=INTEGER},
+      linux_sum = #{linuxSum,jdbcType=INTEGER},
+      github_sum = #{githubSum,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="totalChannel" resultType="java.lang.Long">
+    select SUM(android_sum+ios_sum+windows_sum+mac_sum+linux_sum) from download_statistics
+  </select>
+  <update id="updateByDownloadType" parameterType="org.trustnote.activity.common.pojo.DownloadStatistics">
+    update download_statistics
+    <set>
+      <if test="record.androidSum != null">
+        android_sum = android_sum + 1,
+      </if>
+      <if test="record.iosSum != null">
+        ios_sum = ios_sum + 1,
+      </if>
+      <if test="record.windowsSum != null">
+        windows_sum = windows_sum + 1,
+      </if>
+      <if test="record.macSum != null">
+        mac_sum = mac_sum + 1,
+      </if>
+      <if test="record.linuxSum != null">
+        linux_sum = linux_sum + 1,
+      </if>
+      <if test="record.githubSum != null">
+        github_sum = github_sum + 1,
+      </if>
+    </set>
+  </update>
+  <select id="selectDownloadStatistics" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from download_statistics
+  </select>
+</mapper>

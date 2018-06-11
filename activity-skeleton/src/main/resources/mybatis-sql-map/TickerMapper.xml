@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.trustnote.activity.skeleton.mybatis.mapper.TickerMapper">
+  <resultMap id="BaseResultMap" type="org.trustnote.activity.common.pojo.Ticker">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="last" jdbcType="DECIMAL" property="last" />
+    <result column="buy" jdbcType="DECIMAL" property="buy" />
+    <result column="sell" jdbcType="DECIMAL" property="sell" />
+    <result column="high" jdbcType="DECIMAL" property="high" />
+    <result column="low" jdbcType="DECIMAL" property="low" />
+    <result column="vol" jdbcType="DECIMAL" property="vol" />
+    <result column="website" jdbcType="VARCHAR" property="website" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
+    <result column="date" jdbcType="TIMESTAMP" property="date" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, last, buy, sell, high, low, vol, website, currency, date
+  </sql>
+  <select id="selectByExample" parameterType="org.trustnote.activity.common.example.TickerExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ticker
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ticker
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByExampleReturnOne" parameterType="org.trustnote.activity.common.example.TickerExample" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ticker
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    limit 1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from ticker
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.trustnote.activity.common.example.TickerExample">
+    delete from ticker
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.trustnote.activity.common.pojo.Ticker">
+    insert into ticker (id, last, buy, 
+      sell, high, low, vol, 
+      website, currency, date
+      )
+    values (#{id,jdbcType=BIGINT}, #{last,jdbcType=DECIMAL}, #{buy,jdbcType=DECIMAL}, 
+      #{sell,jdbcType=DECIMAL}, #{high,jdbcType=DECIMAL}, #{low,jdbcType=DECIMAL}, #{vol,jdbcType=DECIMAL}, 
+      #{website,jdbcType=VARCHAR}, #{currency,jdbcType=VARCHAR}, #{date,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.Ticker">
+    insert into ticker
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="last != null">
+        last,
+      </if>
+      <if test="buy != null">
+        buy,
+      </if>
+      <if test="sell != null">
+        sell,
+      </if>
+      <if test="high != null">
+        high,
+      </if>
+      <if test="low != null">
+        low,
+      </if>
+      <if test="vol != null">
+        vol,
+      </if>
+      <if test="website != null">
+        website,
+      </if>
+      <if test="currency != null">
+        currency,
+      </if>
+      <if test="date != null">
+        date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="last != null">
+        #{last,jdbcType=DECIMAL},
+      </if>
+      <if test="buy != null">
+        #{buy,jdbcType=DECIMAL},
+      </if>
+      <if test="sell != null">
+        #{sell,jdbcType=DECIMAL},
+      </if>
+      <if test="high != null">
+        #{high,jdbcType=DECIMAL},
+      </if>
+      <if test="low != null">
+        #{low,jdbcType=DECIMAL},
+      </if>
+      <if test="vol != null">
+        #{vol,jdbcType=DECIMAL},
+      </if>
+      <if test="website != null">
+        #{website,jdbcType=VARCHAR},
+      </if>
+      <if test="currency != null">
+        #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.trustnote.activity.common.example.TickerExample" resultType="java.lang.Long">
+    select count(*) from ticker
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update ticker
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.last != null">
+        last = #{record.last,jdbcType=DECIMAL},
+      </if>
+      <if test="record.buy != null">
+        buy = #{record.buy,jdbcType=DECIMAL},
+      </if>
+      <if test="record.sell != null">
+        sell = #{record.sell,jdbcType=DECIMAL},
+      </if>
+      <if test="record.high != null">
+        high = #{record.high,jdbcType=DECIMAL},
+      </if>
+      <if test="record.low != null">
+        low = #{record.low,jdbcType=DECIMAL},
+      </if>
+      <if test="record.vol != null">
+        vol = #{record.vol,jdbcType=DECIMAL},
+      </if>
+      <if test="record.website != null">
+        website = #{record.website,jdbcType=VARCHAR},
+      </if>
+      <if test="record.currency != null">
+        currency = #{record.currency,jdbcType=VARCHAR},
+      </if>
+      <if test="record.date != null">
+        date = #{record.date,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update ticker
+    set id = #{record.id,jdbcType=BIGINT},
+      last = #{record.last,jdbcType=DECIMAL},
+      buy = #{record.buy,jdbcType=DECIMAL},
+      sell = #{record.sell,jdbcType=DECIMAL},
+      high = #{record.high,jdbcType=DECIMAL},
+      low = #{record.low,jdbcType=DECIMAL},
+      vol = #{record.vol,jdbcType=DECIMAL},
+      website = #{record.website,jdbcType=VARCHAR},
+      currency = #{record.currency,jdbcType=VARCHAR},
+      date = #{record.date,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.trustnote.activity.common.pojo.Ticker">
+    update ticker
+    <set>
+      <if test="last != null">
+        last = #{last,jdbcType=DECIMAL},
+      </if>
+      <if test="buy != null">
+        buy = #{buy,jdbcType=DECIMAL},
+      </if>
+      <if test="sell != null">
+        sell = #{sell,jdbcType=DECIMAL},
+      </if>
+      <if test="high != null">
+        high = #{high,jdbcType=DECIMAL},
+      </if>
+      <if test="low != null">
+        low = #{low,jdbcType=DECIMAL},
+      </if>
+      <if test="vol != null">
+        vol = #{vol,jdbcType=DECIMAL},
+      </if>
+      <if test="website != null">
+        website = #{website,jdbcType=VARCHAR},
+      </if>
+      <if test="currency != null">
+        currency = #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        date = #{date,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.trustnote.activity.common.pojo.Ticker">
+    update ticker
+    set last = #{last,jdbcType=DECIMAL},
+      buy = #{buy,jdbcType=DECIMAL},
+      sell = #{sell,jdbcType=DECIMAL},
+      high = #{high,jdbcType=DECIMAL},
+      low = #{low,jdbcType=DECIMAL},
+      vol = #{vol,jdbcType=DECIMAL},
+      website = #{website,jdbcType=VARCHAR},
+      currency = #{currency,jdbcType=VARCHAR},
+      date = #{date,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

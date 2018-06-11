@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.trustnote.activity.skeleton.mybatis.mapper.ActivityMapper">
+  <resultMap id="BaseResultMap" type="org.trustnote.activity.common.pojo.Activity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="startTime" jdbcType="TIMESTAMP" property="starttime" />
+    <result column="endTime" jdbcType="TIMESTAMP" property="endtime" />
+    <result column="label" jdbcType="VARCHAR" property="label" />
+    <result column="Inviter_num" jdbcType="INTEGER" property="inviterNum" />
+    <result column="invitee_num" jdbcType="INTEGER" property="inviteeNum" />
+    <result column="enLink" jdbcType="VARCHAR" property="enlink" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, title, startTime, endTime, label, Inviter_num, invitee_num, enLink
+  </sql>
+  <select id="selectByExample" parameterType="org.trustnote.activity.common.example.ActivityExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from activity
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause} DESC
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from activity
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from activity
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.trustnote.activity.common.example.ActivityExample">
+    delete from activity
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.trustnote.activity.common.pojo.Activity">
+    insert into activity (id, title, startTime, 
+      endTime, label, Inviter_num, 
+      invitee_num, enLink)
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{starttime,jdbcType=TIMESTAMP}, 
+      #{endtime,jdbcType=TIMESTAMP}, #{label,jdbcType=VARCHAR}, #{inviterNum,jdbcType=INTEGER}, 
+      #{inviteeNum,jdbcType=INTEGER}, #{enlink,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.Activity">
+    insert into activity
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="starttime != null">
+        startTime,
+      </if>
+      <if test="endtime != null">
+        endTime,
+      </if>
+      <if test="label != null">
+        label,
+      </if>
+      <if test="inviterNum != null">
+        Inviter_num,
+      </if>
+      <if test="inviteeNum != null">
+        invitee_num,
+      </if>
+      <if test="enlink != null">
+        enLink,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime != null">
+        #{starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null">
+        #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="label != null">
+        #{label,jdbcType=VARCHAR},
+      </if>
+      <if test="inviterNum != null">
+        #{inviterNum,jdbcType=INTEGER},
+      </if>
+      <if test="inviteeNum != null">
+        #{inviteeNum,jdbcType=INTEGER},
+      </if>
+      <if test="enlink != null">
+        #{enlink,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.trustnote.activity.common.example.ActivityExample" resultType="java.lang.Long">
+    select count(*) from activity
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update activity
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.title != null">
+        title = #{record.title,jdbcType=VARCHAR},
+      </if>
+      <if test="record.starttime != null">
+        startTime = #{record.starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.endtime != null">
+        endTime = #{record.endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.label != null">
+        label = #{record.label,jdbcType=VARCHAR},
+      </if>
+      <if test="record.inviterNum != null">
+        Inviter_num = #{record.inviterNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.inviteeNum != null">
+        invitee_num = #{record.inviteeNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.enlink != null">
+        enLink = #{record.enlink,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update activity
+    set id = #{record.id,jdbcType=INTEGER},
+      title = #{record.title,jdbcType=VARCHAR},
+      startTime = #{record.starttime,jdbcType=TIMESTAMP},
+      endTime = #{record.endtime,jdbcType=TIMESTAMP},
+      label = #{record.label,jdbcType=VARCHAR},
+      Inviter_num = #{record.inviterNum,jdbcType=INTEGER},
+      invitee_num = #{record.inviteeNum,jdbcType=INTEGER},
+      enLink = #{record.enlink,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.trustnote.activity.common.pojo.Activity">
+    update activity
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime != null">
+        startTime = #{starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null">
+        endTime = #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="label != null">
+        label = #{label,jdbcType=VARCHAR},
+      </if>
+      <if test="inviterNum != null">
+        Inviter_num = #{inviterNum,jdbcType=INTEGER},
+      </if>
+      <if test="inviteeNum != null">
+        invitee_num = #{inviteeNum,jdbcType=INTEGER},
+      </if>
+      <if test="enlink != null">
+        enLink = #{enlink,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.trustnote.activity.common.pojo.Activity">
+    update activity
+    set title = #{title,jdbcType=VARCHAR},
+      startTime = #{starttime,jdbcType=TIMESTAMP},
+      endTime = #{endtime,jdbcType=TIMESTAMP},
+      label = #{label,jdbcType=VARCHAR},
+      Inviter_num = #{inviterNum,jdbcType=INTEGER},
+      invitee_num = #{inviteeNum,jdbcType=INTEGER},
+      enLink = #{enlink,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByTime"    resultMap="BaseResultMap">
+    SELECT * FROM activity where startTime  &lt;=#{time} and endTime &gt;=#{time};
+  </select>
+
+  <select id="selectByDEscTime"  resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    FROM activity where  endTime &lt;=#{time} order by endTime desc;
+
+  </select>
+
+</mapper>

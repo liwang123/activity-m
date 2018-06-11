@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.trustnote.activity.skeleton.mybatis.mapper.TransactionRecordMapper">
+  <resultMap id="BaseResultMap" type="org.trustnote.activity.common.pojo.TransactionRecord">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="trustnote_address" jdbcType="VARCHAR" property="trustnoteAddress" />
+    <result column="handsel_count" jdbcType="INTEGER" property="handselCount" />
+    <result column="submit_time" jdbcType="TIMESTAMP" property="submitTime" />
+    <result column="invite_trustnote_address" jdbcType="VARCHAR" property="inviteTrustnoteAddress" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+    <result column="invite_code" jdbcType="VARCHAR" property="inviteCode" />
+  </resultMap>
+  <resultMap id="listMap" type="java.util.HashMap">
+    <result column="trustnote_address" jdbcType="VARCHAR" property="trustnoteAddress" />
+    <result column="handsel_count" jdbcType="INTEGER" property="handselCount" />
+    <result column="submit_time" jdbcType="TIMESTAMP" property="submitTime" />
+    <result column="invite_trustnote_address" jdbcType="VARCHAR" property="inviteTrustnoteAddress" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+    <result column="invite_code" jdbcType="VARCHAR" property="inviteCode" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, trustnote_address, handsel_count,submit_time, invite_trustnote_address, mobile_phone, invite_code
+  </sql>
+  <select id="selectByExample" parameterType="org.trustnote.activity.common.example.TransactionRecordExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from transaction_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from transaction_record
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.trustnote.activity.common.example.TransactionRecordExample">
+    delete from transaction_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.trustnote.activity.common.pojo.TransactionRecord">
+    insert into transaction_record (id, trustnote_address,handsel_count, submit_time, invite_trustnote_address, mobile_phone, invite_code)
+    values (#{id,jdbcType=BIGINT}, #{trustnoteAddress,jdbcType=VARCHAR}, #{handselCount,jdbcType=INTEGER},
+    #{submitTime,jdbcType=TIMESTAMP}, #{inviteTrustnoteAddress,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, #{inviteCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.TransactionRecord">
+    insert into transaction_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="trustnoteAddress != null">
+        trustnote_address,
+      </if>
+      <if test="handselCount != null">
+        handsel_count,
+      </if>
+      <if test="submitTime != null">
+        submit_time,
+      </if>
+      <if test="inviteTrustnoteAddress != null">
+        invite_trustnote_address,
+      </if>
+      <if test="mobilePhone != null">
+        mobile_phone,
+      </if>
+      <if test="inviteCode != null">
+        invite_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="trustnoteAddress != null">
+        #{trustnoteAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="handselCount != null">
+        #{handselCount,jdbcType=INTEGER},
+      </if>
+      <if test="submitTime != null">
+        #{submitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inviteTrustnoteAddress != null">
+        #{inviteTrustnoteAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null">
+        #{mobilePhone, jdbcType=VARCHAR},
+      </if>
+      <if test="inviteCode != null">
+        #{inviteCode, jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.trustnote.activity.common.example.TransactionRecordExample" resultType="java.lang.Long">
+    select count(*) from transaction_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update transaction_record
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.trustnoteAddress != null">
+        trustnote_address = #{record.trustnoteAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handselCount != null">
+        handsel_count = #{record.handselCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.submitTime != null">
+        submit_time = #{record.submitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.inviteTrustnoteAddress != null">
+        invite_trustnote_address = #{record.inviteTrustnoteAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mobilePhone != null">
+        mobile_phone = #{record.mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.inviteCode != null">
+        invite_code = #{record.inviteCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update transaction_record
+    set id = #{record.id,jdbcType=BIGINT},
+      trustnote_address = #{record.trustnoteAddress,jdbcType=VARCHAR},
+      handsel_count = #{record.handselCount,jdbcType=INTEGER},
+      submit_time = #{record.submitTime,jdbcType=TIMESTAMP},
+      invite_trustnote_address = #{record.inviteTrustnoteAddress,jdbcType=VARCHAR},
+      mobile_phone = #{record.mobilePhone,jdbcType=VARCHAR},
+      invite_code = #{record.inviteCode,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.trustnote.activity.common.pojo.TransactionRecord">
+    update transaction_record
+    <set>
+      <if test="trustnoteAddress != null">
+        trustnote_address = #{trustnoteAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="handselCount != null">
+        handsel_count = #{handselCount,jdbcType=INTEGER},
+      </if>
+      <if test="submitTime != null">
+        submit_time = #{submitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inviteTrustnoteAddress != null">
+        invite_trustnote_address = #{inviteTrustnoteAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null">
+        mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteCode != null">
+        invite_code = #{inviteCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.trustnote.activity.common.pojo.TransactionRecord">
+    update transaction_record
+    set trustnote_address = #{trustnoteAddress,jdbcType=VARCHAR},
+      handsel_count = #{handselCount,jdbcType=INTEGER},
+      submit_time = #{submitTime,jdbcType=TIMESTAMP},
+      invite_trustnote_address = #{inviteTrustnoteAddress,jdbcType=VARCHAR},
+      mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+      invite_code = #{inviteCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="queryTransactionRecordPages" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List" />
+    from transaction_record
+    WHERE
+    <if test="inviteCode != null">
+      invite_code = #{inviteCode,jdbcType=VARCHAR} AND
+    </if>
+    invite_trustnote_address = #{inviteTrustnoteAddress,jdbcType=VARCHAR}
+
+    AND submit_time &gt;=#{startTime} AND submit_time &lt;=#{endTime}
+    order by submit_time DESC
+  </select>
+  <select id="queryAll" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    from transaction_record
+    order by submit_time DESC
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from transaction_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="exportTransactionRecord" resultMap="listMap">
+    SELECT
+      trustnote_address, handsel_count,submit_time, invite_trustnote_address, mobile_phone, invite_code
+    from transaction_record
+    order by submit_time DESC
+  </select>
+
+
+  <select id="selectByTransactionRecordTime"   resultMap="BaseResultMap">
+
+    SELECT
+    <include refid="Base_Column_List" />
+    from transaction_record where to_days(submit_time) = to_days(#{time});
+  </select>
+
+
+
+  <select id="queryTransactionByaddress" resultMap="BaseResultMap">
+
+    SELECT
+    <include refid="Base_Column_List" />
+    from transaction_record
+    WHERE
+    <if test="condition == ''">
+    <if test="label == 'TxgF9gEHHyKLxSdF'">
+      submit_time &gt;='2000-01-01 17:07:05' AND submit_time &lt;='2200-09-28 17:07:05'
+    </if>
+    <if test="label != 'TxgF9gEHHyKLxSdF'">
+      submit_time &gt;=#{startTime} AND submit_time &lt;=#{endTime}
+    </if>
+    AND  invite_trustnote_address = #{transactionAddress}
+    </if>
+    <if test="condition != ''">
+      invite_code = #{condition}
+      OR trustnote_address = #{condition}
+      OR mobile_phone = #{condition}
+    </if>
+    order by submit_time DESC LIMIT #{offset},#{length}
+  </select>
+
+
+
+</mapper>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop
+        					   http://www.springframework.org/schema/aop/spring-aop.xsd
+        					   http://www.springframework.org/schema/beans
+        					   http://www.springframework.org/schema/beans/spring-beans.xsd
+       					   http://www.springframework.org/schema/context
+       					   http://www.springframework.org/schema/context/spring-context.xsd
+        					   http://www.springframework.org/schema/mvc
+        					   http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+        					   http://www.springframework.org/schema/task
+                                http://www.springframework.org/schema/task/spring-task-4.2.xsd ">
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath*:tencentUpload.properties</value>
+            </list>
+        </property>
+    </bean>
+    <mvc:annotation-driven
+            content-negotiation-manager="contentNegotiationManager" />
+    <mvc:cors>
+        <mvc:mapping path="/**"
+                     allowed-origins="http://localhost:8080,http://127.0.0.1:8080,http://10.10.10.131:8020,https://trustnote.org,https://explorer.trustnote.org,https://explorer-test.trustnote.org,https://graph2note.com"
+                     allowed-headers="*"
+                     allowed-methods="GET,POST,HEAD,OPTIONS"
+                     allow-credentials="true"/>
+    </mvc:cors>
+    <bean id="contentNegotiationManager"
+          class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="favorPathExtension" value="false" />
+        <property name="favorParameter" value="false" />
+        <property name="ignoreAcceptHeader" value="false" />
+        <property name="mediaTypes" value="json=application/json" />
+    </bean>
+    <aop:aspectj-autoproxy />
+    <mvc:default-servlet-handler />
+    <mvc:interceptors>
+        <mvc:interceptor><!--配置局部拦截器，需要满足下列路径条件 -->
+            <mvc:mapping path="/**" />
+            <!-- 以下配置排除过滤规则配置 -->
+            <mvc:exclude-mapping path="/user/*"/><!-- 用户操作 -->
+            <mvc:exclude-mapping path="/download/record.htm" /><!-- 下载统计 -->
+            <!--<mvc:exclude-mapping path="/activity/insert.htm" />活动
+
+            <mvc:exclude-mapping path="/activity/*" />-->
+            <mvc:exclude-mapping path="/media/*" />
+            <mvc:exclude-mapping path="/feedback/*" />
+            <mvc:exclude-mapping path="/explorerManager/*" />
+            <mvc:exclude-mapping path="/channel/queryOne.htm" />
+            <mvc:exclude-mapping path="/coin/queryByAdress.htm" />
+            <mvc:exclude-mapping path="/coin/sendTotoken.htm" />
+            <mvc:exclude-mapping path="/coin/queryTokenBalance.htm" />
+            <mvc:exclude-mapping path="/question/insert.htm" />
+            <mvc:exclude-mapping path="/question/update.htm" />
+            <mvc:exclude-mapping path="/activity/queryOrder.htm" />
+            <mvc:exclude-mapping path="/activity/queryLink.htm" />
+            <mvc:exclude-mapping path="/activity/queryAll.htm" />
+            <mvc:exclude-mapping path="/activity/queryOne.htm" />
+            <mvc:exclude-mapping path="/activity/queryActivity.htm" />
+            <mvc:exclude-mapping path="/activity/queryOder.htm" />
+            <mvc:exclude-mapping path="/exchange/conversion.htm" /><!-- 汇率查询不需要拦截 -->
+            <mvc:exclude-mapping path="/transaction/save.htm" /><!-- 交易记录保存 -->
+            <mvc:exclude-mapping path="/transaction/query.htm" /><!-- 查看交易-->
+            <mvc:exclude-mapping path="/ann/show.htm" /><!-- 官网通知公告查询 -->
+            <mvc:exclude-mapping path="/ann/read.htm" /><!-- 增加阅读数 -->
+            <mvc:exclude-mapping path="/ann/showOne.htm" /><!-- 查询一个通知公告 -->
+            <mvc:exclude-mapping path="/sms/*" /><!-- 短信 -->
+            <mvc:exclude-mapping path="/invite/verification.htm" /><!-- 邀请页面验证码 -->
+            <mvc:exclude-mapping path="/invite/mobileCheck.htm" /><!-- 邀请页面手机号校验 -->
+            <mvc:exclude-mapping path="/invite/trustnoteAddressCheck.htm" /><!-- 邀请页面ttt地址校验 -->
+            <mvc:exclude-mapping path="/invite/hasInvited.htm" /><!-- 查询已邀请信息 -->
+            <mvc:exclude-mapping path="/invite/search.htm" /><!-- 查询邀请码 -->
+            <mvc:exclude-mapping path="/gift/query.htm" /><!-- 赠送设置查询 -->
+            <bean class="org.trustnote.activity.utils.SecuritySSOInterceptor" /><!--自定义拦截器 -->
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="*.htm" />
+            <bean class="org.trustnote.activity.utils.FrequencyHandlerInterceptor" />
+        </mvc:interceptor>
+        <!-- 我们可以直接在者注册自定义拦截器Bean来配置全局拦截器，会对所有请求拦截 -->
+    </mvc:interceptors>
+    <context:component-scan base-package="org.trustnote.activity" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
+    </context:component-scan>
+
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="mappingJacksonHttpMessageConverter" />
+            </list>
+        </property>
+    </bean>
+    <bean id="mappingJacksonHttpMessageConverter"
+          class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>text/plain;charset=UTF-8</value>
+                <value>application/json;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+    <!-- 文件上传配置注意:这里申明的id必须为multipartResolver -->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="203238400" /><!--200M -->
+    </bean>
+    <!-- 配置定时任务 -->
+    <task:annotation-driven />
+</beans>

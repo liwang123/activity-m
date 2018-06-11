@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--设置log4j2的自身log级别为TRACE -->
+<Configuration status="TRACE">
+    <Properties>
+        <Property name="CATALINA_BASE_LOGPATH">${sys:catalina.base}/logs</Property>
+    </Properties>
+    <Appenders>
+        <!-- 定义 -->
+        <RandomAccessFile name="RandomAccessFileInfo" fileName="${sys:catalina.base}/logs/activity/info/info.log"
+                          immediateFlush="false" bufferSize="524288">
+            <Filters>
+                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="%d{DEFAULT} %p %C{10} %L %M %m%n%ex"/>
+        </RandomAccessFile>
+
+        <RandomAccessFile name="RandomAccessFileWarn" fileName="${sys:catalina.base}/logs/activity/warn/warn.log">
+            <Filters>
+                <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="%d{DEFAULT} %p %C{10} %L %M %m%n%ex"/>
+        </RandomAccessFile>
+
+        <RandomAccessFile name="RandomAccessFileError" fileName="${sys:catalina.base}/logs/activity/error/error.log">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+        </RandomAccessFile>
+
+    </Appenders>
+
+    <Loggers>
+        <AsyncLogger name="org.trustnote.activity" level="INFO" includeLocation="true" additivity="false">
+            <AppenderRef ref="RandomAccessFileInfo"/>
+        </AsyncLogger>
+        <Root level="WARN" includeLocation="true">
+            <AppenderRef ref="RandomAccessFileWarn"/>
+            <AppenderRef ref="RandomAccessFileError"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
