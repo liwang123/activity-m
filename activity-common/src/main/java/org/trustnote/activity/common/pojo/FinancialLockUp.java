@@ -3,6 +3,9 @@ package org.trustnote.activity.common.pojo;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * @author zhuxl
+ */
 public class FinancialLockUp {
     private Integer id;
 
@@ -19,58 +22,58 @@ public class FinancialLockUp {
     private Date crtTime;
 
     public Integer getId() {
-        return id;
+        return this.id;
     }
 
-    public void setId(Integer id) {
+    public void setId(final Integer id) {
         this.id = id;
     }
 
     public String getSharedAddress() {
-        return sharedAddress;
+        return this.sharedAddress;
     }
 
-    public void setSharedAddress(String sharedAddress) {
+    public void setSharedAddress(final String sharedAddress) {
         this.sharedAddress = sharedAddress == null ? null : sharedAddress.trim();
     }
 
     public String getDeviceAddress() {
-        return deviceAddress;
+        return this.deviceAddress;
     }
 
-    public void setDeviceAddress(String deviceAddress) {
+    public void setDeviceAddress(final String deviceAddress) {
         this.deviceAddress = deviceAddress == null ? null : deviceAddress.trim();
     }
 
     public Integer getFinancialBenefitsId() {
-        return financialBenefitsId;
+        return this.financialBenefitsId;
     }
 
-    public void setFinancialBenefitsId(Integer financialBenefitsId) {
+    public void setFinancialBenefitsId(final Integer financialBenefitsId) {
         this.financialBenefitsId = financialBenefitsId;
     }
 
     public Integer getLockUpAmount() {
-        return lockUpAmount;
+        return this.lockUpAmount;
     }
 
-    public void setLockUpAmount(Integer lockUpAmount) {
+    public void setLockUpAmount(final Integer lockUpAmount) {
         this.lockUpAmount = lockUpAmount;
     }
 
     public BigDecimal getIncomeAmount() {
-        return incomeAmount;
+        return this.incomeAmount;
     }
 
-    public void setIncomeAmount(BigDecimal incomeAmount) {
+    public void setIncomeAmount(final BigDecimal incomeAmount) {
         this.incomeAmount = incomeAmount;
     }
 
     public Date getCrtTime() {
-        return crtTime;
+        return this.crtTime;
     }
 
-    public void setCrtTime(Date crtTime) {
+    public void setCrtTime(final Date crtTime) {
         this.crtTime = crtTime;
     }
 }

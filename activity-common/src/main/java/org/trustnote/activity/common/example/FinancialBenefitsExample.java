@@ -1,8 +1,8 @@
 package org.trustnote.activity.common.example;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -309,52 +309,52 @@ public class FinancialBenefitsExample {
             return (Criteria) this;
         }
 
-        public Criteria andPanicStartTimeEqualTo(final Date value) {
+        public Criteria andPanicStartTimeEqualTo(final LocalDateTime value) {
             this.addCriterion("panic_start_time =", value, "panicStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicStartTimeNotEqualTo(final Date value) {
+        public Criteria andPanicStartTimeNotEqualTo(final LocalDateTime value) {
             this.addCriterion("panic_start_time <>", value, "panicStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicStartTimeGreaterThan(final Date value) {
+        public Criteria andPanicStartTimeGreaterThan(final LocalDateTime value) {
             this.addCriterion("panic_start_time >", value, "panicStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicStartTimeGreaterThanOrEqualTo(final Date value) {
+        public Criteria andPanicStartTimeGreaterThanOrEqualTo(final LocalDateTime value) {
             this.addCriterion("panic_start_time >=", value, "panicStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicStartTimeLessThan(final Date value) {
+        public Criteria andPanicStartTimeLessThan(final LocalDateTime value) {
             this.addCriterion("panic_start_time <", value, "panicStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicStartTimeLessThanOrEqualTo(final Date value) {
+        public Criteria andPanicStartTimeLessThanOrEqualTo(final LocalDateTime value) {
             this.addCriterion("panic_start_time <=", value, "panicStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicStartTimeIn(final List<Date> values) {
+        public Criteria andPanicStartTimeIn(final List<LocalDateTime> values) {
             this.addCriterion("panic_start_time in", values, "panicStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicStartTimeNotIn(final List<Date> values) {
+        public Criteria andPanicStartTimeNotIn(final List<LocalDateTime> values) {
             this.addCriterion("panic_start_time not in", values, "panicStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicStartTimeBetween(final Date value1, final Date value2) {
+        public Criteria andPanicStartTimeBetween(final LocalDateTime value1, final LocalDateTime value2) {
             this.addCriterion("panic_start_time between", value1, value2, "panicStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicStartTimeNotBetween(final Date value1, final Date value2) {
+        public Criteria andPanicStartTimeNotBetween(final LocalDateTime value1, final LocalDateTime value2) {
             this.addCriterion("panic_start_time not between", value1, value2, "panicStartTime");
             return (Criteria) this;
         }
@@ -369,52 +369,52 @@ public class FinancialBenefitsExample {
             return (Criteria) this;
         }
 
-        public Criteria andPanicEndTimeEqualTo(final Date value) {
+        public Criteria andPanicEndTimeEqualTo(final LocalDateTime value) {
             this.addCriterion("panic_end_time =", value, "panicEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicEndTimeNotEqualTo(final Date value) {
+        public Criteria andPanicEndTimeNotEqualTo(final LocalDateTime value) {
             this.addCriterion("panic_end_time <>", value, "panicEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicEndTimeGreaterThan(final Date value) {
+        public Criteria andPanicEndTimeGreaterThan(final LocalDateTime value) {
             this.addCriterion("panic_end_time >", value, "panicEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicEndTimeGreaterThanOrEqualTo(final Date value) {
+        public Criteria andPanicEndTimeGreaterThanOrEqualTo(final LocalDateTime value) {
             this.addCriterion("panic_end_time >=", value, "panicEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicEndTimeLessThan(final Date value) {
+        public Criteria andPanicEndTimeLessThan(final LocalDateTime value) {
             this.addCriterion("panic_end_time <", value, "panicEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicEndTimeLessThanOrEqualTo(final Date value) {
+        public Criteria andPanicEndTimeLessThanOrEqualTo(final LocalDateTime value) {
             this.addCriterion("panic_end_time <=", value, "panicEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicEndTimeIn(final List<Date> values) {
+        public Criteria andPanicEndTimeIn(final List<LocalDateTime> values) {
             this.addCriterion("panic_end_time in", values, "panicEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicEndTimeNotIn(final List<Date> values) {
+        public Criteria andPanicEndTimeNotIn(final List<LocalDateTime> values) {
             this.addCriterion("panic_end_time not in", values, "panicEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicEndTimeBetween(final Date value1, final Date value2) {
+        public Criteria andPanicEndTimeBetween(final LocalDateTime value1, final LocalDateTime value2) {
             this.addCriterion("panic_end_time between", value1, value2, "panicEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andPanicEndTimeNotBetween(final Date value1, final Date value2) {
+        public Criteria andPanicEndTimeNotBetween(final LocalDateTime value1, final LocalDateTime value2) {
             this.addCriterion("panic_end_time not between", value1, value2, "panicEndTime");
             return (Criteria) this;
         }
@@ -429,52 +429,52 @@ public class FinancialBenefitsExample {
             return (Criteria) this;
         }
 
-        public Criteria andInterestStartTimeEqualTo(final Date value) {
+        public Criteria andInterestStartTimeEqualTo(final LocalDateTime value) {
             this.addCriterion("interest_start_time =", value, "interestStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestStartTimeNotEqualTo(final Date value) {
+        public Criteria andInterestStartTimeNotEqualTo(final LocalDateTime value) {
             this.addCriterion("interest_start_time <>", value, "interestStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestStartTimeGreaterThan(final Date value) {
+        public Criteria andInterestStartTimeGreaterThan(final LocalDateTime value) {
             this.addCriterion("interest_start_time >", value, "interestStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestStartTimeGreaterThanOrEqualTo(final Date value) {
+        public Criteria andInterestStartTimeGreaterThanOrEqualTo(final LocalDateTime value) {
             this.addCriterion("interest_start_time >=", value, "interestStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestStartTimeLessThan(final Date value) {
+        public Criteria andInterestStartTimeLessThan(final LocalDateTime value) {
             this.addCriterion("interest_start_time <", value, "interestStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestStartTimeLessThanOrEqualTo(final Date value) {
+        public Criteria andInterestStartTimeLessThanOrEqualTo(final LocalDateTime value) {
             this.addCriterion("interest_start_time <=", value, "interestStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestStartTimeIn(final List<Date> values) {
+        public Criteria andInterestStartTimeIn(final List<LocalDateTime> values) {
             this.addCriterion("interest_start_time in", values, "interestStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestStartTimeNotIn(final List<Date> values) {
+        public Criteria andInterestStartTimeNotIn(final List<LocalDateTime> values) {
             this.addCriterion("interest_start_time not in", values, "interestStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestStartTimeBetween(final Date value1, final Date value2) {
+        public Criteria andInterestStartTimeBetween(final LocalDateTime value1, final LocalDateTime value2) {
             this.addCriterion("interest_start_time between", value1, value2, "interestStartTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestStartTimeNotBetween(final Date value1, final Date value2) {
+        public Criteria andInterestStartTimeNotBetween(final LocalDateTime value1, final LocalDateTime value2) {
             this.addCriterion("interest_start_time not between", value1, value2, "interestStartTime");
             return (Criteria) this;
         }
@@ -489,52 +489,52 @@ public class FinancialBenefitsExample {
             return (Criteria) this;
         }
 
-        public Criteria andInterestEndTimeEqualTo(final Date value) {
+        public Criteria andInterestEndTimeEqualTo(final LocalDateTime value) {
             this.addCriterion("interest_end_time =", value, "interestEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestEndTimeNotEqualTo(final Date value) {
+        public Criteria andInterestEndTimeNotEqualTo(final LocalDateTime value) {
             this.addCriterion("interest_end_time <>", value, "interestEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestEndTimeGreaterThan(final Date value) {
+        public Criteria andInterestEndTimeGreaterThan(final LocalDateTime value) {
             this.addCriterion("interest_end_time >", value, "interestEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestEndTimeGreaterThanOrEqualTo(final Date value) {
+        public Criteria andInterestEndTimeGreaterThanOrEqualTo(final LocalDateTime value) {
             this.addCriterion("interest_end_time >=", value, "interestEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestEndTimeLessThan(final Date value) {
+        public Criteria andInterestEndTimeLessThan(final LocalDateTime value) {
             this.addCriterion("interest_end_time <", value, "interestEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestEndTimeLessThanOrEqualTo(final Date value) {
+        public Criteria andInterestEndTimeLessThanOrEqualTo(final LocalDateTime value) {
             this.addCriterion("interest_end_time <=", value, "interestEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestEndTimeIn(final List<Date> values) {
+        public Criteria andInterestEndTimeIn(final List<LocalDateTime> values) {
             this.addCriterion("interest_end_time in", values, "interestEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestEndTimeNotIn(final List<Date> values) {
+        public Criteria andInterestEndTimeNotIn(final List<LocalDateTime> values) {
             this.addCriterion("interest_end_time not in", values, "interestEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestEndTimeBetween(final Date value1, final Date value2) {
+        public Criteria andInterestEndTimeBetween(final LocalDateTime value1, final LocalDateTime value2) {
             this.addCriterion("interest_end_time between", value1, value2, "interestEndTime");
             return (Criteria) this;
         }
 
-        public Criteria andInterestEndTimeNotBetween(final Date value1, final Date value2) {
+        public Criteria andInterestEndTimeNotBetween(final LocalDateTime value1, final LocalDateTime value2) {
             this.addCriterion("interest_end_time not between", value1, value2, "interestEndTime");
             return (Criteria) this;
         }
@@ -549,52 +549,52 @@ public class FinancialBenefitsExample {
             return (Criteria) this;
         }
 
-        public Criteria andUnlockTimeEqualTo(final Date value) {
+        public Criteria andUnlockTimeEqualTo(final LocalDateTime value) {
             this.addCriterion("unlock_time =", value, "unlockTime");
             return (Criteria) this;
         }
 
-        public Criteria andUnlockTimeNotEqualTo(final Date value) {
+        public Criteria andUnlockTimeNotEqualTo(final LocalDateTime value) {
             this.addCriterion("unlock_time <>", value, "unlockTime");
             return (Criteria) this;
         }
 
-        public Criteria andUnlockTimeGreaterThan(final Date value) {
+        public Criteria andUnlockTimeGreaterThan(final LocalDateTime value) {
             this.addCriterion("unlock_time >", value, "unlockTime");
             return (Criteria) this;
         }
 
-        public Criteria andUnlockTimeGreaterThanOrEqualTo(final Date value) {
+        public Criteria andUnlockTimeGreaterThanOrEqualTo(final LocalDateTime value) {
             this.addCriterion("unlock_time >=", value, "unlockTime");
             return (Criteria) this;
         }
 
-        public Criteria andUnlockTimeLessThan(final Date value) {
+        public Criteria andUnlockTimeLessThan(final LocalDateTime value) {
             this.addCriterion("unlock_time <", value, "unlockTime");
             return (Criteria) this;
         }
 
-        public Criteria andUnlockTimeLessThanOrEqualTo(final Date value) {
+        public Criteria andUnlockTimeLessThanOrEqualTo(final LocalDateTime value) {
             this.addCriterion("unlock_time <=", value, "unlockTime");
             return (Criteria) this;
         }
 
-        public Criteria andUnlockTimeIn(final List<Date> values) {
+        public Criteria andUnlockTimeIn(final List<LocalDateTime> values) {
             this.addCriterion("unlock_time in", values, "unlockTime");
             return (Criteria) this;
         }
 
-        public Criteria andUnlockTimeNotIn(final List<Date> values) {
+        public Criteria andUnlockTimeNotIn(final List<LocalDateTime> values) {
             this.addCriterion("unlock_time not in", values, "unlockTime");
             return (Criteria) this;
         }
 
-        public Criteria andUnlockTimeBetween(final Date value1, final Date value2) {
+        public Criteria andUnlockTimeBetween(final LocalDateTime value1, final LocalDateTime value2) {
             this.addCriterion("unlock_time between", value1, value2, "unlockTime");
             return (Criteria) this;
         }
 
-        public Criteria andUnlockTimeNotBetween(final Date value1, final Date value2) {
+        public Criteria andUnlockTimeNotBetween(final LocalDateTime value1, final LocalDateTime value2) {
             this.addCriterion("unlock_time not between", value1, value2, "unlockTime");
             return (Criteria) this;
         }
@@ -909,52 +909,52 @@ public class FinancialBenefitsExample {
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeEqualTo(final Date value) {
+        public Criteria andCrtTimeEqualTo(final LocalDateTime value) {
             this.addCriterion("crt_time =", value, "crtTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeNotEqualTo(final Date value) {
+        public Criteria andCrtTimeNotEqualTo(final LocalDateTime value) {
             this.addCriterion("crt_time <>", value, "crtTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeGreaterThan(final Date value) {
+        public Criteria andCrtTimeGreaterThan(final LocalDateTime value) {
             this.addCriterion("crt_time >", value, "crtTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeGreaterThanOrEqualTo(final Date value) {
+        public Criteria andCrtTimeGreaterThanOrEqualTo(final LocalDateTime value) {
             this.addCriterion("crt_time >=", value, "crtTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeLessThan(final Date value) {
+        public Criteria andCrtTimeLessThan(final LocalDateTime value) {
             this.addCriterion("crt_time <", value, "crtTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeLessThanOrEqualTo(final Date value) {
+        public Criteria andCrtTimeLessThanOrEqualTo(final LocalDateTime value) {
             this.addCriterion("crt_time <=", value, "crtTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeIn(final List<Date> values) {
+        public Criteria andCrtTimeIn(final List<LocalDateTime> values) {
             this.addCriterion("crt_time in", values, "crtTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeNotIn(final List<Date> values) {
+        public Criteria andCrtTimeNotIn(final List<LocalDateTime> values) {
             this.addCriterion("crt_time not in", values, "crtTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeBetween(final Date value1, final Date value2) {
+        public Criteria andCrtTimeBetween(final LocalDateTime value1, final LocalDateTime value2) {
             this.addCriterion("crt_time between", value1, value2, "crtTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeNotBetween(final Date value1, final Date value2) {
+        public Criteria andCrtTimeNotBetween(final LocalDateTime value1, final LocalDateTime value2) {
             this.addCriterion("crt_time not between", value1, value2, "crtTime");
             return (Criteria) this;
         }
@@ -969,52 +969,52 @@ public class FinancialBenefitsExample {
             return (Criteria) this;
         }
 
-        public Criteria andUptTimeEqualTo(final Date value) {
+        public Criteria andUptTimeEqualTo(final LocalDateTime value) {
             this.addCriterion("upt_time =", value, "uptTime");
             return (Criteria) this;
         }
 
-        public Criteria andUptTimeNotEqualTo(final Date value) {
+        public Criteria andUptTimeNotEqualTo(final LocalDateTime value) {
             this.addCriterion("upt_time <>", value, "uptTime");
             return (Criteria) this;
         }
 
-        public Criteria andUptTimeGreaterThan(final Date value) {
+        public Criteria andUptTimeGreaterThan(final LocalDateTime value) {
             this.addCriterion("upt_time >", value, "uptTime");
             return (Criteria) this;
         }
 
-        public Criteria andUptTimeGreaterThanOrEqualTo(final Date value) {
+        public Criteria andUptTimeGreaterThanOrEqualTo(final LocalDateTime value) {
             this.addCriterion("upt_time >=", value, "uptTime");
             return (Criteria) this;
         }
 
-        public Criteria andUptTimeLessThan(final Date value) {
+        public Criteria andUptTimeLessThan(final LocalDateTime value) {
             this.addCriterion("upt_time <", value, "uptTime");
             return (Criteria) this;
         }
 
-        public Criteria andUptTimeLessThanOrEqualTo(final Date value) {
+        public Criteria andUptTimeLessThanOrEqualTo(final LocalDateTime value) {
             this.addCriterion("upt_time <=", value, "uptTime");
             return (Criteria) this;
         }
 
-        public Criteria andUptTimeIn(final List<Date> values) {
+        public Criteria andUptTimeIn(final List<LocalDateTime> values) {
             this.addCriterion("upt_time in", values, "uptTime");
             return (Criteria) this;
         }
 
-        public Criteria andUptTimeNotIn(final List<Date> values) {
+        public Criteria andUptTimeNotIn(final List<LocalDateTime> values) {
             this.addCriterion("upt_time not in", values, "uptTime");
             return (Criteria) this;
         }
 
-        public Criteria andUptTimeBetween(final Date value1, final Date value2) {
+        public Criteria andUptTimeBetween(final LocalDateTime value1, final LocalDateTime value2) {
             this.addCriterion("upt_time between", value1, value2, "uptTime");
             return (Criteria) this;
         }
 
-        public Criteria andUptTimeNotBetween(final Date value1, final Date value2) {
+        public Criteria andUptTimeNotBetween(final LocalDateTime value1, final LocalDateTime value2) {
             this.addCriterion("upt_time not between", value1, value2, "uptTime");
             return (Criteria) this;
         }

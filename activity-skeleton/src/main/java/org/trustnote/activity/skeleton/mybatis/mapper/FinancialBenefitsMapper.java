@@ -3,6 +3,7 @@ package org.trustnote.activity.skeleton.mybatis.mapper;
 import org.apache.ibatis.annotations.Param;
 import org.trustnote.activity.common.example.FinancialBenefitsExample;
 import org.trustnote.activity.common.pojo.FinancialBenefits;
+import org.trustnote.activity.skeleton.mybatis.orm.Page;
 
 import java.util.List;
 
@@ -19,6 +20,8 @@ public interface FinancialBenefitsMapper {
     int insert(FinancialBenefits record);
 
     int insertSelective(FinancialBenefits record);
+
+    List<FinancialBenefits> selectByExampleAndPage(Page<FinancialBenefits> page, FinancialBenefitsExample example);
 
     List<FinancialBenefits> selectByExample(FinancialBenefitsExample example);
 

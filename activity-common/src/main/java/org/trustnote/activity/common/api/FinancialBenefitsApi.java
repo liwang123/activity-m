@@ -1,4 +1,4 @@
-package org.trustnote.activity.common.pojo;
+package org.trustnote.activity.common.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * @author zhuxl
@@ -16,22 +14,22 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FinancialBenefits {
+public class FinancialBenefitsApi {
     private Integer id;
 
     private Integer financialId;
 
     private String productName;
 
-    private LocalDateTime panicStartTime;
+    private Long panicStartTime;
 
-    private LocalDateTime panicEndTime;
+    private Long panicEndTime;
 
-    private LocalDateTime interestStartTime;
+    private Long interestStartTime;
 
-    private LocalDateTime interestEndTime;
+    private Long interestEndTime;
 
-    private LocalDateTime unlockTime;
+    private Long unlockTime;
 
     private BigDecimal panicTotalLimit;
 
@@ -41,10 +39,9 @@ public class FinancialBenefits {
 
     private BigDecimal remainLimit;
 
-    private Integer financialStatus;
+    private String financialStatusName;
 
-    private Date crtTime;
+    private long nextPanicStartTime;
 
-    private Date uptTime;
-
+    private long nextPanicEndTime;
 }
