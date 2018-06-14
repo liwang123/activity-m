@@ -77,9 +77,11 @@
             <mvc:exclude-mapping path="/invite/hasInvited.htm" /><!-- 查询已邀请信息 -->
             <mvc:exclude-mapping path="/invite/search.htm" /><!-- 查询邀请码 -->
             <mvc:exclude-mapping path="/gift/query.htm" /><!-- 赠送设置查询 -->
-            <mvc:exclude-mapping path="/financial/home.htm"/><!-- 持仓收益 -->
-            <mvc:exclude-mapping path="/financial-benefits/push.htm"/>
-            <mvc:exclude-mapping path="/financial-lockup/*"/><!-- 测试完删除 -->
+            <mvc:exclude-mapping path="/financial/home.htm"/><!-- 持仓收益-理财套餐 -->
+            <mvc:exclude-mapping path="/financial-benefits/push.htm"/><!-- 持仓收益-理财产品 -->
+            <mvc:exclude-mapping path="/financial-lockup/save.htm"/><!-- 合约地址-保存 -->
+            <mvc:exclude-mapping path="/financial-lockup/all.htm"/><!-- 合约地址-设备地址查询 -->
+            <mvc:exclude-mapping path="/financial-lockup/participate.htm"/><!-- 合约地址-设备地址查询 -->
             <bean class="org.trustnote.activity.utils.SecuritySSOInterceptor" /><!--自定义拦截器 -->
         </mvc:interceptor>
         <mvc:interceptor>

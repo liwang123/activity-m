@@ -31,15 +31,17 @@ public class FinancialBenefitsApi {
 
     private Long unlockTime;
 
-    private BigDecimal panicTotalLimit;
+    private Integer panicTotalLimit;
 
-    private BigDecimal minAmount;
+    private Integer minAmount;
 
-    private BigDecimal purchaseLimit;
+    private Integer purchaseLimit;
 
     private BigDecimal remainLimit;
 
-    private String financialStatusName;
+    private Integer financialStatus;
+
+    private String activityStatus;
 
     private long nextPanicStartTime;
 

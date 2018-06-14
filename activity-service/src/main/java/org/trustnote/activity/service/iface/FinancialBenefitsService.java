@@ -4,6 +4,7 @@ import org.trustnote.activity.common.api.FinancialBenefitsApi;
 import org.trustnote.activity.common.pojo.FinancialBenefits;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -21,4 +22,6 @@ public interface FinancialBenefitsService {
     FinancialBenefitsApi queryFinancialBenefitsByFinancialId(int financialId) throws Exception;
 
     int updateFinancialStatus(int id) throws Exception;
+
+    List<FinancialBenefits> queryFinancialInterestGreaterThanNow(final LocalDateTime now) throws Exception;
 }

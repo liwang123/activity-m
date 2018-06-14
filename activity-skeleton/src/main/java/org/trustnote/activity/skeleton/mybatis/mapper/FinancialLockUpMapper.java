@@ -5,7 +5,9 @@ import org.trustnote.activity.common.example.FinancialLockUpExample;
 import org.trustnote.activity.common.pojo.FinancialLockUp;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zhuxl
@@ -34,4 +36,6 @@ public interface FinancialLockUpMapper {
     int updateByPrimaryKeySelective(FinancialLockUp record);
 
     int updateByPrimaryKey(FinancialLockUp record);
+
+    Map<String, BigDecimal> participate();
 }

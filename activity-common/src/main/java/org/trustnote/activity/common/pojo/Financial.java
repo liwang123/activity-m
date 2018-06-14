@@ -14,6 +14,8 @@ public class Financial {
 
     private Date uptTime;
 
+    private Integer numericalv;
+
     public Integer getId() {
         return this.id;
     }
@@ -44,5 +46,13 @@ public class Financial {
 
     public void setUptTime(final Date uptTime) {
         this.uptTime = uptTime;
+    }
+
+    public Integer getNumericalv() {
+        return this.numericalv;
+    }
+
+    public void setNumericalv(final Integer numericalv) {
+        this.numericalv = numericalv;
     }
 }

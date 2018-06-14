@@ -6,9 +6,10 @@
         <result column="shared_address" jdbcType="VARCHAR" property="sharedAddress"/>
         <result column="device_address" jdbcType="VARCHAR" property="deviceAddress"/>
         <result column="financial_benefits_id" jdbcType="INTEGER" property="financialBenefitsId"/>
-        <result column="lock_up_amount" jdbcType="INTEGER" property="lockUpAmount"/>
+        <result column="lock_up_amount" jdbcType="DECIMAL" property="lockUpAmount"/>
         <result column="income_amount" jdbcType="DECIMAL" property="incomeAmount"/>
         <result column="crt_time" jdbcType="TIMESTAMP" property="crtTime"/>
+        <result column="order_amount" jdbcType="INTEGER" property="orderAmount"/>
     </resultMap>
     <sql id="Example_Where_Clause">
         <where>
@@ -72,7 +73,7 @@
     </sql>
     <sql id="Base_Column_List">
     id, shared_address, device_address, financial_benefits_id, lock_up_amount, income_amount, 
-    crt_time
+    crt_time, order_amount
   </sql>
     <select id="selectByExample" parameterType="org.trustnote.activity.common.example.FinancialLockUpExample"
             resultMap="BaseResultMap">
@@ -123,10 +124,10 @@
     <insert id="insert" parameterType="org.trustnote.activity.common.pojo.FinancialLockUp">
     insert into financial_lock_up (id, shared_address, device_address, 
       financial_benefits_id, lock_up_amount, income_amount, 
-      crt_time)
+      crt_time, order_amount)
     values (#{id,jdbcType=INTEGER}, #{sharedAddress,jdbcType=VARCHAR}, #{deviceAddress,jdbcType=VARCHAR}, 
-      #{financialBenefitsId,jdbcType=INTEGER}, #{lockUpAmount,jdbcType=INTEGER}, #{incomeAmount,jdbcType=DECIMAL}, 
-      #{crtTime,jdbcType=TIMESTAMP})
+      #{financialBenefitsId,jdbcType=INTEGER}, #{lockUpAmount,jdbcType=DECIMAL}, #{incomeAmount,jdbcType=DECIMAL},
+      #{crtTime,jdbcType=TIMESTAMP}, #{orderAmount,jdbcType=INTEGER})
   </insert>
     <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.FinancialLockUp">
         insert into financial_lock_up
@@ -152,6 +153,9 @@
             <if test="crtTime != null">
                 crt_time,
             </if>
+            <if test="orderAmount != null">
+                order_amount,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -167,13 +171,16 @@
                 #{financialBenefitsId,jdbcType=INTEGER},
             </if>
             <if test="lockUpAmount != null">
-                #{lockUpAmount,jdbcType=INTEGER},
+                #{lockUpAmount,jdbcType=DECIMAL},
             </if>
             <if test="incomeAmount != null">
                 #{incomeAmount,jdbcType=DECIMAL},
             </if>
             <if test="crtTime != null">
                 #{crtTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderAmount != null">
+                #{orderAmount,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -200,13 +207,16 @@
                 financial_benefits_id = #{record.financialBenefitsId,jdbcType=INTEGER},
             </if>
             <if test="record.lockUpAmount != null">
-                lock_up_amount = #{record.lockUpAmount,jdbcType=INTEGER},
+                lock_up_amount = #{record.lockUpAmount,jdbcType=DECIMAL},
             </if>
             <if test="record.incomeAmount != null">
                 income_amount = #{record.incomeAmount,jdbcType=DECIMAL},
             </if>
             <if test="record.crtTime != null">
                 crt_time = #{record.crtTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.orderAmount != null">
+                order_amount = #{record.orderAmount,jdbcType=INTEGER},
             </if>
         </set>
         <if test="_parameter != null">
@@ -219,9 +229,10 @@
         shared_address = #{record.sharedAddress,jdbcType=VARCHAR},
         device_address = #{record.deviceAddress,jdbcType=VARCHAR},
         financial_benefits_id = #{record.financialBenefitsId,jdbcType=INTEGER},
-        lock_up_amount = #{record.lockUpAmount,jdbcType=INTEGER},
+        lock_up_amount = #{record.lockUpAmount,jdbcType=DECIMAL},
         income_amount = #{record.incomeAmount,jdbcType=DECIMAL},
-        crt_time = #{record.crtTime,jdbcType=TIMESTAMP}
+        crt_time = #{record.crtTime,jdbcType=TIMESTAMP},
+        order_amount = #{record.orderAmount,jdbcType=INTEGER}
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
         </if>
@@ -239,13 +250,16 @@
                 financial_benefits_id = #{financialBenefitsId,jdbcType=INTEGER},
             </if>
             <if test="lockUpAmount != null">
-                lock_up_amount = #{lockUpAmount,jdbcType=INTEGER},
+                lock_up_amount = #{lockUpAmount,jdbcType=DECIMAL},
             </if>
             <if test="incomeAmount != null">
                 income_amount = #{incomeAmount,jdbcType=DECIMAL},
             </if>
             <if test="crtTime != null">
                 crt_time = #{crtTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderAmount != null">
+                order_amount = #{orderAmount,jdbcType=DECIMAL},
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
@@ -255,9 +269,18 @@
     set shared_address = #{sharedAddress,jdbcType=VARCHAR},
       device_address = #{deviceAddress,jdbcType=VARCHAR},
       financial_benefits_id = #{financialBenefitsId,jdbcType=INTEGER},
-      lock_up_amount = #{lockUpAmount,jdbcType=INTEGER},
+      lock_up_amount = #{lockUpAmount,jdbcType=DECIMAL},
       income_amount = #{incomeAmount,jdbcType=DECIMAL},
-      crt_time = #{crtTime,jdbcType=TIMESTAMP}
+      crt_time = #{crtTime,jdbcType=TIMESTAMP},
+      order_amount = #{orderAmount,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
-  </update>
+    </update>
+    <select id="participate" resultType="Map">
+        SELECT
+          SUM(id) total_user, SUM(lock_up_amount) total_amount
+        FROM
+          financial_lock_up
+        WHERE
+          lock_up_amount IS NOT NULL;
+    </select>
 </mapper>

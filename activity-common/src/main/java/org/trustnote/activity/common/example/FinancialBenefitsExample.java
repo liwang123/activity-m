@@ -609,52 +609,52 @@ public class FinancialBenefitsExample {
             return (Criteria) this;
         }
 
-        public Criteria andPanicTotalLimitEqualTo(final BigDecimal value) {
+        public Criteria andPanicTotalLimitEqualTo(final Integer value) {
             this.addCriterion("panic_total_limit =", value, "panicTotalLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPanicTotalLimitNotEqualTo(final BigDecimal value) {
+        public Criteria andPanicTotalLimitNotEqualTo(final Integer value) {
             this.addCriterion("panic_total_limit <>", value, "panicTotalLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPanicTotalLimitGreaterThan(final BigDecimal value) {
+        public Criteria andPanicTotalLimitGreaterThan(final Integer value) {
             this.addCriterion("panic_total_limit >", value, "panicTotalLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPanicTotalLimitGreaterThanOrEqualTo(final BigDecimal value) {
+        public Criteria andPanicTotalLimitGreaterThanOrEqualTo(final Integer value) {
             this.addCriterion("panic_total_limit >=", value, "panicTotalLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPanicTotalLimitLessThan(final BigDecimal value) {
+        public Criteria andPanicTotalLimitLessThan(final Integer value) {
             this.addCriterion("panic_total_limit <", value, "panicTotalLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPanicTotalLimitLessThanOrEqualTo(final BigDecimal value) {
+        public Criteria andPanicTotalLimitLessThanOrEqualTo(final Integer value) {
             this.addCriterion("panic_total_limit <=", value, "panicTotalLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPanicTotalLimitIn(final List<BigDecimal> values) {
+        public Criteria andPanicTotalLimitIn(final List<Integer> values) {
             this.addCriterion("panic_total_limit in", values, "panicTotalLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPanicTotalLimitNotIn(final List<BigDecimal> values) {
+        public Criteria andPanicTotalLimitNotIn(final List<Integer> values) {
             this.addCriterion("panic_total_limit not in", values, "panicTotalLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPanicTotalLimitBetween(final BigDecimal value1, final BigDecimal value2) {
+        public Criteria andPanicTotalLimitBetween(final Integer value1, final Integer value2) {
             this.addCriterion("panic_total_limit between", value1, value2, "panicTotalLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPanicTotalLimitNotBetween(final BigDecimal value1, final BigDecimal value2) {
+        public Criteria andPanicTotalLimitNotBetween(final Integer value1, final Integer value2) {
             this.addCriterion("panic_total_limit not between", value1, value2, "panicTotalLimit");
             return (Criteria) this;
         }
@@ -669,52 +669,52 @@ public class FinancialBenefitsExample {
             return (Criteria) this;
         }
 
-        public Criteria andMinAmountEqualTo(final BigDecimal value) {
+        public Criteria andMinAmountEqualTo(final Integer value) {
             this.addCriterion("min_amount =", value, "minAmount");
             return (Criteria) this;
         }
 
-        public Criteria andMinAmountNotEqualTo(final BigDecimal value) {
+        public Criteria andMinAmountNotEqualTo(final Integer value) {
             this.addCriterion("min_amount <>", value, "minAmount");
             return (Criteria) this;
         }
 
-        public Criteria andMinAmountGreaterThan(final BigDecimal value) {
+        public Criteria andMinAmountGreaterThan(final Integer value) {
             this.addCriterion("min_amount >", value, "minAmount");
             return (Criteria) this;
         }
 
-        public Criteria andMinAmountGreaterThanOrEqualTo(final BigDecimal value) {
+        public Criteria andMinAmountGreaterThanOrEqualTo(final Integer value) {
             this.addCriterion("min_amount >=", value, "minAmount");
             return (Criteria) this;
         }
 
-        public Criteria andMinAmountLessThan(final BigDecimal value) {
+        public Criteria andMinAmountLessThan(final Integer value) {
             this.addCriterion("min_amount <", value, "minAmount");
             return (Criteria) this;
         }
 
-        public Criteria andMinAmountLessThanOrEqualTo(final BigDecimal value) {
+        public Criteria andMinAmountLessThanOrEqualTo(final Integer value) {
             this.addCriterion("min_amount <=", value, "minAmount");
             return (Criteria) this;
         }
 
-        public Criteria andMinAmountIn(final List<BigDecimal> values) {
+        public Criteria andMinAmountIn(final List<Integer> values) {
             this.addCriterion("min_amount in", values, "minAmount");
             return (Criteria) this;
         }
 
-        public Criteria andMinAmountNotIn(final List<BigDecimal> values) {
+        public Criteria andMinAmountNotIn(final List<Integer> values) {
             this.addCriterion("min_amount not in", values, "minAmount");
             return (Criteria) this;
         }
 
-        public Criteria andMinAmountBetween(final BigDecimal value1, final BigDecimal value2) {
+        public Criteria andMinAmountBetween(final Integer value1, final Integer value2) {
             this.addCriterion("min_amount between", value1, value2, "minAmount");
             return (Criteria) this;
         }
 
-        public Criteria andMinAmountNotBetween(final BigDecimal value1, final BigDecimal value2) {
+        public Criteria andMinAmountNotBetween(final Integer value1, final Integer value2) {
             this.addCriterion("min_amount not between", value1, value2, "minAmount");
             return (Criteria) this;
         }
@@ -729,52 +729,52 @@ public class FinancialBenefitsExample {
             return (Criteria) this;
         }
 
-        public Criteria andPurchaseLimitEqualTo(final BigDecimal value) {
+        public Criteria andPurchaseLimitEqualTo(final Integer value) {
             this.addCriterion("purchase_limit =", value, "purchaseLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPurchaseLimitNotEqualTo(final BigDecimal value) {
+        public Criteria andPurchaseLimitNotEqualTo(final Integer value) {
             this.addCriterion("purchase_limit <>", value, "purchaseLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPurchaseLimitGreaterThan(final BigDecimal value) {
+        public Criteria andPurchaseLimitGreaterThan(final Integer value) {
             this.addCriterion("purchase_limit >", value, "purchaseLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPurchaseLimitGreaterThanOrEqualTo(final BigDecimal value) {
+        public Criteria andPurchaseLimitGreaterThanOrEqualTo(final Integer value) {
             this.addCriterion("purchase_limit >=", value, "purchaseLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPurchaseLimitLessThan(final BigDecimal value) {
+        public Criteria andPurchaseLimitLessThan(final Integer value) {
             this.addCriterion("purchase_limit <", value, "purchaseLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPurchaseLimitLessThanOrEqualTo(final BigDecimal value) {
+        public Criteria andPurchaseLimitLessThanOrEqualTo(final Integer value) {
             this.addCriterion("purchase_limit <=", value, "purchaseLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPurchaseLimitIn(final List<BigDecimal> values) {
+        public Criteria andPurchaseLimitIn(final List<Integer> values) {
             this.addCriterion("purchase_limit in", values, "purchaseLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPurchaseLimitNotIn(final List<BigDecimal> values) {
+        public Criteria andPurchaseLimitNotIn(final List<Integer> values) {
             this.addCriterion("purchase_limit not in", values, "purchaseLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPurchaseLimitBetween(final BigDecimal value1, final BigDecimal value2) {
+        public Criteria andPurchaseLimitBetween(final Integer value1, final Integer value2) {
             this.addCriterion("purchase_limit between", value1, value2, "purchaseLimit");
             return (Criteria) this;
         }
 
-        public Criteria andPurchaseLimitNotBetween(final BigDecimal value1, final BigDecimal value2) {
+        public Criteria andPurchaseLimitNotBetween(final Integer value1, final Integer value2) {
             this.addCriterion("purchase_limit not between", value1, value2, "purchaseLimit");
             return (Criteria) this;
         }
@@ -1016,6 +1016,66 @@ public class FinancialBenefitsExample {
 
         public Criteria andUptTimeNotBetween(final LocalDateTime value1, final LocalDateTime value2) {
             this.addCriterion("upt_time not between", value1, value2, "uptTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusIsNull() {
+            this.addCriterion("calaction_status is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusIsNotNull() {
+            this.addCriterion("calaction_status is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusEqualTo(final Integer value) {
+            this.addCriterion("calaction_status =", value, "CalactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusNotEqualTo(final Integer value) {
+            this.addCriterion("calaction_status <>", value, "CalactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusGreaterThan(final Integer value) {
+            this.addCriterion("calaction_status >", value, "CalactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusGreaterThanOrEqualTo(final Integer value) {
+            this.addCriterion("calaction_status >=", value, "CalactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusLessThan(final Integer value) {
+            this.addCriterion("calaction_status <", value, "CalactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusLessThanOrEqualTo(final Integer value) {
+            this.addCriterion("calaction_status <=", value, "CalactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusIn(final List<Integer> values) {
+            this.addCriterion("calaction_status in", values, "CalactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusNotIn(final List<Integer> values) {
+            this.addCriterion("calaction_status not in", values, "CalactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusBetween(final Integer value1, final Integer value2) {
+            this.addCriterion("calaction_status between", value1, value2, "CalactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusNotBetween(final Integer value1, final Integer value2) {
+            this.addCriterion("calaction_status not between", value1, value2, "CalactionStatus");
             return (Criteria) this;
         }
     }

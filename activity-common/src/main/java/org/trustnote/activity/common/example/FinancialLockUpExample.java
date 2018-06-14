@@ -379,52 +379,52 @@ public class FinancialLockUpExample {
             return (Criteria) this;
         }
 
-        public Criteria andLockUpAmountEqualTo(final Integer value) {
+        public Criteria andLockUpAmountEqualTo(final BigDecimal value) {
             this.addCriterion("lock_up_amount =", value, "lockUpAmount");
             return (Criteria) this;
         }
 
-        public Criteria andLockUpAmountNotEqualTo(final Integer value) {
+        public Criteria andLockUpAmountNotEqualTo(final BigDecimal value) {
             this.addCriterion("lock_up_amount <>", value, "lockUpAmount");
             return (Criteria) this;
         }
 
-        public Criteria andLockUpAmountGreaterThan(final Integer value) {
+        public Criteria andLockUpAmountGreaterThan(final BigDecimal value) {
             this.addCriterion("lock_up_amount >", value, "lockUpAmount");
             return (Criteria) this;
         }
 
-        public Criteria andLockUpAmountGreaterThanOrEqualTo(final Integer value) {
+        public Criteria andLockUpAmountGreaterThanOrEqualTo(final BigDecimal value) {
             this.addCriterion("lock_up_amount >=", value, "lockUpAmount");
             return (Criteria) this;
         }
 
-        public Criteria andLockUpAmountLessThan(final Integer value) {
+        public Criteria andLockUpAmountLessThan(final BigDecimal value) {
             this.addCriterion("lock_up_amount <", value, "lockUpAmount");
             return (Criteria) this;
         }
 
-        public Criteria andLockUpAmountLessThanOrEqualTo(final Integer value) {
+        public Criteria andLockUpAmountLessThanOrEqualTo(final BigDecimal value) {
             this.addCriterion("lock_up_amount <=", value, "lockUpAmount");
             return (Criteria) this;
         }
 
-        public Criteria andLockUpAmountIn(final List<Integer> values) {
+        public Criteria andLockUpAmountIn(final List<BigDecimal> values) {
             this.addCriterion("lock_up_amount in", values, "lockUpAmount");
             return (Criteria) this;
         }
 
-        public Criteria andLockUpAmountNotIn(final List<Integer> values) {
+        public Criteria andLockUpAmountNotIn(final List<BigDecimal> values) {
             this.addCriterion("lock_up_amount not in", values, "lockUpAmount");
             return (Criteria) this;
         }
 
-        public Criteria andLockUpAmountBetween(final Integer value1, final Integer value2) {
+        public Criteria andLockUpAmountBetween(final BigDecimal value1, final BigDecimal value2) {
             this.addCriterion("lock_up_amount between", value1, value2, "lockUpAmount");
             return (Criteria) this;
         }
 
-        public Criteria andLockUpAmountNotBetween(final Integer value1, final Integer value2) {
+        public Criteria andLockUpAmountNotBetween(final BigDecimal value1, final BigDecimal value2) {
             this.addCriterion("lock_up_amount not between", value1, value2, "lockUpAmount");
             return (Criteria) this;
         }

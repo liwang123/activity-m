@@ -1,7 +1,7 @@
 package org.trustnote.activity.common.pojo;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author zhuxl
@@ -15,11 +15,13 @@ public class FinancialLockUp {
 
     private Integer financialBenefitsId;
 
-    private Integer lockUpAmount;
+    private BigDecimal lockUpAmount;
 
     private BigDecimal incomeAmount;
 
-    private Date crtTime;
+    private LocalDateTime crtTime;
+
+    private String lockUpStatus;
 
     public Integer getId() {
         return this.id;
@@ -53,11 +55,11 @@ public class FinancialLockUp {
         this.financialBenefitsId = financialBenefitsId;
     }
 
-    public Integer getLockUpAmount() {
+    public BigDecimal getLockUpAmount() {
         return this.lockUpAmount;
     }
 
-    public void setLockUpAmount(final Integer lockUpAmount) {
+    public void setLockUpAmount(final BigDecimal lockUpAmount) {
         this.lockUpAmount = lockUpAmount;
     }
 
@@ -69,11 +71,19 @@ public class FinancialLockUp {
         this.incomeAmount = incomeAmount;
     }
 
-    public Date getCrtTime() {
+    public LocalDateTime getCrtTime() {
         return this.crtTime;
     }
 
-    public void setCrtTime(final Date crtTime) {
+    public void setCrtTime(final LocalDateTime crtTime) {
         this.crtTime = crtTime;
+    }
+
+    public String getLockUpStatus() {
+        return this.lockUpStatus;
+    }
+
+    public void setLockUpStatus(final String lockUpStatus) {
+        this.lockUpStatus = lockUpStatus;
     }
 }

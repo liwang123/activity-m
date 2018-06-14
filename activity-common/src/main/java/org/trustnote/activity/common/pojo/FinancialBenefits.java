@@ -33,11 +33,11 @@ public class FinancialBenefits {
 
     private LocalDateTime unlockTime;
 
-    private BigDecimal panicTotalLimit;
+    private Integer panicTotalLimit;
 
-    private BigDecimal minAmount;
+    private Integer minAmount;
 
-    private BigDecimal purchaseLimit;
+    private Integer purchaseLimit;
 
     private BigDecimal remainLimit;
 
@@ -47,4 +47,5 @@ public class FinancialBenefits {
 
     private Date uptTime;
 
+    private Integer calactionStatus;
 }

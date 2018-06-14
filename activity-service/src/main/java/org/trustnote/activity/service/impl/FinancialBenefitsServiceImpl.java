@@ -3,7 +3,6 @@ package org.trustnote.activity.service.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.trustnote.activity.common.api.FinancialBenefitsApi;
-import org.trustnote.activity.common.enume.PositionTypeEnum;
 import org.trustnote.activity.common.example.FinancialBenefitsExample;
 import org.trustnote.activity.common.pojo.FinancialBenefits;
 import org.trustnote.activity.common.utils.DateTimeUtils;
@@ -106,7 +105,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .minAmount(benefits.getMinAmount())
                     .purchaseLimit(benefits.getPurchaseLimit())
                     .remainLimit(benefits.getRemainLimit())
-                    .financialStatusName("进行中")
+                    .financialStatus(benefits.getFinancialStatus())
+                    .activityStatus("抢购进行中")
                     .build();
             if (!CollectionUtils.isEmpty(nextFinancialBenefits)) {
                 financialBenefitsApi.setNextPanicStartTime(DateTimeUtils.localDateTimeParseLong(nextFinancialBenefits.get(0).getPanicStartTime()));
@@ -131,7 +131,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .minAmount(benefits.getMinAmount())
                     .purchaseLimit(benefits.getPurchaseLimit())
                     .remainLimit(benefits.getRemainLimit())
-                    .financialStatusName("未开启")
+                    .financialStatus(benefits.getFinancialStatus())
+                    .activityStatus("未开启")
                     .build();
             //查询未开启后续是否还有
             final List<FinancialBenefits> nextTwo = this.queryFinancialGreaterThanNow(financialId, benefits.getPanicEndTime());
@@ -158,7 +159,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .minAmount(benefits.getMinAmount())
                     .purchaseLimit(benefits.getPurchaseLimit())
                     .remainLimit(benefits.getRemainLimit())
-                    .financialStatusName("抢购已结束")
+                    .financialStatus(benefits.getFinancialStatus())
+                    .activityStatus("抢购已结束")
                     .build();
 
             //查询抢购结束后续是否还有
@@ -216,6 +218,23 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
     }
 
     /**
+     * 根据financialid,当前时间查询大于计息时间，并且未计算收益的
+     *
+     * @param now
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public List<FinancialBenefits> queryFinancialInterestGreaterThanNow(final LocalDateTime now) throws Exception {
+        final FinancialBenefitsExample example = new FinancialBenefitsExample();
+        final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
+        criteria.andInterestStartTimeGreaterThan(now);
+        criteria.andCalactionStatusEqualTo(0);
+        final Page<FinancialBenefits> page = new Page<>(1, Integer.MAX_VALUE);
+        return this.financialBenefitsMapper.selectByExampleAndPage(page, example);
+    }
+
+    /**
      * 根据panic判断是否存在抢购时间段内的数据
      *
      * @param panic
@@ -234,22 +253,13 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         final LocalDateTime now = LocalDateTime.now();
         final List<FinancialBenefitsApi> lists = new ArrayList<>();
         for (final FinancialBenefits benefits : financialBenefits) {
-            final PositionTypeEnum positionTypeEnum = PositionTypeEnum.getItem(benefits.getFinancialStatus());
             String statusName = null;
-            if ("".equals(positionTypeEnum.getValue())) {
-                if (now.isBefore(benefits.getPanicStartTime())) {
-                    statusName = "未开启";
-                } else if (now.compareTo(benefits.getPanicStartTime()) >= 0 && now.compareTo(benefits.getPanicEndTime()) < 0) {
-                    statusName = "抢购进行中";
-                } else if (now.isAfter(benefits.getPanicEndTime()) && now.isBefore(benefits.getInterestStartTime())) {
-                    statusName = "抢购已结束";
-                } else if (now.isAfter(benefits.getUnlockTime())) {
-                    statusName = "已解锁";
-                } else if (now.isAfter(benefits.getInterestStartTime()) && now.isBefore(benefits.getUnlockTime())) {
-                    statusName = "未解锁";
-                }
+            if (now.isBefore(benefits.getPanicStartTime())) {
+                statusName = "未开启";
+            } else if (now.compareTo(benefits.getPanicStartTime()) >= 0 && now.compareTo(benefits.getPanicEndTime()) < 0) {
+                statusName = "抢购进行中";
             } else {
-                statusName = positionTypeEnum.getValue();
+                statusName = "抢购已结束";
             }
             final FinancialBenefitsApi financialBenefitsApi = FinancialBenefitsApi.builder()
                     .id(benefits.getId())
@@ -264,7 +274,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .minAmount(benefits.getMinAmount())
                     .purchaseLimit(benefits.getPurchaseLimit())
                     .remainLimit(benefits.getRemainLimit())
-                    .financialStatusName(statusName)
+                    .financialStatus(benefits.getFinancialStatus())
+                    .activityStatus(statusName)
                     .build();
             lists.add(financialBenefitsApi);
         }

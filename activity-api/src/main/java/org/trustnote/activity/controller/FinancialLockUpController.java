@@ -5,11 +5,14 @@ import com.alibaba.fastjson.JSONException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.trustnote.activity.common.enume.ResultEnum;
 import org.trustnote.activity.common.pojo.FinancialLockUp;
+import org.trustnote.activity.common.utils.ExcelUtils;
 import org.trustnote.activity.common.utils.Result;
 import org.trustnote.activity.service.iface.FinancialLockUpService;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
@@ -17,6 +20,9 @@ import org.trustnote.activity.stereotype.Frequency;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static org.trustnote.activity.controller.ResultUtil.universalExceptionReturn;
 import static org.trustnote.activity.controller.ResultUtil.universalJSONExceptionReturn;
@@ -97,6 +103,40 @@ public class FinancialLockUpController {
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
             result.setEntity(this.financialLockUpService.queryFincialLockUpByDeviceAddress(deviceAddress));
+        } catch (final Exception e) {
+            return universalExceptionReturn(FinancialLockUpController.logger, e, response, result);
+        }
+        return result.getString(result);
+    }
+
+    @RequestMapping(value = "/export", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity export(@RequestParam(value = "benefitsId") final int benefitsId,
+                                 final HttpServletResponse response) {
+        final String export;
+        try {
+            final List<String> header = new ArrayList<>();
+            header.add("合约地址");
+            header.add("锁仓金额(MN)");
+            header.add("收益金额(MN)");
+            header.add("状态");
+            header.add("操作时间");
+            final List<Map<String, String>> contents = this.financialLockUpService.export(benefitsId);
+            export = ExcelUtils.exportExcel("合约信息.xls", header, contents, 3, response);
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return new ResponseEntity(export, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/participate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String participate(final HttpServletResponse response) {
+        final Result result = new Result();
+        try {
+            result.setCode(ResultEnum.OK.getCode());
+            result.setMsg(ResultEnum.OK.getMsg());
+            result.setEntity(this.financialLockUpService.participate());
         } catch (final Exception e) {
             return universalExceptionReturn(FinancialLockUpController.logger, e, response, result);
         }
