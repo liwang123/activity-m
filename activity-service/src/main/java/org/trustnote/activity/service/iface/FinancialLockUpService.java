@@ -21,5 +21,11 @@ public interface FinancialLockUpService {
 
     void saveInComeAmount();
 
+    void validationPayment();
+
     Map<String, BigDecimal> participate() throws Exception;
+
+    int updateFinancialLockUp(final int id, final int orderAmount) throws Exception;
+
+    FinancialLockUp queryLockUp(final FinancialLockUp financialLockUp) throws Exception;
 }

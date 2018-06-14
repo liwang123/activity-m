@@ -27,6 +27,11 @@ public class TickerTask {
         this.financialLockUpService.saveInComeAmount();
     }
 
+    @Scheduled(cron = "0 0/30 * * * ?")
+    public void validationPayment() {
+        this.financialLockUpService.validationPayment();
+    }
+
     /**
      @Scheduled(cron = "0/2 * * * * ? ")
      public void getBizTTTBTC(){

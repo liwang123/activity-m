@@ -82,9 +82,26 @@ public class FinancialLockUpController {
         }
         try {
             final FinancialLockUp financialLockUp = JSON.parseObject(json, FinancialLockUp.class);
+            if (StringUtils.isBlank(financialLockUp.getSharedAddress())) {
+                return ResultUtil.universalBlankReturn(response, result);
+            }
+            if (StringUtils.isBlank(financialLockUp.getDeviceAddress())) {
+                return ResultUtil.universalBlankReturn(response, result);
+            }
+            if (null == financialLockUp.getFinancialBenefitsId()) {
+                return ResultUtil.universalBlankReturn(response, result);
+            }
+            final FinancialLockUp checkLockUp = this.financialLockUpService.queryLockUp(financialLockUp);
+            final int operationStatus;
+            if (checkLockUp == null) {
+                operationStatus = this.financialLockUpService.saveFinancialLockUp(financialLockUp);
+            } else {
+                operationStatus = this.financialLockUpService.updateFinancialLockUp(checkLockUp.getId(),
+                        financialLockUp.getOrderAmount() == null ? checkLockUp.getOrderAmount() : financialLockUp.getOrderAmount());
+            }
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
-            result.setEntity(this.financialLockUpService.saveFinancialLockUp(financialLockUp));
+            result.setEntity(operationStatus);
         } catch (final JSONException e) {
             return universalJSONExceptionReturn(FinancialLockUpController.logger, e, response, result);
         } catch (final Exception e) {

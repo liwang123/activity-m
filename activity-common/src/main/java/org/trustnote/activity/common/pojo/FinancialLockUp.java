@@ -19,9 +19,11 @@ public class FinancialLockUp {
 
     private BigDecimal incomeAmount;
 
-    private LocalDateTime crtTime;
+    private LocalDateTime operationTime;
 
     private String lockUpStatus;
+
+    private Integer orderAmount;
 
     public Integer getId() {
         return this.id;
@@ -71,12 +73,12 @@ public class FinancialLockUp {
         this.incomeAmount = incomeAmount;
     }
 
-    public LocalDateTime getCrtTime() {
-        return this.crtTime;
+    public LocalDateTime getOperationTime() {
+        return this.operationTime;
     }
 
-    public void setCrtTime(final LocalDateTime crtTime) {
-        this.crtTime = crtTime;
+    public void setOperationTime(final LocalDateTime operationTime) {
+        this.operationTime = operationTime;
     }
 
     public String getLockUpStatus() {
@@ -85,5 +87,13 @@ public class FinancialLockUp {
 
     public void setLockUpStatus(final String lockUpStatus) {
         this.lockUpStatus = lockUpStatus;
+    }
+
+    public Integer getOrderAmount() {
+        return orderAmount;
+    }
+
+    public void setOrderAmount(Integer orderAmount) {
+        this.orderAmount = orderAmount;
     }
 }

@@ -8,7 +8,7 @@
         <result column="financial_benefits_id" jdbcType="INTEGER" property="financialBenefitsId"/>
         <result column="lock_up_amount" jdbcType="DECIMAL" property="lockUpAmount"/>
         <result column="income_amount" jdbcType="DECIMAL" property="incomeAmount"/>
-        <result column="crt_time" jdbcType="TIMESTAMP" property="crtTime"/>
+        <result column="operation_time" jdbcType="TIMESTAMP" property="operationTime"/>
         <result column="order_amount" jdbcType="INTEGER" property="orderAmount"/>
     </resultMap>
     <sql id="Example_Where_Clause">
@@ -73,7 +73,7 @@
     </sql>
     <sql id="Base_Column_List">
     id, shared_address, device_address, financial_benefits_id, lock_up_amount, income_amount, 
-    crt_time, order_amount
+    operation_time, order_amount
   </sql>
     <select id="selectByExample" parameterType="org.trustnote.activity.common.example.FinancialLockUpExample"
             resultMap="BaseResultMap">
@@ -124,10 +124,10 @@
     <insert id="insert" parameterType="org.trustnote.activity.common.pojo.FinancialLockUp">
     insert into financial_lock_up (id, shared_address, device_address, 
       financial_benefits_id, lock_up_amount, income_amount, 
-      crt_time, order_amount)
+      operation_time, order_amount)
     values (#{id,jdbcType=INTEGER}, #{sharedAddress,jdbcType=VARCHAR}, #{deviceAddress,jdbcType=VARCHAR}, 
       #{financialBenefitsId,jdbcType=INTEGER}, #{lockUpAmount,jdbcType=DECIMAL}, #{incomeAmount,jdbcType=DECIMAL},
-      #{crtTime,jdbcType=TIMESTAMP}, #{orderAmount,jdbcType=INTEGER})
+      #{operationTime,jdbcType=TIMESTAMP}, #{orderAmount,jdbcType=INTEGER})
   </insert>
     <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.FinancialLockUp">
         insert into financial_lock_up
@@ -150,8 +150,8 @@
             <if test="incomeAmount != null">
                 income_amount,
             </if>
-            <if test="crtTime != null">
-                crt_time,
+            <if test="operationTime != null">
+                operation_time,
             </if>
             <if test="orderAmount != null">
                 order_amount,
@@ -176,8 +176,8 @@
             <if test="incomeAmount != null">
                 #{incomeAmount,jdbcType=DECIMAL},
             </if>
-            <if test="crtTime != null">
-                #{crtTime,jdbcType=TIMESTAMP},
+            <if test="operationTime != null">
+                #{operationTime,jdbcType=TIMESTAMP},
             </if>
             <if test="orderAmount != null">
                 #{orderAmount,jdbcType=INTEGER},
@@ -212,8 +212,8 @@
             <if test="record.incomeAmount != null">
                 income_amount = #{record.incomeAmount,jdbcType=DECIMAL},
             </if>
-            <if test="record.crtTime != null">
-                crt_time = #{record.crtTime,jdbcType=TIMESTAMP},
+            <if test="record.operationTime != null">
+                operation_time = #{record.operationTime,jdbcType=TIMESTAMP},
             </if>
             <if test="record.orderAmount != null">
                 order_amount = #{record.orderAmount,jdbcType=INTEGER},
@@ -231,7 +231,7 @@
         financial_benefits_id = #{record.financialBenefitsId,jdbcType=INTEGER},
         lock_up_amount = #{record.lockUpAmount,jdbcType=DECIMAL},
         income_amount = #{record.incomeAmount,jdbcType=DECIMAL},
-        crt_time = #{record.crtTime,jdbcType=TIMESTAMP},
+        operation_time = #{record.operationTime,jdbcType=TIMESTAMP},
         order_amount = #{record.orderAmount,jdbcType=INTEGER}
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
@@ -255,8 +255,8 @@
             <if test="incomeAmount != null">
                 income_amount = #{incomeAmount,jdbcType=DECIMAL},
             </if>
-            <if test="crtTime != null">
-                crt_time = #{crtTime,jdbcType=TIMESTAMP},
+            <if test="operationTime != null">
+                operation_time = #{operationTime,jdbcType=TIMESTAMP},
             </if>
             <if test="orderAmount != null">
                 order_amount = #{orderAmount,jdbcType=DECIMAL},
@@ -271,7 +271,7 @@
       financial_benefits_id = #{financialBenefitsId,jdbcType=INTEGER},
       lock_up_amount = #{lockUpAmount,jdbcType=DECIMAL},
       income_amount = #{incomeAmount,jdbcType=DECIMAL},
-      crt_time = #{crtTime,jdbcType=TIMESTAMP},
+      operation_time = #{operationTime,jdbcType=TIMESTAMP},
       order_amount = #{orderAmount,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
     </update>

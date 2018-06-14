@@ -1,8 +1,8 @@
 package org.trustnote.activity.common.example;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -489,63 +489,63 @@ public class FinancialLockUpExample {
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeIsNull() {
-            this.addCriterion("crt_time is null");
+        public Criteria andOperationTimeIsNull() {
+            this.addCriterion("operation_time is null");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeIsNotNull() {
-            this.addCriterion("crt_time is not null");
+        public Criteria andOperationTimeIsNotNull() {
+            this.addCriterion("operation_time is not null");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeEqualTo(final Date value) {
-            this.addCriterion("crt_time =", value, "crtTime");
+        public Criteria andOperationTimeEqualTo(final LocalDateTime value) {
+            this.addCriterion("operation_time =", value, "operationTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeNotEqualTo(final Date value) {
-            this.addCriterion("crt_time <>", value, "crtTime");
+        public Criteria andOperationTimeNotEqualTo(final LocalDateTime value) {
+            this.addCriterion("operation_time <>", value, "operationTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeGreaterThan(final Date value) {
-            this.addCriterion("crt_time >", value, "crtTime");
+        public Criteria andOperationTimeGreaterThan(final LocalDateTime value) {
+            this.addCriterion("operation_time >", value, "operationTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeGreaterThanOrEqualTo(final Date value) {
-            this.addCriterion("crt_time >=", value, "crtTime");
+        public Criteria andOperationTimeGreaterThanOrEqualTo(final LocalDateTime value) {
+            this.addCriterion("operation_time >=", value, "operationTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeLessThan(final Date value) {
-            this.addCriterion("crt_time <", value, "crtTime");
+        public Criteria andOperationTimeLessThan(final LocalDateTime value) {
+            this.addCriterion("operation_time <", value, "operationTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeLessThanOrEqualTo(final Date value) {
-            this.addCriterion("crt_time <=", value, "crtTime");
+        public Criteria andOperationTimeLessThanOrEqualTo(final LocalDateTime value) {
+            this.addCriterion("operation_time <=", value, "operationTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeIn(final List<Date> values) {
-            this.addCriterion("crt_time in", values, "crtTime");
+        public Criteria andOperationTimeIn(final List<LocalDateTime> values) {
+            this.addCriterion("operation_time in", values, "operationTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeNotIn(final List<Date> values) {
-            this.addCriterion("crt_time not in", values, "crtTime");
+        public Criteria andOperationTimeNotIn(final List<LocalDateTime> values) {
+            this.addCriterion("operation_time not in", values, "operationTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeBetween(final Date value1, final Date value2) {
-            this.addCriterion("crt_time between", value1, value2, "crtTime");
+        public Criteria andOperationTimeBetween(final LocalDateTime value1, final LocalDateTime value2) {
+            this.addCriterion("operation_time between", value1, value2, "operationTime");
             return (Criteria) this;
         }
 
-        public Criteria andCrtTimeNotBetween(final Date value1, final Date value2) {
-            this.addCriterion("crt_time not between", value1, value2, "crtTime");
+        public Criteria andOperationTimeNotBetween(final LocalDateTime value1, final LocalDateTime value2) {
+            this.addCriterion("operation_time not between", value1, value2, "operationTime");
             return (Criteria) this;
         }
     }

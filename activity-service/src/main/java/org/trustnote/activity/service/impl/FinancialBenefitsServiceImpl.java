@@ -11,6 +11,7 @@ import org.trustnote.activity.skeleton.mybatis.mapper.FinancialBenefitsMapper;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                 .panicTotalLimit(financialBenefitsApi.getPanicTotalLimit())
                 .minAmount(financialBenefitsApi.getMinAmount())
                 .purchaseLimit(financialBenefitsApi.getPurchaseLimit())
+                .remainLimit(new BigDecimal(financialBenefitsApi.getPanicTotalLimit()))
                 .build();
         return this.financialBenefitsMapper.updateByPrimaryKeySelective(record);
     }
@@ -74,6 +76,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                 .panicTotalLimit(financialBenefitsApi.getPanicTotalLimit())
                 .minAmount(financialBenefitsApi.getMinAmount())
                 .purchaseLimit(financialBenefitsApi.getPurchaseLimit())
+                .remainLimit(new BigDecimal(financialBenefitsApi.getPanicTotalLimit()))
                 .build();
         return this.financialBenefitsMapper.insertSelective(financialBenefits);
     }

@@ -1,9 +1,18 @@
 package org.trustnote.activity.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.trustnote.activity.common.example.FinancialLockUpExample;
+import org.trustnote.activity.common.pojo.BalanceEntity;
 import org.trustnote.activity.common.pojo.Financial;
 import org.trustnote.activity.common.pojo.FinancialBenefits;
 import org.trustnote.activity.common.pojo.FinancialLockUp;
@@ -16,6 +25,7 @@ import org.trustnote.activity.skeleton.mybatis.mapper.FinancialLockUpMapper;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -52,6 +62,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
     public int saveFinancialLockUp(final FinancialLockUp financialLockUp) throws Exception {
         financialLockUp.setIncomeAmount(null);
         financialLockUp.setLockUpAmount(null);
+        financialLockUp.setOperationTime(LocalDateTime.now());
         return this.financialLockUpMapper.insertSelective(financialLockUp);
     }
 
@@ -61,6 +72,36 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         final FinancialLockUpExample.Criteria criteria = example.createCriteria();
         criteria.andDeviceAddressEqualTo(deviceAddress);
         return this.convert(this.financialLockUpMapper.selectByExample(example));
+    }
+
+    @Override
+    public int updateFinancialLockUp(final int id, final int orderAmount) throws Exception {
+        final FinancialLockUp financialLockUp = new FinancialLockUp();
+        financialLockUp.setId(id);
+        financialLockUp.setOrderAmount(orderAmount);
+        financialLockUp.setOperationTime(LocalDateTime.now());
+        return this.financialLockUpMapper.updateByPrimaryKeySelective(financialLockUp);
+    }
+
+    /**
+     * 根据设备地址、合约地址、产品ID查询合约信息
+     *
+     * @param financialLockUp
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public FinancialLockUp queryLockUp(final FinancialLockUp financialLockUp) throws Exception {
+        final FinancialLockUpExample example = new FinancialLockUpExample();
+        final FinancialLockUpExample.Criteria criteria = example.createCriteria();
+        criteria.andSharedAddressEqualTo(financialLockUp.getSharedAddress());
+        criteria.andDeviceAddressEqualTo(financialLockUp.getDeviceAddress());
+        criteria.andFinancialBenefitsIdEqualTo(financialLockUp.getFinancialBenefitsId());
+        final List<FinancialLockUp> financialLockUps = this.financialLockUpMapper.selectByExample(example);
+        if (!CollectionUtils.isEmpty(financialLockUps)) {
+            return financialLockUps.get(0);
+        }
+        return null;
     }
 
     @Override
@@ -75,7 +116,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
             map.put("1", financialLockUp.getLockUpAmount().toString());
             map.put("2", financialLockUp.getIncomeAmount() == null ? "" : financialLockUp.getIncomeAmount().toString());
             map.put("3", financialLockUp.getLockUpStatus());
-            map.put("4", DateTimeUtils.formatDateTime(financialLockUp.getCrtTime(), "yyyy-MM-dd HH:mm:ss"));
+            map.put("4", DateTimeUtils.formatDateTime(financialLockUp.getOperationTime(), "yyyy-MM-dd HH:mm:ss"));
             contents.add(map);
         }
         return contents;
@@ -151,7 +192,74 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
             }
         }
         index++;
-        FinancialLockUpServiceImpl.logger.info("-----------------------------------计算收益开始---------------------------------");
+        FinancialLockUpServiceImpl.logger.info("-----------------------------------计算收益结束---------------------------------");
+    }
+
+    @Override
+    public void validationPayment() {
+        FinancialLockUpServiceImpl.logger.info("-----------------------------------验证开始---------------------------------");
+        final StringBuilder sb = new StringBuilder("http://localhost:3000/checkbalance?address=");
+        //第一步 只过滤30分钟之内的交易
+        final LocalDateTime now = LocalDateTime.now();
+        final List<FinancialLockUp> financialLockUps;
+        try {
+            financialLockUps = this.queryWithinThirtyMinutes(now);
+        } catch (final Exception e) {
+            FinancialLockUpServiceImpl.logger.error("获取30分钟内的合约地址数据异常： {}", e);
+            return;
+        }
+        for (final FinancialLockUp financialLockUp : financialLockUps) {
+            final FinancialBenefits financialBenefits = this.financialBenefitsMapper.selectByPrimaryKey(financialLockUp.getFinancialBenefitsId());
+            final Financial financial;
+            try {
+                financial = this.financialService.queryOneFinancial(financialBenefits.getFinancialId());
+            } catch (final Exception e) {
+                FinancialLockUpServiceImpl.logger.info("获取套餐异常： {}", e);
+                continue;
+            }
+            sb.append(financialLockUp.getSharedAddress().trim());
+            // 根据地址获取请求
+            final HttpGet request = new HttpGet(sb.toString());
+            // 获取当前客户端对象
+            final CloseableHttpClient httpClient = HttpClients.createDefault();
+            try (final CloseableHttpResponse httpResponse = httpClient.execute(request)) {
+                // 判断网络连接状态码是否正常(0--200都数正常)
+                if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                    final String json = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
+                    final JSONObject jsonObject = (JSONObject) JSONObject.parse(json);
+                    final BalanceEntity data = jsonObject.getObject("data", BalanceEntity.class);
+                    final BigDecimal currentAmount = data.getAll_balance().divide(new BigDecimal(1000000));
+                    BigDecimal lockUpAmount = new BigDecimal(0);
+                    if (currentAmount.compareTo(new BigDecimal(financialBenefits.getMinAmount())) != -1) {
+                        if (financial.getId() == 1) {
+                            if (currentAmount.compareTo(new BigDecimal(financialBenefits.getPurchaseLimit())) != -1) {
+                                lockUpAmount = new BigDecimal(financialBenefits.getPurchaseLimit());
+                            } else {
+                                lockUpAmount = currentAmount;
+                            }
+                        } else {
+                            lockUpAmount = currentAmount;
+                        }
+                    }
+                    if (lockUpAmount.compareTo(new BigDecimal(0)) == 1) {
+                        final FinancialLockUp record = new FinancialLockUp();
+                        record.setId(financialLockUp.getId());
+                        record.setLockUpAmount(lockUpAmount);
+                        this.financialLockUpMapper.updateByPrimaryKeySelective(record);
+                        //计算剩余额度
+                        final FinancialBenefits fbRecord = FinancialBenefits.builder()
+                                .id(financialBenefits.getId())
+                                .remainLimit(financialBenefits.getRemainLimit().subtract(lockUpAmount))
+                                .build();
+                        this.financialBenefitsMapper.updateByPrimaryKeySelective(fbRecord);
+                    }
+                }
+            } catch (final IOException e) {
+                FinancialLockUpServiceImpl.logger.info("调用nodejs异常： {}", e);
+                continue;
+            }
+        }
+        FinancialLockUpServiceImpl.logger.info("-----------------------------------验证结束---------------------------------");
     }
 
     @Override
@@ -177,5 +285,11 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         return financialLockUps;
     }
 
-
+    private List<FinancialLockUp> queryWithinThirtyMinutes(final LocalDateTime now) throws Exception {
+        final LocalDateTime beginTime = now.minusMinutes(30);
+        final FinancialLockUpExample example = new FinancialLockUpExample();
+        final FinancialLockUpExample.Criteria criteria = example.createCriteria();
+        criteria.andOperationTimeGreaterThan(beginTime);
+        return this.financialLockUpMapper.selectByExample(example);
+    }
 }
