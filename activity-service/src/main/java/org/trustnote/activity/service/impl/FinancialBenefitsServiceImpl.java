@@ -241,7 +241,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
     public List<FinancialBenefits> queryFinancialInterestGreaterThanNow(final LocalDateTime now) throws Exception {
         final FinancialBenefitsExample example = new FinancialBenefitsExample();
         final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
-        criteria.andInterestStartTimeGreaterThan(now);
+        criteria.andInterestStartTimeLessThanOrEqualTo(now);
+        criteria.andInterestEndTimeGreaterThanOrEqualTo(now);
         criteria.andCalactionStatusEqualTo(0);
         final Page<FinancialBenefits> page = new Page<>(1, Integer.MAX_VALUE);
         return this.financialBenefitsMapper.selectByExampleAndPage(page, example);
