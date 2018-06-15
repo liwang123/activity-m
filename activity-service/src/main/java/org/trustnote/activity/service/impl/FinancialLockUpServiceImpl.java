@@ -233,27 +233,36 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                     FinancialLockUpServiceImpl.logger.info("解析data: {}", data);
                     final BigDecimal currentAmount = data.getCurrent_balance().divide(new BigDecimal(1000000));
                     BigDecimal lockUpAmount = new BigDecimal(0);
+                    FinancialLockUpServiceImpl.logger.info("合约地址当前余额: {}, 起购额度: {}", currentAmount, financialBenefits.getMinAmount());
                     if (currentAmount.compareTo(new BigDecimal(financialBenefits.getMinAmount())) != -1) {
+                        FinancialLockUpServiceImpl.logger.info("余额大于等于起购额度，并且套餐类型为: {} 同时限购额度为: {}", financial.getFinancialName(), financialBenefits.getPurchaseLimit());
                         if (financial.getId() == 1) {
                             if (currentAmount.compareTo(new BigDecimal(financialBenefits.getPurchaseLimit())) != -1) {
+                                FinancialLockUpServiceImpl.logger.info("周套餐：启用限购额度");
                                 lockUpAmount = new BigDecimal(financialBenefits.getPurchaseLimit());
                             } else {
+                                FinancialLockUpServiceImpl.logger.info("周套餐：启用当前余额");
                                 lockUpAmount = currentAmount;
                             }
                         } else {
+                            FinancialLockUpServiceImpl.logger.info("周以外套餐：启用当前余额");
                             lockUpAmount = currentAmount;
                         }
                     }
+                    FinancialLockUpServiceImpl.logger.info("决定是否更新锁仓金额以及剩余额度，当前金额为: {}", lockUpAmount);
                     if (lockUpAmount.compareTo(new BigDecimal(0)) == 1) {
+                        FinancialLockUpServiceImpl.logger.info("开始更新锁仓金额，合约id: {}", financialLockUp.getId());
                         final FinancialLockUp record = new FinancialLockUp();
                         record.setId(financialLockUp.getId());
                         record.setLockUpAmount(lockUpAmount);
                         this.financialLockUpMapper.updateByPrimaryKeySelective(record);
+                        FinancialLockUpServiceImpl.logger.info("开始计算剩余额度, 产品id:{}", financialBenefits.getId());
                         //计算剩余额度
                         final FinancialBenefits fbRecord = FinancialBenefits.builder()
                                 .id(financialBenefits.getId())
                                 .remainLimit(financialBenefits.getRemainLimit().subtract(lockUpAmount))
                                 .build();
+                        FinancialLockUpServiceImpl.logger.info("剩余额度: {}, 锁仓金额: {}, 最新剩余额度: {}", financialBenefits.getRemainLimit(), lockUpAmount, financialBenefits.getRemainLimit().subtract(lockUpAmount));
                         this.financialBenefitsMapper.updateByPrimaryKeySelective(fbRecord);
                     }
                 }

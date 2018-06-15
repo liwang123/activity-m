@@ -24,12 +24,12 @@ public class TickerTask {
     @Autowired
     private FinancialLockUpService financialLockUpService;
 
-    @Scheduled(cron = "0 10 17 * * ?")
+    @Scheduled(cron = "0 45 17 * * ?")
     public void calculateInComeAmount() {
         this.financialLockUpService.saveInComeAmount();
     }
 
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/3 * * * ?")
     public void validationPayment() {
         this.financialLockUpService.validationPayment();
     }
