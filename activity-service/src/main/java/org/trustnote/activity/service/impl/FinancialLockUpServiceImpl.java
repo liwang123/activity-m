@@ -164,7 +164,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 //理财周期
                 final BigDecimal numericalv = BigDecimal.valueOf(financial.getNumericalv());
                 //年化利率
-                final BigDecimal rate = BigDecimal.valueOf(financialBenefits.getFinancialRate()).setScale(2);
+                final BigDecimal rate = BigDecimal.valueOf(financialBenefits.getFinancialRate()).setScale(2, BigDecimal.ROUND_DOWN);
                 //计算收益
                 final BigDecimal all = principal.multiply(numericalv).multiply(rate);
                 final BigDecimal income = all.divide(new BigDecimal(360), 6, BigDecimal.ROUND_DOWN);
