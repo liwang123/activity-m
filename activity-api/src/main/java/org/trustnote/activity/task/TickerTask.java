@@ -3,6 +3,7 @@ package org.trustnote.activity.task;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.trustnote.activity.service.iface.FinancialLockUpService;
@@ -15,6 +16,7 @@ import org.trustnote.activity.service.iface.FinancialLockUpService;
  * @since 1.0.0
  */
 @Component
+@EnableScheduling
 public class TickerTask {
 
     private static final Logger logger = LogManager.getLogger(TickerTask.class);
@@ -22,12 +24,12 @@ public class TickerTask {
     @Autowired
     private FinancialLockUpService financialLockUpService;
 
-    @Scheduled(cron = "0 0 22 * * ?")
+    @Scheduled(cron = "0 10 17 * * ?")
     public void calculateInComeAmount() {
         this.financialLockUpService.saveInComeAmount();
     }
 
-    @Scheduled(cron = "0 0/30 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void validationPayment() {
         this.financialLockUpService.validationPayment();
     }

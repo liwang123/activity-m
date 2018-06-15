@@ -38,6 +38,14 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
 
     @Override
     public int updateFinancialBenefits(final FinancialBenefitsApi financialBenefitsApi) throws Exception {
+        List<FinancialBenefits> panic = this.queryFinancialBetweenPanic(financialBenefitsApi.getPanicStartTime(), 1, financialBenefitsApi.getId());
+        if (!CollectionUtils.isEmpty(panic)) {
+            return -1;
+        }
+        panic = this.queryFinancialBetweenPanic(financialBenefitsApi.getPanicEndTime(), 1, financialBenefitsApi.getId());
+        if (!CollectionUtils.isEmpty(panic)) {
+            return -1;
+        }
         final FinancialBenefits record = FinancialBenefits.builder()
                 .id(financialBenefitsApi.getId())
                 .financialId(financialBenefitsApi.getFinancialId())
@@ -51,19 +59,20 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                 .minAmount(financialBenefitsApi.getMinAmount())
                 .purchaseLimit(financialBenefitsApi.getPurchaseLimit())
                 .remainLimit(new BigDecimal(financialBenefitsApi.getPanicTotalLimit()))
+                .financialRate(financialBenefitsApi.getFinancialRate())
                 .build();
         return this.financialBenefitsMapper.updateByPrimaryKeySelective(record);
     }
 
     @Override
     public int insertFinancialBenefits(final FinancialBenefitsApi financialBenefitsApi) throws Exception {
-        List<FinancialBenefits> panic = this.queryFinancialBetweenPanic(financialBenefitsApi.getPanicStartTime());
+        List<FinancialBenefits> panic = this.queryFinancialBetweenPanic(financialBenefitsApi.getPanicStartTime(), 0, 0);
         if (!CollectionUtils.isEmpty(panic)) {
-            return 0;
+            return -1;
         }
-        panic = this.queryFinancialBetweenPanic(financialBenefitsApi.getPanicEndTime());
+        panic = this.queryFinancialBetweenPanic(financialBenefitsApi.getPanicEndTime(), 0, 0);
         if (!CollectionUtils.isEmpty(panic)) {
-            return 0;
+            return -1;
         }
         final FinancialBenefits financialBenefits = FinancialBenefits.builder()
                 .financialId(financialBenefitsApi.getFinancialId())
@@ -77,6 +86,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                 .minAmount(financialBenefitsApi.getMinAmount())
                 .purchaseLimit(financialBenefitsApi.getPurchaseLimit())
                 .remainLimit(new BigDecimal(financialBenefitsApi.getPanicTotalLimit()))
+                .financialRate(financialBenefitsApi.getFinancialRate())
                 .build();
         return this.financialBenefitsMapper.insertSelective(financialBenefits);
     }
@@ -243,12 +253,15 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
      * @param panic
      * @return
      */
-    public List<FinancialBenefits> queryFinancialBetweenPanic(final long panic) throws Exception {
+    public List<FinancialBenefits> queryFinancialBetweenPanic(final long panic, final int type, final int id) throws Exception {
         final LocalDateTime panicTime = DateTimeUtils.longParseLocalDateTime(panic);
         final FinancialBenefitsExample example = new FinancialBenefitsExample();
         final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
         criteria.andPanicStartTimeLessThanOrEqualTo(panicTime);
         criteria.andPanicEndTimeGreaterThanOrEqualTo(panicTime);
+        if (type == 1) {
+            criteria.andIdNotEqualTo(id);
+        }
         return this.financialBenefitsMapper.selectByExample(example);
     }
 

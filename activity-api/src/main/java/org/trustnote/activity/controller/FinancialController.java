@@ -61,19 +61,20 @@ public class FinancialController {
         return result.getString(result);
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/update", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String updateFinancial(@RequestParam final int id,
-                                  @RequestParam final float rate,
-                                  final HttpServletResponse response) {
-        final Result result = new Result();
-        try {
-            result.setCode(ResultEnum.OK.getCode());
-            result.setMsg(ResultEnum.OK.getMsg());
-            result.setEntity(this.financialService.updateFinancial(id, rate));
-        } catch (final Exception e) {
-            return universalExceptionReturn(FinancialController.logger, e, response, result);
-        }
-        return result.getString(result);
-    }
+    /**
+     @ResponseBody
+     @RequestMapping(value = "/update", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+     public String updateFinancial(@RequestParam final int id,
+     @RequestParam final float rate,
+     final HttpServletResponse response) {
+     final Result result = new Result();
+     try {
+     result.setCode(ResultEnum.OK.getCode());
+     result.setMsg(ResultEnum.OK.getMsg());
+     result.setEntity(this.financialService.updateFinancial(id, rate));
+     } catch (final Exception e) {
+     return universalExceptionReturn(FinancialController.logger, e, response, result);
+     }
+     return result.getString(result);
+     }*/
 }

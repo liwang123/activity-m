@@ -48,4 +48,6 @@ public class FinancialBenefits {
     private Date uptTime;
 
     private Integer calactionStatus;
+
+    private Float financialRate;
 }

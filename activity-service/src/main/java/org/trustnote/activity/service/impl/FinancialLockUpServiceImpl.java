@@ -138,7 +138,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         int index = 1;
         for (final FinancialBenefits financialBenefits : benefits) {
             //第二步 根据financial_benefits_id查询lock_up_amount不为空的合约地址计算收益
-            //首先 查询当前产品所属的套餐，得到收益率
+            //首先 查询当前产品所属的套餐，得到理财周期
             FinancialLockUpServiceImpl.logger.info("开始计算第{}个产品，产品ID为:{}", index, financialBenefits.getId());
             Financial financial;
             try {
@@ -164,7 +164,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 //理财周期
                 final BigDecimal numericalv = BigDecimal.valueOf(financial.getNumericalv());
                 //年化利率
-                final BigDecimal rate = BigDecimal.valueOf(financial.getFinancialRate());
+                final BigDecimal rate = BigDecimal.valueOf(financialBenefits.getFinancialRate());
                 //计算收益
                 final BigDecimal all = principal.multiply(numericalv).multiply(rate);
                 final BigDecimal income = all.divide(new BigDecimal(360), 6, BigDecimal.ROUND_DOWN);
@@ -224,11 +224,14 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
             final CloseableHttpClient httpClient = HttpClients.createDefault();
             try (final CloseableHttpResponse httpResponse = httpClient.execute(request)) {
                 // 判断网络连接状态码是否正常(0--200都数正常)
+                FinancialLockUpServiceImpl.logger.info("调用nodejs接口　response: {}", httpResponse.getStatusLine().getStatusCode());
                 if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                     final String json = EntityUtils.toString(httpResponse.getEntity(), "utf-8");
+                    FinancialLockUpServiceImpl.logger.info("解析json: {}", json);
                     final JSONObject jsonObject = (JSONObject) JSONObject.parse(json);
                     final BalanceEntity data = jsonObject.getObject("data", BalanceEntity.class);
-                    final BigDecimal currentAmount = data.getAll_balance().divide(new BigDecimal(1000000));
+                    FinancialLockUpServiceImpl.logger.info("解析data: {}", data);
+                    final BigDecimal currentAmount = data.getCurrent_balance().divide(new BigDecimal(1000000));
                     BigDecimal lockUpAmount = new BigDecimal(0);
                     if (currentAmount.compareTo(new BigDecimal(financialBenefits.getMinAmount())) != -1) {
                         if (financial.getId() == 1) {

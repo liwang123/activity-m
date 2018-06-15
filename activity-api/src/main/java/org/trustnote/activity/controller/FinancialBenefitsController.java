@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.trustnote.activity.common.api.FinancialBenefitsApi;
 import org.trustnote.activity.common.enume.ResultEnum;
 import org.trustnote.activity.common.pojo.FinancialBenefits;
+import org.trustnote.activity.common.utils.DateTimeUtils;
 import org.trustnote.activity.common.utils.Result;
 import org.trustnote.activity.service.iface.FinancialBenefitsService;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
@@ -18,6 +21,9 @@ import org.trustnote.activity.stereotype.Frequency;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.trustnote.activity.controller.ResultUtil.universalExceptionReturn;
 
@@ -66,13 +72,31 @@ public class FinancialBenefitsController {
 
     @ResponseBody
     @RequestMapping(value = "insert", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String insertFinancialBenefits(final FinancialBenefitsApi financialBenefitsApi,
+    public String insertFinancialBenefits(@Valid final FinancialBenefitsApi financialBenefitsApi,
+                                          final Errors errors,
                                           final HttpServletResponse response) {
         final Result result = new Result();
+        final Result errorsResult = this.errors(errors);
+        if (errorsResult != null) {
+            return result.getString(errorsResult);
+        }
+        final Result validation = this.specialValidation(financialBenefitsApi);
+        if (validation != null) {
+            return result.getString(validation);
+        }
         try {
-            result.setCode(ResultEnum.OK.getCode());
-            result.setMsg(ResultEnum.OK.getMsg());
-            result.setEntity(this.financialBenefitsService.insertFinancialBenefits(financialBenefitsApi));
+            final int insertStatus = this.financialBenefitsService.insertFinancialBenefits(financialBenefitsApi);
+            if (insertStatus == -1) {
+                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                result.setMsg("时间不正确");
+            } else if (insertStatus == 0) {
+                result.setCode(ResultEnum.MISSION_FAIL.getCode());
+                result.setMsg(ResultEnum.MISSION_FAIL.getMsg());
+            } else {
+                result.setCode(ResultEnum.OK.getCode());
+                result.setMsg(ResultEnum.OK.getMsg());
+            }
+            result.setEntity(insertStatus);
         } catch (final Exception e) {
             return universalExceptionReturn(FinancialBenefitsController.logger, e, response, result);
         }
@@ -81,8 +105,18 @@ public class FinancialBenefitsController {
 
     @ResponseBody
     @RequestMapping(value = "update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String updateFinancialBenefits(final FinancialBenefitsApi financialBenefitsApi, final HttpServletResponse response) {
+    public String updateFinancialBenefits(@Valid final FinancialBenefitsApi financialBenefitsApi,
+                                          final Errors errors,
+                                          final HttpServletResponse response) {
         final Result result = new Result();
+        final Result errorsResult = this.errors(errors);
+        if (errorsResult != null) {
+            return result.getString(errorsResult);
+        }
+        final Result validation = this.specialValidation(financialBenefitsApi);
+        if (validation != null) {
+            return result.getString(validation);
+        }
         try {
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
@@ -91,6 +125,25 @@ public class FinancialBenefitsController {
             return universalExceptionReturn(FinancialBenefitsController.logger, e, response, result);
         }
         return result.getString(result);
+    }
+
+    /**
+     * 封装代码
+     *
+     * @param errors
+     * @return
+     */
+    private Result errors(final Errors errors) {
+        final Result result = new Result();
+        if (errors.hasErrors()) {
+            final List<ObjectError> errorList = errors.getAllErrors();
+            for (final ObjectError e : errorList) {
+                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                result.setMsg(e.getDefaultMessage());
+                return result;
+            }
+        }
+        return null;
     }
 
     @ResponseBody
@@ -121,5 +174,52 @@ public class FinancialBenefitsController {
             return universalExceptionReturn(FinancialBenefitsController.logger, e, response, result);
         }
         return result.getString(result);
+    }
+
+    /**
+     * 特殊校验
+     *
+     * @param financialBenefitsApi
+     * @return
+     */
+    private Result specialValidation(final FinancialBenefitsApi financialBenefitsApi) {
+        final Result result = new Result();
+        final long now = DateTimeUtils.localDateTimeParseLong(LocalDateTime.now());
+        if (financialBenefitsApi.getPanicStartTime() < now) {
+            result.setCode(ResultEnum.BAD_REQUEST.getCode());
+            result.setMsg("请输入正确时间");
+            return result;
+        }
+        if (financialBenefitsApi.getPanicEndTime() < now) {
+            result.setCode(ResultEnum.BAD_REQUEST.getCode());
+            result.setMsg("请输入正确时间");
+            return result;
+        }
+        if (financialBenefitsApi.getInterestStartTime() < now) {
+            result.setCode(ResultEnum.BAD_REQUEST.getCode());
+            result.setMsg("请输入正确时间");
+            return result;
+        }
+        if (financialBenefitsApi.getInterestEndTime() < now) {
+            result.setCode(ResultEnum.BAD_REQUEST.getCode());
+            result.setMsg("请输入正确时间");
+            return result;
+        }
+        if (financialBenefitsApi.getUnlockTime() < now) {
+            result.setCode(ResultEnum.BAD_REQUEST.getCode());
+            result.setMsg("请输入正确时间");
+            return result;
+        }
+        if (financialBenefitsApi.getUnlockTime() < financialBenefitsApi.getPanicEndTime()) {
+            result.setCode(ResultEnum.BAD_REQUEST.getCode());
+            result.setMsg("请输入正确时间");
+            return result;
+        }
+        if (financialBenefitsApi.getFinancialRate() > 1) {
+            result.setCode(ResultEnum.BAD_REQUEST.getCode());
+            result.setMsg("请输入正确的年化收益率");
+            return result;
+        }
+        return null;
     }
 }

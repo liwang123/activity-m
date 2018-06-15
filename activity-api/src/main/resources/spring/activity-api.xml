@@ -90,7 +90,7 @@
         </mvc:interceptor>
         <!-- 我们可以直接在者注册自定义拦截器Bean来配置全局拦截器，会对所有请求拦截 -->
     </mvc:interceptors>
-    <context:component-scan base-package="org.trustnote.activity" use-default-filters="false">
+    <context:component-scan base-package="org.trustnote.activity.controller" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
     </context:component-scan>

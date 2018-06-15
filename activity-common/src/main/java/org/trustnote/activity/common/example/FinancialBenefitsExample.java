@@ -1078,6 +1078,66 @@ public class FinancialBenefitsExample {
             this.addCriterion("calaction_status not between", value1, value2, "CalactionStatus");
             return (Criteria) this;
         }
+
+        public Criteria andFinancialRateIsNull() {
+            this.addCriterion("financial_rate is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFinancialRateIsNotNull() {
+            this.addCriterion("financial_rate is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFinancialRateEqualTo(final Float value) {
+            this.addCriterion("financial_rate =", value, "financialRate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFinancialRateNotEqualTo(final Float value) {
+            this.addCriterion("financial_rate <>", value, "financialRate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFinancialRateGreaterThan(final Float value) {
+            this.addCriterion("financial_rate >", value, "financialRate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFinancialRateGreaterThanOrEqualTo(final Float value) {
+            this.addCriterion("financial_rate >=", value, "financialRate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFinancialRateLessThan(final Float value) {
+            this.addCriterion("financial_rate <", value, "financialRate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFinancialRateLessThanOrEqualTo(final Float value) {
+            this.addCriterion("financial_rate <=", value, "financialRate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFinancialRateIn(final List<Float> values) {
+            this.addCriterion("financial_rate in", values, "financialRate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFinancialRateNotIn(final List<Float> values) {
+            this.addCriterion("financial_rate not in", values, "financialRate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFinancialRateBetween(final Float value1, final Float value2) {
+            this.addCriterion("financial_rate between", value1, value2, "financialRate");
+            return (Criteria) this;
+        }
+
+        public Criteria andFinancialRateNotBetween(final Float value1, final Float value2) {
+            this.addCriterion("financial_rate not between", value1, value2, "financialRate");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

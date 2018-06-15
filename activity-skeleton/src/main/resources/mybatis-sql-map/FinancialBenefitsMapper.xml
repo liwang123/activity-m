@@ -18,6 +18,7 @@
         <result column="crt_time" jdbcType="TIMESTAMP" property="crtTime"/>
         <result column="upt_time" jdbcType="TIMESTAMP" property="uptTime"/>
         <result column="calaction_status" jdbcType="INTEGER" property="calactionStatus"/>
+        <result column="financial_rate" jdbcType="REAL" property="financialRate"/>
     </resultMap>
     <sql id="Example_Where_Clause">
         <where>
@@ -82,7 +83,7 @@
     <sql id="Base_Column_List">
     id, financial_id, product_name, panic_start_time, panic_end_time, interest_start_time, 
     interest_end_time, unlock_time, panic_total_limit, min_amount, purchase_limit, remain_limit, 
-    financial_status, crt_time, upt_time, calaction_status
+    financial_status, crt_time, upt_time, calaction_status, financial_rate
   </sql>
     <select id="selectByExample" parameterType="org.trustnote.activity.common.example.FinancialBenefitsExample"
             resultMap="BaseResultMap">
@@ -135,13 +136,13 @@
       panic_start_time, panic_end_time, interest_start_time, 
       interest_end_time, unlock_time, panic_total_limit, 
       min_amount, purchase_limit, remain_limit, 
-      financial_status, crt_time, upt_time, calaction_status
+      financial_status, crt_time, upt_time, calaction_status,financial_rate
       )
     values (#{id,jdbcType=INTEGER}, #{financialId,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR}, 
       #{panicStartTime,jdbcType=TIMESTAMP}, #{panicEndTime,jdbcType=TIMESTAMP}, #{interestStartTime,jdbcType=TIMESTAMP}, 
       #{interestEndTime,jdbcType=TIMESTAMP}, #{unlockTime,jdbcType=TIMESTAMP}, #{panicTotalLimit,jdbcType=INTEGER},
       #{minAmount,jdbcType=INTEGER}, #{purchaseLimit,jdbcType=INTEGER}, #{remainLimit,jdbcType=DECIMAL},
-      #{financialStatus,jdbcType=INTEGER}, #{crtTime,jdbcType=TIMESTAMP}, #{uptTime,jdbcType=TIMESTAMP}, #{calactionStatus,jdbcType=INTEGER}
+      #{financialStatus,jdbcType=INTEGER}, #{crtTime,jdbcType=TIMESTAMP}, #{uptTime,jdbcType=TIMESTAMP}, #{calactionStatus,jdbcType=INTEGER},#{financialRate,jdbcType=REAL}
       )
   </insert>
     <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.FinancialBenefits">
@@ -195,6 +196,9 @@
             <if test="calactionStatus != null">
                 calaction_status,
             </if>
+            <if test="financialRate != null">
+                financial_rate,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -244,6 +248,9 @@
             </if>
             <if test="calactionStatus != null">
                 #{calactionStatus,jdbcType=INTEGER},
+            </if>
+            <if test="financialRate != null">
+                #{financialRate,jdbcType=REAL},
             </if>
         </trim>
     </insert>
@@ -305,6 +312,9 @@
             <if test="record.calactionStatus != null">
                 calaction_status = #{record.calactionStatus,jdbcType=INTEGER},
             </if>
+            <if test="record.financialRate != null">
+                financial_rate = #{record.financialRate,jdbcType=REAL},
+            </if>
         </set>
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
@@ -327,7 +337,8 @@
         financial_status = #{record.financialStatus,jdbcType=INTEGER},
         crt_time = #{record.crtTime,jdbcType=TIMESTAMP},
         upt_time = #{record.uptTime,jdbcType=TIMESTAMP},
-        calaction_status = #{record.calactionStatus,jdbcType=INTEGER}
+        calaction_status = #{record.calactionStatus,jdbcType=INTEGER},
+        financial_rate = #{record.financialRate,jdbcType=REAL}
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
         </if>
@@ -380,6 +391,9 @@
             <if test="calactionStatus != null">
                 calaction_status = #{calactionStatus,jdbcType=INTEGER},
             </if>
+            <if test="financialRate != null">
+                financial_rate = #{financialRate,jdbcType=REAL},
+            </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
@@ -399,7 +413,8 @@
       financial_status = #{financialStatus,jdbcType=INTEGER},
       crt_time = #{crtTime,jdbcType=TIMESTAMP},
       upt_time = #{uptTime,jdbcType=TIMESTAMP},
-      calaction_status = #{calactionStatus,jdbcType=INTEGER}
+      calaction_status = #{calactionStatus,jdbcType=INTEGER},
+      financial_rate = #{financialRate,jdbcType=REAL}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
