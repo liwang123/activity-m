@@ -265,12 +265,12 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                     final int upStatus = this.financialLockUpMapper.updateByPrimaryKeySelective(record);
                     FinancialLockUpServiceImpl.logger.info("更新锁仓金额状态： {}", upStatus);
                     FinancialLockUpServiceImpl.logger.info("开始计算剩余额度, 产品id:{}", financialBenefits.getId());
+                    FinancialLockUpServiceImpl.logger.info("剩余额度: {}, 锁仓金额: {}, 最新剩余额度: {}", financialBenefits.getRemainLimit(), lockUpAmount, financialBenefits.getRemainLimit().subtract(lockUpAmount));
                     //计算剩余额度
                     final FinancialBenefits fbRecord = FinancialBenefits.builder()
                             .id(financialBenefits.getId())
                             .remainLimit(financialBenefits.getRemainLimit().subtract(lockUpAmount))
                             .build();
-                    FinancialLockUpServiceImpl.logger.info("剩余额度: {}, 锁仓金额: {}, 最新剩余额度: {}", financialBenefits.getRemainLimit(), lockUpAmount, financialBenefits.getRemainLimit().subtract(lockUpAmount));
                     final int fbUpStatus = this.financialBenefitsMapper.updateByPrimaryKeySelective(fbRecord);
                     FinancialLockUpServiceImpl.logger.info("更新剩余金额状态： {}", fbUpStatus);
                 }
