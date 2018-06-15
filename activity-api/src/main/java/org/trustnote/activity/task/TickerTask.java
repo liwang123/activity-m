@@ -24,7 +24,7 @@ public class TickerTask {
     @Autowired
     private FinancialLockUpService financialLockUpService;
 
-    @Scheduled(cron = "0 57 18 * * ?")
+    @Scheduled(cron = "0 9 19 * * ?")
     public void calculateInComeAmount() {
         this.financialLockUpService.saveInComeAmount();
     }

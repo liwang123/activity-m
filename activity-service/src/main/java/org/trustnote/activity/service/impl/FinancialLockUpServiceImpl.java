@@ -162,7 +162,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 //本金
                 final BigDecimal principal = financialLockUp.getLockUpAmount();
                 //理财周期
-                final BigDecimal numericalv = BigDecimal.valueOf(financial.getNumericalv());
+                final BigDecimal numericalv = BigDecimal.valueOf(financial.getNumericalv()).setScale(2);
                 //年化利率
                 final BigDecimal rate = BigDecimal.valueOf(financialBenefits.getFinancialRate());
                 //计算收益
