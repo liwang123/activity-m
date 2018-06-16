@@ -283,4 +283,12 @@
         WHERE
           lock_up_amount IS NOT NULL;
     </select>
+    <select id="sumLockUpAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+        SELECT
+          SUM(lock_up_amount) total_amount
+        FROM
+          financial_lock_up
+        WHERE
+          where financial_benefits_id =  #{financialBenefitsId,jdbcType=INTEGER};
+    </select>
 </mapper>

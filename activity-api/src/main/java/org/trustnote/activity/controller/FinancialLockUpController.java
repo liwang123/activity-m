@@ -92,12 +92,9 @@ public class FinancialLockUpController {
                 return ResultUtil.universalBlankReturn(response, result);
             }
             final FinancialLockUp checkLockUp = this.financialLockUpService.queryLockUp(financialLockUp);
-            final int operationStatus;
+            int operationStatus = 0;
             if (checkLockUp == null) {
                 operationStatus = this.financialLockUpService.saveFinancialLockUp(financialLockUp);
-            } else {
-                operationStatus = this.financialLockUpService.updateFinancialLockUp(checkLockUp.getId(),
-                        financialLockUp.getOrderAmount() == null ? checkLockUp.getOrderAmount() : financialLockUp.getOrderAmount());
             }
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());

@@ -38,4 +38,6 @@ public interface FinancialLockUpMapper {
     int updateByPrimaryKey(FinancialLockUp record);
 
     Map<String, BigDecimal> participate();
+
+    BigDecimal sumLockUpAmount(int financialBenefitsId);
 }

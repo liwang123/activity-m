@@ -56,5 +56,6 @@ public class FinancialBenefitsApi {
     private long nextPanicEndTime;
     @NotNull(message = "请输入年化收益率")
     @Min(message = "不能小于0", value = 0)
+    @Max(message = "不能大于１", value = 1)
     private Float financialRate;
 }

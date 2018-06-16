@@ -119,6 +119,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .purchaseLimit(benefits.getPurchaseLimit())
                     .remainLimit(benefits.getRemainLimit())
                     .financialStatus(benefits.getFinancialStatus())
+                    .financialRate(benefits.getFinancialRate())
                     .activityStatus("抢购进行中")
                     .build();
             if (!CollectionUtils.isEmpty(nextFinancialBenefits)) {
@@ -145,6 +146,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .purchaseLimit(benefits.getPurchaseLimit())
                     .remainLimit(benefits.getRemainLimit())
                     .financialStatus(benefits.getFinancialStatus())
+                    .financialRate(benefits.getFinancialRate())
                     .activityStatus("未开启")
                     .build();
             //查询未开启后续是否还有
@@ -173,6 +175,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .purchaseLimit(benefits.getPurchaseLimit())
                     .remainLimit(benefits.getRemainLimit())
                     .financialStatus(benefits.getFinancialStatus())
+                    .financialRate(benefits.getFinancialRate())
                     .activityStatus("抢购已结束")
                     .build();
 
@@ -292,6 +295,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .purchaseLimit(benefits.getPurchaseLimit())
                     .remainLimit(benefits.getRemainLimit())
                     .financialStatus(benefits.getFinancialStatus())
+                    .financialRate(benefits.getFinancialRate())
                     .activityStatus(statusName)
                     .build();
             lists.add(financialBenefitsApi);
