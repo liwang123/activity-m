@@ -24,14 +24,37 @@ public class TickerTask {
     @Autowired
     private FinancialLockUpService financialLockUpService;
 
-    @Scheduled(cron = "0 0 22 * * ?")
+    /**
+     * 每天2:00执行计算在计划收益期间的收益
+     */
+    @Scheduled(cron = "0 0 2 * * ?")
     public void calculateInComeAmount() {
         this.financialLockUpService.saveInComeAmount();
     }
 
-    @Scheduled(cron = "0 0/30 * * * ?")
-    public void validationPayment() {
-        this.financialLockUpService.validationPayment();
+    /**
+     * 每隔10分钟计算周套餐产品的剩余额度
+     */
+    @Scheduled(cron = "0 0/10 * * * ?")
+    public void validationPaymentWeek() {
+        this.financialLockUpService.validationPaymentWeek();
+    }
+
+    /**
+     * 每隔35分钟计算其他套餐产品的剩余额度
+     */
+    @Scheduled(cron = "0 0/35 * * * ?")
+    public void validationPaymentOther() {
+        this.financialLockUpService.validationPaymentWeek();
+    }
+
+
+    /**
+     * 每天0:30执行计算抢购活动结束的lockUpAmount
+     */
+    @Scheduled(cron = "0 30 0 * * ?")
+    public void calculateLockUpAmount() {
+        this.financialLockUpService.saveLockUpAmount();
     }
 
     /**

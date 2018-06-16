@@ -50,4 +50,6 @@ public class FinancialBenefits {
     private Integer calactionStatus;
 
     private Float financialRate;
+
+    private Integer calactionLockupStatus;
 }

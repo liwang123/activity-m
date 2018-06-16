@@ -105,6 +105,11 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         if (!CollectionUtils.isEmpty(financialBenefits)) {
             final List<FinancialBenefits> nextFinancialBenefits = this.queryFinancialGreaterThanNow(financialId, now);
             final FinancialBenefits benefits = financialBenefits.get(0);
+            final StringBuilder sb = new StringBuilder("抢购进行中");
+            if (benefits.getRemainLimit().compareTo(new BigDecimal(0)) != 1) {
+                sb.delete(0, sb.length());
+                sb.append("抢购已结束");
+            }
             final FinancialBenefitsApi financialBenefitsApi = FinancialBenefitsApi.builder()
                     .id(benefits.getId())
                     .financialId(benefits.getFinancialId())
@@ -120,7 +125,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .remainLimit(benefits.getRemainLimit())
                     .financialStatus(benefits.getFinancialStatus())
                     .financialRate(benefits.getFinancialRate())
-                    .activityStatus("抢购进行中")
+                    .activityStatus(sb.toString())
                     .build();
             if (!CollectionUtils.isEmpty(nextFinancialBenefits)) {
                 financialBenefitsApi.setNextPanicStartTime(DateTimeUtils.localDateTimeParseLong(nextFinancialBenefits.get(0).getPanicStartTime()));
@@ -212,8 +217,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         criteria.andFinancialIdEqualTo(financialId);
         criteria.andPanicEndTimeLessThan(now);
         example.setOrderByClause("panic_end_time DESC");
-        final Page<FinancialBenefits> page = new Page<>(1, 1);
-        return this.financialBenefitsMapper.selectByExampleAndPage(page, example);
+        return this.financialBenefitsMapper.selectByExample(example);
     }
 
     /**
@@ -229,8 +233,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         criteria.andFinancialIdEqualTo(financialId);
         criteria.andPanicStartTimeGreaterThan(now);
         example.setOrderByClause("panic_start_time");
-        final Page<FinancialBenefits> page = new Page<>(1, 1);
-        return this.financialBenefitsMapper.selectByExampleAndPage(page, example);
+        return this.financialBenefitsMapper.selectByExample(example);
     }
 
     /**
@@ -247,8 +250,30 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         criteria.andInterestStartTimeLessThanOrEqualTo(now);
         criteria.andInterestEndTimeGreaterThanOrEqualTo(now);
         criteria.andCalactionStatusEqualTo(0);
-        final Page<FinancialBenefits> page = new Page<>(1, Integer.MAX_VALUE);
-        return this.financialBenefitsMapper.selectByExampleAndPage(page, example);
+        return this.financialBenefitsMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<FinancialBenefits> queryFinancialNotCalactionLockUp(final LocalDateTime now) throws Exception {
+        final FinancialBenefitsExample example = new FinancialBenefitsExample();
+        final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
+        criteria.andPanicEndTimeLessThan(now);
+        criteria.andCalactionLockupStatusEqualTo(0);
+        return this.financialBenefitsMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<FinancialBenefits> queryFinancialInPanic(final LocalDateTime now, final int financialId, final int type) throws Exception {
+        final FinancialBenefitsExample example = new FinancialBenefitsExample();
+        final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
+        criteria.andPanicStartTimeLessThan(now);
+        criteria.andPanicEndTimeGreaterThan(now);
+        if (type == 0) {
+            criteria.andFinancialIdEqualTo(financialId);
+        } else {
+            criteria.andFinancialIdNotEqualTo(financialId);
+        }
+        return this.financialBenefitsMapper.selectByExample(example);
     }
 
     /**
@@ -277,7 +302,11 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
             if (now.isBefore(benefits.getPanicStartTime())) {
                 statusName = "未开启";
             } else if (now.compareTo(benefits.getPanicStartTime()) >= 0 && now.compareTo(benefits.getPanicEndTime()) < 0) {
-                statusName = "抢购进行中";
+                if (benefits.getRemainLimit().compareTo(new BigDecimal(0)) != 1) {
+                    statusName = "抢购已结束";
+                } else {
+                    statusName = "抢购进行中";
+                }
             } else {
                 statusName = "抢购已结束";
             }

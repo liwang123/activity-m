@@ -548,6 +548,66 @@ public class FinancialLockUpExample {
             this.addCriterion("operation_time not between", value1, value2, "operationTime");
             return (Criteria) this;
         }
+
+        public Criteria andTempAmountIsNull() {
+            this.addCriterion("temp_amount is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTempAmountIsNotNull() {
+            this.addCriterion("temp_amount is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTempAmountEqualTo(final BigDecimal value) {
+            this.addCriterion("temp_amount =", value, "TempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTempAmountNotEqualTo(final BigDecimal value) {
+            this.addCriterion("temp_amount <>", value, "TempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTempAmountGreaterThan(final BigDecimal value) {
+            this.addCriterion("temp_amount >", value, "TempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTempAmountGreaterThanOrEqualTo(final BigDecimal value) {
+            this.addCriterion("temp_amount >=", value, "TempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTempAmountLessThan(final BigDecimal value) {
+            this.addCriterion("temp_amount <", value, "TempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTempAmountLessThanOrEqualTo(final BigDecimal value) {
+            this.addCriterion("temp_amount <=", value, "TempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTempAmountIn(final List<BigDecimal> values) {
+            this.addCriterion("temp_amount in", values, "TempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTempAmountNotIn(final List<BigDecimal> values) {
+            this.addCriterion("temp_amount not in", values, "TempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTempAmountBetween(final BigDecimal value1, final BigDecimal value2) {
+            this.addCriterion("temp_amount between", value1, value2, "TempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andTempAmountNotBetween(final BigDecimal value1, final BigDecimal value2) {
+            this.addCriterion("temp_amount not between", value1, value2, "TempAmount");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

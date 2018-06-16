@@ -25,6 +25,8 @@ public class FinancialLockUp {
 
     private Integer orderAmount;
 
+    private BigDecimal tempAmount;
+
     public Integer getId() {
         return this.id;
     }
@@ -90,10 +92,18 @@ public class FinancialLockUp {
     }
 
     public Integer getOrderAmount() {
-        return orderAmount;
+        return this.orderAmount;
     }
 
-    public void setOrderAmount(Integer orderAmount) {
+    public void setOrderAmount(final Integer orderAmount) {
         this.orderAmount = orderAmount;
+    }
+
+    public BigDecimal getTempAmount() {
+        return this.tempAmount;
+    }
+
+    public void setTempAmount(final BigDecimal tempAmount) {
+        this.tempAmount = tempAmount;
     }
 }

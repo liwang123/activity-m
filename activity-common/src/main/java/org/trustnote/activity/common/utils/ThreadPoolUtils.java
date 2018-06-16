@@ -17,7 +17,7 @@ public class ThreadPoolUtils {
      * @param nThreads 线程数
      * @return ExceutorService
      */
-    public static ExecutorService newFixedThreadPool(int nThreads) {
+    public static ExecutorService newFixedThreadPool(final int nThreads) {
         return new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
     }
 
@@ -30,7 +30,7 @@ public class ThreadPoolUtils {
      */
     public static ExecutorService newCachedThreadPool() {
         return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-                CACHE_ALIVED_TIME, TimeUnit.SECONDS,
+                ThreadPoolUtils.CACHE_ALIVED_TIME, TimeUnit.SECONDS,
                 new SynchronousQueue<>());
     }
 

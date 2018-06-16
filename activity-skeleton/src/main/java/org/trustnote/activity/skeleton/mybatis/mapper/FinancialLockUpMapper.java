@@ -40,4 +40,6 @@ public interface FinancialLockUpMapper {
     Map<String, BigDecimal> participate();
 
     BigDecimal sumLockUpAmount(int financialBenefitsId);
+
+    BigDecimal sumTempAmount(int financialBenefitsId);
 }
