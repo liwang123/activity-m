@@ -77,7 +77,7 @@
     operation_time, order_amount, temp_amount
   </sql>
     <select id="selectByExample" parameterType="org.trustnote.activity.common.example.FinancialLockUpExample"
-            resultMap="BaseResultMap">
+            resultMap="BaseResultMap" useCache="true">
         select
         <if test="distinct">
             distinct
@@ -92,7 +92,7 @@
         </if>
     </select>
     <select id="selectByExamplePage" parameterType="org.trustnote.activity.common.example.FinancialLockUpExample"
-            resultMap="BaseResultMap">
+            resultMap="BaseResultMap" useCache="true">
         select
         <if test="distinct">
             distinct
@@ -290,7 +290,7 @@
       temp_amount = #{tempAmount,jdbcType=DECIMAL}
     where id = #{id,jdbcType=INTEGER}
     </update>
-    <select id="participate" resultType="Map">
+    <select id="participate" resultType="Map" useCache="true">
         SELECT
           SUM(id) total_user, SUM(temp_amount) total_amount
         FROM
@@ -298,7 +298,7 @@
         WHERE
           lock_up_amount IS NOT NULL;
     </select>
-    <select id="sumLockUpAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+    <select id="sumLockUpAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal" useCache="true">
         SELECT
           SUM(lock_up_amount) total_amount
         FROM
@@ -306,7 +306,7 @@
         WHERE
           where financial_benefits_id =  #{financialBenefitsId,jdbcType=INTEGER};
     </select>
-    <select id="sumTempAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+    <select id="sumTempAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal" useCache="true">
         SELECT
           SUM(temp_amount) total_amount
         FROM
@@ -314,4 +314,5 @@
         WHERE
           where financial_benefits_id =  #{financialBenefitsId,jdbcType=INTEGER};
     </select>
+    <cache eviction="LRU" flushInterval="1000000" size="1024" readOnly="true"/>
 </mapper>

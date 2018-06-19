@@ -21,6 +21,8 @@ public interface FinancialBenefitsService {
 
     FinancialBenefitsApi queryFinancialBenefitsByFinancialId(int financialId) throws Exception;
 
+    FinancialBenefitsApi queryFinancialBenefitsById(int id) throws Exception;
+
     int updateFinancialStatus(int id) throws Exception;
 
     List<FinancialBenefits> queryFinancialInterestGreaterThanNow(final LocalDateTime now) throws Exception;

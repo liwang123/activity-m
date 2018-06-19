@@ -128,7 +128,7 @@ public class FinancialBenefitsController {
     }
 
     /**
-     * 封装代码
+     * 根据套餐ＩＤ获取当前理财产品
      *
      * @param errors
      * @return
@@ -155,6 +155,28 @@ public class FinancialBenefitsController {
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
             result.setEntity(this.financialBenefitsService.queryFinancialBenefitsByFinancialId(financialId));
+        } catch (final Exception e) {
+            return universalExceptionReturn(FinancialBenefitsController.logger, e, response, result);
+        }
+        return result.getString(result);
+    }
+
+    /**
+     * 根据产品ＩＤ获取当前理财产品
+     *
+     * @param financialBenefitsId
+     * @param response
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "push_benefitid", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String pushFinancialBeneftits(@RequestParam(value = "financialBenefitsId") final int financialBenefitsId, final HttpServletResponse response) {
+        FinancialBenefitsController.logger.info("parameter: {}", financialBenefitsId);
+        final Result result = new Result();
+        try {
+            result.setCode(ResultEnum.OK.getCode());
+            result.setMsg(ResultEnum.OK.getMsg());
+            result.setEntity(this.financialBenefitsService.queryFinancialBenefitsById(financialBenefitsId));
         } catch (final Exception e) {
             return universalExceptionReturn(FinancialBenefitsController.logger, e, response, result);
         }

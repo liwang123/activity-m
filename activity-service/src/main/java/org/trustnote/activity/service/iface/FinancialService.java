@@ -1,5 +1,6 @@
 package org.trustnote.activity.service.iface;
 
+import org.trustnote.activity.common.api.FinancialApi;
 import org.trustnote.activity.common.pojo.Financial;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public interface FinancialService {
     Financial queryOneFinancial(int id) throws Exception;
 
-    List<Financial> queryFinancial() throws Exception;
+    List<FinancialApi> queryFinancial() throws Exception;
 
     int updateFinancial(int id, Float rate) throws Exception;
 }

@@ -102,8 +102,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         final List<FinancialBenefits> financialBenefits = this.financialBenefitsMapper.selectByExample(example);
         example.setOrderByClause("panic_start_time");
         //第一步：有进行中的产品，查询是否存在下期的产品
+        final List<FinancialBenefits> nextFinancialBenefits = this.queryFinancialGreaterThanNow(financialId, now);
         if (!CollectionUtils.isEmpty(financialBenefits)) {
-            final List<FinancialBenefits> nextFinancialBenefits = this.queryFinancialGreaterThanNow(financialId, now);
             final FinancialBenefits benefits = financialBenefits.get(0);
             final StringBuilder sb = new StringBuilder("抢购进行中");
             if (benefits.getRemainLimit().compareTo(new BigDecimal(0)) != 1) {
@@ -134,7 +134,6 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
             return financialBenefitsApi;
         }
         //第二步：如果没有进行中 优先查询是否有未开启的
-        final List<FinancialBenefits> nextFinancialBenefits = this.queryFinancialGreaterThanNow(financialId, now);
         if (!CollectionUtils.isEmpty(nextFinancialBenefits)) {
             final FinancialBenefits benefits = nextFinancialBenefits.get(0);
             final FinancialBenefitsApi financialBenefitsApi = FinancialBenefitsApi.builder()
@@ -191,6 +190,15 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                 financialBenefitsApi.setNextPanicEndTime(DateTimeUtils.localDateTimeParseLong(next.get(0).getPanicEndTime()));
             }
             return financialBenefitsApi;
+        }
+        return null;
+    }
+
+    @Override
+    public FinancialBenefitsApi queryFinancialBenefitsById(final int id) throws Exception {
+        final FinancialBenefits financialBenefits = this.financialBenefitsMapper.selectByPrimaryKey(id);
+        if (financialBenefits != null) {
+            return this.queryFinancialBenefitsByFinancialId(financialBenefits.getFinancialId());
         }
         return null;
     }
