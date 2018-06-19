@@ -207,32 +207,47 @@ public class FinancialBenefitsController {
     private Result specialValidation(final FinancialBenefitsApi financialBenefitsApi) {
         final Result result = new Result();
         final long now = DateTimeUtils.localDateTimeParseLong(LocalDateTime.now());
-        if (financialBenefitsApi.getPanicStartTime() < now) {
+        if (financialBenefitsApi.getPanicStartTime() <= now) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
             result.setMsg("请输入正确时间");
             return result;
         }
-        if (financialBenefitsApi.getPanicEndTime() < now) {
+        if (financialBenefitsApi.getPanicEndTime() <= now) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
             result.setMsg("请输入正确时间");
             return result;
         }
-        if (financialBenefitsApi.getInterestStartTime() < now) {
+        if (financialBenefitsApi.getInterestStartTime() <= now) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
             result.setMsg("请输入正确时间");
             return result;
         }
-        if (financialBenefitsApi.getInterestEndTime() < now) {
+        if (financialBenefitsApi.getInterestEndTime() <= now) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
             result.setMsg("请输入正确时间");
             return result;
         }
-        if (financialBenefitsApi.getUnlockTime() < now) {
+        if (financialBenefitsApi.getUnlockTime() <= now) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
             result.setMsg("请输入正确时间");
             return result;
         }
-        if (financialBenefitsApi.getUnlockTime() < financialBenefitsApi.getPanicEndTime()) {
+        if (financialBenefitsApi.getUnlockTime() <= financialBenefitsApi.getInterestEndTime()) {
+            result.setCode(ResultEnum.BAD_REQUEST.getCode());
+            result.setMsg("请输入正确时间");
+            return result;
+        }
+        if (financialBenefitsApi.getPanicEndTime() <= financialBenefitsApi.getPanicStartTime()) {
+            result.setCode(ResultEnum.BAD_REQUEST.getCode());
+            result.setMsg("请输入正确时间");
+            return result;
+        }
+        if (financialBenefitsApi.getInterestEndTime() <= financialBenefitsApi.getInterestStartTime()) {
+            result.setCode(ResultEnum.BAD_REQUEST.getCode());
+            result.setMsg("请输入正确时间");
+            return result;
+        }
+        if (financialBenefitsApi.getInterestStartTime() <= financialBenefitsApi.getPanicEndTime()) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
             result.setMsg("请输入正确时间");
             return result;
