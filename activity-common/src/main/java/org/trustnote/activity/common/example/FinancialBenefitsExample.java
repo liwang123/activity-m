@@ -1258,6 +1258,66 @@ public class FinancialBenefitsExample {
             this.addCriterion("also_lock_up_amount not between", value1, value2, "alsoLockUpAmount");
             return (Criteria) this;
         }
+
+        public Criteria andAlsoTempAmountIsNull() {
+            this.addCriterion("also_temp_amount is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoTempAmountIsNotNull() {
+            this.addCriterion("also_temp_amount is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoTempAmountEqualTo(final BigDecimal value) {
+            this.addCriterion("also_temp_amount =", value, "alsoTempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoTempAmountNotEqualTo(final BigDecimal value) {
+            this.addCriterion("also_temp_amount <>", value, "alsoTempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoTempAmountGreaterThan(final BigDecimal value) {
+            this.addCriterion("also_temp_amount >", value, "alsoTempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoTempAmountGreaterThanOrEqualTo(final BigDecimal value) {
+            this.addCriterion("also_temp_amount >=", value, "alsoTempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoTempAmountLessThan(final BigDecimal value) {
+            this.addCriterion("also_temp_amount <", value, "alsoTempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoTempAmountLessThanOrEqualTo(final BigDecimal value) {
+            this.addCriterion("also_temp_amount <=", value, "alsoTempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoTempAmountIn(final List<BigDecimal> values) {
+            this.addCriterion("also_temp_amount in", values, "alsoTempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoTempAmountNotIn(final List<BigDecimal> values) {
+            this.addCriterion("also_temp_amount not in", values, "alsoTempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoTempAmountBetween(final BigDecimal value1, final BigDecimal value2) {
+            this.addCriterion("also_temp_amount between", value1, value2, "alsoTempAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoTempAmountNotBetween(final BigDecimal value1, final BigDecimal value2) {
+            this.addCriterion("also_temp_amount not between", value1, value2, "alsoTempAmount");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

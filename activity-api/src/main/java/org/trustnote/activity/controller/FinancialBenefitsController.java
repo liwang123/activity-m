@@ -183,6 +183,28 @@ public class FinancialBenefitsController {
         return result.getString(result);
     }
 
+    /**
+     * 后台查询单个理财产品
+     *
+     * @param id
+     * @param response
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "getFinancial", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String queryOneFinancialBenefits(@RequestParam(value = "id") final int id, final HttpServletResponse response) {
+        FinancialBenefitsController.logger.info("parameter: {}", id);
+        final Result result = new Result();
+        try {
+            result.setCode(ResultEnum.OK.getCode());
+            result.setMsg(ResultEnum.OK.getMsg());
+            result.setEntity(this.financialBenefitsService.queryFinancialBenefitsByIdExcludeNextInfo(id));
+        } catch (final Exception e) {
+            return universalExceptionReturn(FinancialBenefitsController.logger, e, response, result);
+        }
+        return result.getString(result);
+    }
+
     @ResponseBody
     @RequestMapping(value = "finish", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String finishBenefits(@RequestParam(value = "id") final int id,

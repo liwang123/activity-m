@@ -209,45 +209,44 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         }
         //第二步　遍历产品，取出产品下的合约查询金额
         for (final FinancialBenefits benefits : financialBenefits) {
-            final List<FinancialLockUp> financialLockUps = this.queryLockUpByBenefitId(benefits.getId(), 1);
-            for (final FinancialLockUp financialLockUp : financialLockUps) {
-                sb.append(financialLockUp.getSharedAddress().trim());
-                final BalanceEntity data = this.balanceGet(sb);
-                if (data == null) {
-                    continue;
-                }
-                FinancialLockUpServiceImpl.logger.info("解析data: {}", data);
-                final BigDecimal currentAmount = data.getCurrent_balance().divide(new BigDecimal(1000000));
-                BigDecimal tempAmount = new BigDecimal(0);
-                FinancialLockUpServiceImpl.logger.info("合约地址当前余额: {}, 起购额度: {}", currentAmount, benefits.getMinAmount());
-                boolean fullLockStatus = false;
-                if (currentAmount.compareTo(new BigDecimal(benefits.getMinAmount())) != -1) {
-                    FinancialLockUpServiceImpl.logger.info("余额大于等于起购额度 同时限购额度为: {}", benefits.getPurchaseLimit());
-                    if (currentAmount.compareTo(new BigDecimal(benefits.getPurchaseLimit())) != -1) {
-                        FinancialLockUpServiceImpl.logger.info("周套餐：启用限购额度");
-                        tempAmount = new BigDecimal(benefits.getPurchaseLimit());
-                        fullLockStatus = true;
-                    } else {
-                        FinancialLockUpServiceImpl.logger.info("周套餐：启用当前余额");
-                        tempAmount = currentAmount;
-                    }
-                }
-                FinancialLockUpServiceImpl.logger.info("决定是否更新tempAmount金额以及剩余额度，当前金额为: {}", tempAmount);
-                this.updateTempAmount(tempAmount, financialLockUp.getId(), fullLockStatus);
-            }
+            final List<FinancialLockUp> financialLockUps = this.queryLockUpByBenefitId(benefits.getId());
+            this.toDoLockUps(sb, financialLockUps, benefits);
             final BigDecimal sumLockUpAmount = this.financialLockUpMapper.sumTempAmount(benefits.getId());
-            final BigDecimal remainLimit = new BigDecimal(benefits.getPanicTotalLimit()).subtract(sumLockUpAmount);
+            BigDecimal remainLimit = new BigDecimal(0);
+            if (benefits.getPanicTotalLimit() != null) {
+                remainLimit = new BigDecimal(benefits.getPanicTotalLimit()).subtract(sumLockUpAmount);
+            }
             FinancialLockUpServiceImpl.logger.info("总额度: {}, 最新剩余额度: {}", benefits.getPanicTotalLimit(), remainLimit);
             //计算剩余额度
             final FinancialBenefits fbRecord = FinancialBenefits.builder()
                     .id(benefits.getId())
                     .remainLimit(remainLimit)
-                    .alsoLockUpAmount(sumLockUpAmount)
+                    .alsoTempAmount(sumLockUpAmount)
                     .build();
             final int fbUpStatus = this.financialBenefitsMapper.updateByPrimaryKeySelective(fbRecord);
             FinancialLockUpServiceImpl.logger.info("更新剩余金额状态： {}", fbUpStatus);
         }
         FinancialLockUpServiceImpl.logger.info("-----------------------------------计算周套餐temp_amount结束---------------------------------");
+    }
+
+    private void toDoLockUps(final StringBuilder sb, final List<FinancialLockUp> financialLockUps, final FinancialBenefits benefits) {
+        for (final FinancialLockUp financialLockUp : financialLockUps) {
+            sb.append(financialLockUp.getSharedAddress().trim());
+            final BalanceEntity data = this.balanceGet(sb);
+            if (data == null) {
+                continue;
+            }
+            FinancialLockUpServiceImpl.logger.info("解析data: {}", data);
+            final BigDecimal currentAmount = data.getCurrent_balance().divide(new BigDecimal(1000000));
+            BigDecimal tempAmount = new BigDecimal(0);
+            FinancialLockUpServiceImpl.logger.info("合约地址当前余额: {}, 起购额度: {}", currentAmount, benefits.getMinAmount());
+            if (currentAmount.compareTo(new BigDecimal(benefits.getMinAmount())) != -1) {
+                FinancialLockUpServiceImpl.logger.info("余额大于等于起购额度 同时限购额度为: {}", benefits.getPurchaseLimit());
+                tempAmount = currentAmount;
+            }
+            FinancialLockUpServiceImpl.logger.info("决定是否更新tempAmount金额以及剩余额度，当前金额为: {}", tempAmount);
+            this.updateTempAmount(tempAmount, financialLockUp.getId());
+        }
     }
 
     @Override
@@ -264,32 +263,19 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         }
         //第二步　遍历产品，取出产品下的合约查询金额
         for (final FinancialBenefits benefits : financialBenefits) {
-            final List<FinancialLockUp> financialLockUps = this.queryLockUpByBenefitId(benefits.getId(), 0);
-            for (final FinancialLockUp financialLockUp : financialLockUps) {
-                sb.append(financialLockUp.getSharedAddress().trim());
-                final BalanceEntity data = this.balanceGet(sb);
-                if (data == null) {
-                    continue;
-                }
-                FinancialLockUpServiceImpl.logger.info("解析data: {}", data);
-                final BigDecimal currentAmount = data.getCurrent_balance().divide(new BigDecimal(1000000));
-                BigDecimal tempAmount = new BigDecimal(0);
-                FinancialLockUpServiceImpl.logger.info("合约地址当前余额: {}, 起购额度: {}", currentAmount, benefits.getMinAmount());
-                if (currentAmount.compareTo(new BigDecimal(benefits.getMinAmount())) != -1) {
-                    FinancialLockUpServiceImpl.logger.info("余额大于等于起购额度 同时限购额度为: {}", benefits.getPurchaseLimit());
-                    tempAmount = currentAmount;
-                }
-                FinancialLockUpServiceImpl.logger.info("决定是否更新tempAmount金额以及剩余额度，当前金额为: {}", tempAmount);
-                this.updateTempAmount(tempAmount, financialLockUp.getId(), false);
-            }
+            final List<FinancialLockUp> financialLockUps = this.queryLockUpByBenefitId(benefits.getId());
+            this.toDoLockUps(sb, financialLockUps, benefits);
             final BigDecimal sumLockUpAmount = this.financialLockUpMapper.sumTempAmount(benefits.getId());
-            final BigDecimal remainLimit = new BigDecimal(benefits.getPanicTotalLimit()).subtract(sumLockUpAmount);
+            BigDecimal remainLimit = new BigDecimal(0);
+            if (benefits.getPanicTotalLimit() != null) {
+                remainLimit = new BigDecimal(benefits.getPanicTotalLimit()).subtract(sumLockUpAmount);
+            }
             FinancialLockUpServiceImpl.logger.info("总额度: {}, 最新剩余额度: {}", benefits.getPanicTotalLimit(), remainLimit);
             //计算剩余额度
             final FinancialBenefits fbRecord = FinancialBenefits.builder()
                     .id(benefits.getId())
                     .remainLimit(remainLimit)
-                    .alsoLockUpAmount(sumLockUpAmount)
+                    .alsoTempAmount(sumLockUpAmount)
                     .build();
             final int fbUpStatus = this.financialBenefitsMapper.updateByPrimaryKeySelective(fbRecord);
             FinancialLockUpServiceImpl.logger.info("更新剩余金额状态： {}", fbUpStatus);
@@ -311,7 +297,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         }
         //第二步　遍历产品下的合约；根据合约地址查询lock_up_amount
         for (final FinancialBenefits financialBenefits : benefits) {
-            final List<FinancialLockUp> financialLockUps = this.queryLockUpByBenefitId(financialBenefits.getId(), 0);
+            final List<FinancialLockUp> financialLockUps = this.queryLockUpByBenefitId(financialBenefits.getId());
             for (final FinancialLockUp financialLockUp : financialLockUps) {
                 final Financial financial;
                 try {
@@ -356,12 +342,10 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 }
             }
             final BigDecimal sumLockUpAmount = this.financialLockUpMapper.sumLockUpAmount(financialBenefits.getId());
-            final BigDecimal remainLimit = new BigDecimal(financialBenefits.getPanicTotalLimit()).subtract(sumLockUpAmount);
-            FinancialLockUpServiceImpl.logger.info("总额度: {}, 最新剩余额度: {}", financialBenefits.getPanicTotalLimit(), remainLimit);
+            FinancialLockUpServiceImpl.logger.info("总额度: {}", financialBenefits.getPanicTotalLimit());
             //计算剩余额度
             final FinancialBenefits fbRecord = FinancialBenefits.builder()
                     .id(financialBenefits.getId())
-                    .remainLimit(remainLimit)
                     .calactionLockupStatus(1)
                     .alsoLockUpAmount(sumLockUpAmount)
                     .build();
@@ -383,7 +367,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         final String keyAmount = "total_amount";
         Map<String, BigDecimal> map = this.financialLockUpMapper.participate();
         if (map == null) {
-            map = new HashMap<>();
+            map = new HashMap<>(2);
             map.put(keyUser, new BigDecimal(0));
             map.put(keyAmount, new BigDecimal(0));
         } else {
@@ -419,16 +403,12 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
      * 根据benefitId查询lockUp
      *
      * @param financialBenefitdId
-     * @param type 周产品查询传１，其余的传０
      * @return
      */
-    private List<FinancialLockUp> queryLockUpByBenefitId(final int financialBenefitdId, final int type) {
+    private List<FinancialLockUp> queryLockUpByBenefitId(final int financialBenefitdId) {
         final FinancialLockUpExample example = new FinancialLockUpExample();
         final FinancialLockUpExample.Criteria criteria = example.createCriteria();
         criteria.andFinancialBenefitsIdEqualTo(financialBenefitdId);
-        if (type == 1) {
-            criteria.andFullLockStatusEqualTo(0);
-        }
         return this.financialLockUpMapper.selectByExample(example);
     }
 
@@ -466,15 +446,12 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
      * @param tempAmount
      * @param lockUpId
      */
-    private void updateTempAmount(final BigDecimal tempAmount, final int lockUpId, final boolean fullLockStatus) {
+    private void updateTempAmount(final BigDecimal tempAmount, final int lockUpId) {
         if (tempAmount.compareTo(new BigDecimal(0)) == 1) {
             FinancialLockUpServiceImpl.logger.info("开始更新tempAmount金额，合约id: {}", lockUpId);
             final FinancialLockUp record = new FinancialLockUp();
             record.setId(lockUpId);
             record.setTempAmount(tempAmount);
-            if (fullLockStatus) {
-                record.setFullLockStatus(1);
-            }
             final int upStatus = this.financialLockUpMapper.updateByPrimaryKeySelective(record);
             FinancialLockUpServiceImpl.logger.info("更新tempAmount金额状态： {}", upStatus);
         }

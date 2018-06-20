@@ -56,4 +56,5 @@ public class FinancialBenefitsApi {
     private Float financialRate;
     private Integer numericalv;
     private BigDecimal alsoLockUpAmount;
+    private BigDecimal alsoTempAmount;
 }

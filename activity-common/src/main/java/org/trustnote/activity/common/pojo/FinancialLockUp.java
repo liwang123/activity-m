@@ -27,8 +27,6 @@ public class FinancialLockUp {
 
     private BigDecimal tempAmount;
 
-    private Integer fullLockStatus;
-
     public Integer getId() {
         return this.id;
     }
@@ -109,11 +107,4 @@ public class FinancialLockUp {
         this.tempAmount = tempAmount;
     }
 
-    public Integer getFullLockStatus() {
-        return this.fullLockStatus;
-    }
-
-    public void setFullLockStatus(final Integer fullLockStatus) {
-        this.fullLockStatus = fullLockStatus;
-    }
 }

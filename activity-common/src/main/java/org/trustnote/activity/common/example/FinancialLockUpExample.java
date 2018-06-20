@@ -609,65 +609,6 @@ public class FinancialLockUpExample {
             return (Criteria) this;
         }
 
-        public Criteria andFullLockStatusIsNull() {
-            this.addCriterion("full_lock_status is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andFullLockStatusIsNotNull() {
-            this.addCriterion("full_lock_status is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andFullLockStatusEqualTo(final Integer value) {
-            this.addCriterion("full_lock_status =", value, "fullLockStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andFullLockStatusNotEqualTo(final Integer value) {
-            this.addCriterion("full_lock_status <>", value, "fullLockStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andFullLockStatusGreaterThan(final Integer value) {
-            this.addCriterion("full_lock_status >", value, "fullLockStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andFullLockStatusGreaterThanOrEqualTo(final Integer value) {
-            this.addCriterion("full_lock_status >=", value, "fullLockStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andFullLockStatusLessThan(final Integer value) {
-            this.addCriterion("full_lock_status <", value, "fullLockStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andFullLockStatusLessThanOrEqualTo(final Integer value) {
-            this.addCriterion("full_lock_status <=", value, "fullLockStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andFullLockStatusIn(final List<Integer> values) {
-            this.addCriterion("full_lock_status in", values, "fullLockStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andFullLockStatusNotIn(final List<Integer> values) {
-            this.addCriterion("full_lock_status not in", values, "fullLockStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andFullLockStatusBetween(final Integer value1, final Integer value2) {
-            this.addCriterion("full_lock_status between", value1, value2, "fullLockStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andFullLockStatusNotBetween(final Integer value1, final Integer value2) {
-            this.addCriterion("full_lock_status not between", value1, value2, "fullLockStatus");
-            return (Criteria) this;
-        }
     }
 
     public static class Criteria extends GeneratedCriteria {

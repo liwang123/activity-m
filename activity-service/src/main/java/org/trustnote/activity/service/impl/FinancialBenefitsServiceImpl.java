@@ -217,6 +217,29 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
     }
 
     @Override
+    public FinancialBenefitsApi queryFinancialBenefitsByIdExcludeNextInfo(final int id) throws Exception {
+        final FinancialBenefits financialBenefits = this.financialBenefitsMapper.selectByPrimaryKey(id);
+        if (financialBenefits != null) {
+            final FinancialBenefitsApi financialBenefitsApi = FinancialBenefitsApi.builder()
+                    .id(financialBenefits.getId())
+                    .financialId(financialBenefits.getFinancialId())
+                    .productName(financialBenefits.getProductName())
+                    .panicStartTime(DateTimeUtils.localDateTimeParseLong(financialBenefits.getPanicStartTime()))
+                    .panicEndTime(DateTimeUtils.localDateTimeParseLong(financialBenefits.getPanicEndTime()))
+                    .interestStartTime(DateTimeUtils.localDateTimeParseLong(financialBenefits.getInterestStartTime()))
+                    .interestEndTime(DateTimeUtils.localDateTimeParseLong(financialBenefits.getInterestEndTime()))
+                    .unlockTime(DateTimeUtils.localDateTimeParseLong(financialBenefits.getUnlockTime()))
+                    .panicTotalLimit(financialBenefits.getPanicTotalLimit())
+                    .minAmount(financialBenefits.getMinAmount())
+                    .purchaseLimit(financialBenefits.getPurchaseLimit())
+                    .financialRate(financialBenefits.getFinancialRate())
+                    .build();
+            return financialBenefitsApi;
+        }
+        return null;
+    }
+
+    @Override
     public int updateFinancialStatus(final int id) throws Exception {
         final FinancialBenefits record = FinancialBenefits.builder()
                 .id(id)

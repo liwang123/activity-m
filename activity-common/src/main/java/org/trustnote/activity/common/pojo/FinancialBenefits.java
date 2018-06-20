@@ -54,4 +54,6 @@ public class FinancialBenefits {
     private Integer calactionLockupStatus;
 
     private BigDecimal alsoLockUpAmount;
+
+    private BigDecimal alsoTempAmount;
 }
