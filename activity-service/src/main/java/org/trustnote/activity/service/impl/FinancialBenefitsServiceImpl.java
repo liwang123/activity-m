@@ -81,6 +81,10 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         if (!CollectionUtils.isEmpty(panic)) {
             return -1;
         }
+        BigDecimal remainLimit = new BigDecimal(0);
+        if (financialBenefitsApi.getFinancialId() == 1) {
+            remainLimit = new BigDecimal(financialBenefitsApi.getPanicTotalLimit());
+        }
         final FinancialBenefits financialBenefits = FinancialBenefits.builder()
                 .financialId(financialBenefitsApi.getFinancialId())
                 .productName(financialBenefitsApi.getProductName())
@@ -92,7 +96,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                 .panicTotalLimit(financialBenefitsApi.getPanicTotalLimit())
                 .minAmount(financialBenefitsApi.getMinAmount())
                 .purchaseLimit(financialBenefitsApi.getPurchaseLimit())
-                .remainLimit(new BigDecimal(financialBenefitsApi.getPanicTotalLimit()))
+                .remainLimit(remainLimit)
                 .financialRate(financialBenefitsApi.getFinancialRate())
                 .build();
         return this.financialBenefitsMapper.insertSelective(financialBenefits);

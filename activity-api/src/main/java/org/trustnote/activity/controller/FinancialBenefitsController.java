@@ -257,6 +257,18 @@ public class FinancialBenefitsController {
             result.setMsg("请输入正确的年化收益率");
             return result;
         }
+        if (financialBenefitsApi.getFinancialId() == 1) {
+            if (financialBenefitsApi.getPanicTotalLimit() == null) {
+                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                result.setMsg("请输入抢购总额度");
+                return result;
+            }
+            if (financialBenefitsApi.getPurchaseLimit() == null) {
+                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                result.setMsg("请输入限额");
+                return result;
+            }
+        }
         return null;
     }
 }

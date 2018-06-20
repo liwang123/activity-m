@@ -52,4 +52,6 @@ public class FinancialBenefits {
     private Float financialRate;
 
     private Integer calactionLockupStatus;
+
+    private BigDecimal alsoLockUpAmount;
 }

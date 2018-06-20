@@ -32,16 +32,12 @@ public class FinancialBenefitsApi {
     private Long interestEndTime;
     @NotNull(message = "请输入时间")
     private Long unlockTime;
-    @NotNull(message = "请输入抢购总额度")
-    @Min(message = "不少于１MN", value = 1)
     @Max(message = "长度不能大于10位", value = Integer.MAX_VALUE)
     private Integer panicTotalLimit;
-    @NotNull(message = "不少于１MN")
+    @NotNull(message = "请输入起购额度")
     @Min(message = "不少于１MN", value = 1)
     @Max(message = "长度不能大于10位", value = Integer.MAX_VALUE)
     private Integer minAmount;
-    @NotNull(message = "请输入限购额度")
-    @Min(message = "不少于１MN", value = 1)
     @Max(message = "长度不能大于10位", value = Integer.MAX_VALUE)
     private Integer purchaseLimit;
 
@@ -59,4 +55,5 @@ public class FinancialBenefitsApi {
     @Max(message = "不能大于１", value = 1)
     private Float financialRate;
     private Integer numericalv;
+    private BigDecimal alsoLockUpAmount;
 }

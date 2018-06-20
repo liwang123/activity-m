@@ -1198,6 +1198,66 @@ public class FinancialBenefitsExample {
             this.addCriterion("calaction_lockup_status not between", value1, value2, "CalactionLockupStatus");
             return (Criteria) this;
         }
+
+        public Criteria andAlsoLockUpAmountIsNull() {
+            this.addCriterion("also_lock_up_amount is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoLockUpAmountIsNotNull() {
+            this.addCriterion("also_lock_up_amount is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoLockUpAmountEqualTo(final BigDecimal value) {
+            this.addCriterion("also_lock_up_amount =", value, "alsoLockUpAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoLockUpAmountNotEqualTo(final BigDecimal value) {
+            this.addCriterion("also_lock_up_amount <>", value, "alsoLockUpAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoLockUpAmountGreaterThan(final BigDecimal value) {
+            this.addCriterion("also_lock_up_amount >", value, "alsoLockUpAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoLockUpAmountGreaterThanOrEqualTo(final BigDecimal value) {
+            this.addCriterion("also_lock_up_amount >=", value, "alsoLockUpAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoLockUpAmountLessThan(final BigDecimal value) {
+            this.addCriterion("also_lock_up_amount <", value, "alsoLockUpAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoLockUpAmountLessThanOrEqualTo(final BigDecimal value) {
+            this.addCriterion("also_lock_up_amount <=", value, "alsoLockUpAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoLockUpAmountIn(final List<BigDecimal> values) {
+            this.addCriterion("also_lock_up_amount in", values, "alsoLockUpAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoLockUpAmountNotIn(final List<BigDecimal> values) {
+            this.addCriterion("also_lock_up_amount not in", values, "alsoLockUpAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoLockUpAmountBetween(final BigDecimal value1, final BigDecimal value2) {
+            this.addCriterion("also_lock_up_amount between", value1, value2, "alsoLockUpAmount");
+            return (Criteria) this;
+        }
+
+        public Criteria andAlsoLockUpAmountNotBetween(final BigDecimal value1, final BigDecimal value2) {
+            this.addCriterion("also_lock_up_amount not between", value1, value2, "alsoLockUpAmount");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
