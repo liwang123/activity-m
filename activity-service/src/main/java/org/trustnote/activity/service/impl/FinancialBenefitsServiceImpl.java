@@ -1,12 +1,16 @@
 package org.trustnote.activity.service.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.trustnote.activity.common.api.FinancialBenefitsApi;
 import org.trustnote.activity.common.example.FinancialBenefitsExample;
+import org.trustnote.activity.common.pojo.Financial;
 import org.trustnote.activity.common.pojo.FinancialBenefits;
 import org.trustnote.activity.common.utils.DateTimeUtils;
 import org.trustnote.activity.service.iface.FinancialBenefitsService;
+import org.trustnote.activity.service.iface.FinancialService;
 import org.trustnote.activity.skeleton.mybatis.mapper.FinancialBenefitsMapper;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
 
@@ -21,9 +25,12 @@ import java.util.List;
  */
 @Service
 public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
+    private static final Logger logger = LogManager.getLogger(FinancialBenefitsServiceImpl.class);
 
     @Resource
     private FinancialBenefitsMapper financialBenefitsMapper;
+    @Resource
+    private FinancialService financialService;
 
     @Override
     public FinancialBenefits queryOneFinancialBenefits(final int id) throws Exception {
@@ -322,6 +329,12 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
             } else {
                 statusName = "抢购已结束";
             }
+            Financial financial = null;
+            try {
+                financial = this.financialService.queryOneFinancial(benefits.getFinancialId());
+            } catch (final Exception e) {
+                FinancialBenefitsServiceImpl.logger.info("查询抢购时间段内的产品异常： {}", e);
+            }
             final FinancialBenefitsApi financialBenefitsApi = FinancialBenefitsApi.builder()
                     .id(benefits.getId())
                     .financialId(benefits.getFinancialId())
@@ -338,6 +351,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .financialStatus(benefits.getFinancialStatus())
                     .financialRate(benefits.getFinancialRate())
                     .activityStatus(statusName)
+                    .numericalv(financial == null ? 0 : financial.getNumericalv())
                     .build();
             lists.add(financialBenefitsApi);
         }

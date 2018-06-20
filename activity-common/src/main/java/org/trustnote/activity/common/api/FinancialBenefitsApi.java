@@ -58,4 +58,5 @@ public class FinancialBenefitsApi {
     @Min(message = "不能小于0", value = 0)
     @Max(message = "不能大于１", value = 1)
     private Float financialRate;
+    private Integer numericalv;
 }
