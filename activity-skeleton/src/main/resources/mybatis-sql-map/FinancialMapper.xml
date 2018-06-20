@@ -72,7 +72,7 @@
     id, financial_name, financial_rate, upt_time, numericalv
   </sql>
     <select id="selectByExample" parameterType="org.trustnote.activity.common.example.FinancialExample"
-            resultMap="BaseResultMap" useCache="true">
+            resultMap="BaseResultMap">
         select
         <if test="distinct">
             distinct
@@ -86,7 +86,7 @@
             order by ${orderByClause}
         </if>
     </select>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap" useCache="true">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from financial
@@ -212,5 +212,4 @@
       numericalv = #{numericalv,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
     </update>
-    <cache eviction="LRU" flushInterval="1000000" size="1024" readOnly="true"/>
 </mapper>

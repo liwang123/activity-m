@@ -39,7 +39,9 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
 
     @Override
     public List<FinancialBenefitsApi> queryFinancialBenefits(final Page<FinancialBenefits> page) throws Exception {
-        final List<FinancialBenefits> financialBenefits = this.financialBenefitsMapper.selectByExampleAndPage(page, new FinancialBenefitsExample());
+        final FinancialBenefitsExample example = new FinancialBenefitsExample();
+        example.setOrderByClause("id DESC");
+        final List<FinancialBenefits> financialBenefits = this.financialBenefitsMapper.selectByExampleAndPage(page, example);
         return this.convertPojoToApi(financialBenefits);
     }
 

@@ -88,7 +88,7 @@
     financial_status, crt_time, upt_time, calaction_status, financial_rate, calaction_lockup_status, also_lock_up_amount
   </sql>
     <select id="selectByExample" parameterType="org.trustnote.activity.common.example.FinancialBenefitsExample"
-            resultMap="BaseResultMap" useCache="true">
+            resultMap="BaseResultMap">
         select
         <if test="distinct">
             distinct
@@ -103,7 +103,7 @@
         </if>
     </select>
     <select id="selectByExampleAndPage" parameterType="org.trustnote.activity.common.example.FinancialBenefitsExample"
-            resultMap="BaseResultMap" useCache="true">
+            resultMap="BaseResultMap">
         select
         <if test="distinct">
             distinct
@@ -117,7 +117,7 @@
             order by ${orderByClause}
         </if>
     </select>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap" useCache="true">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from financial_benefits
@@ -448,5 +448,4 @@
       also_lock_up_amount = #{alsoLockUpAmount,jdbcType=DECIMAL}
     where id = #{id,jdbcType=INTEGER}
   </update>
-    <cache eviction="LRU" flushInterval="1000000" size="1024" readOnly="true"/>
 </mapper>
