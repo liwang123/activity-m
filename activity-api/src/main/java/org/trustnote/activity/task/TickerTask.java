@@ -35,7 +35,7 @@ public class TickerTask {
     /**
      * 每隔10分钟计算周套餐产品的剩余额度
      */
-    @Scheduled(cron = "0 0/10 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void validationPaymentWeek() {
         this.financialLockUpService.validationPaymentWeek();
     }
@@ -43,7 +43,7 @@ public class TickerTask {
     /**
      * 每隔35分钟计算其他套餐产品的剩余额度
      */
-    @Scheduled(cron = "0 0/35 * * * ?")
+    @Scheduled(cron = "0 0/30 * * * ?")
     public void validationPaymentOther() {
         this.financialLockUpService.validationPaymentWeek();
     }
