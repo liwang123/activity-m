@@ -231,9 +231,8 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 }
                 FinancialLockUpServiceImpl.logger.info("解析data: {}", data);
                 final BigDecimal currentAmount = data.getCurrent_balance().divide(new BigDecimal(1000000));
-                final BigDecimal tempAmount = new BigDecimal(0);
                 FinancialLockUpServiceImpl.logger.info("合约地址当前余额: {}, 起购额度: {}", currentAmount, benefits.getMinAmount());
-                this.updateTempAmount(tempAmount, financialLockUp.getId());
+                this.updateTempAmount(currentAmount, financialLockUp.getId());
             }
             final BigDecimal sumLockUpAmount = this.financialLockUpMapper.sumTempAmount(benefits.getId());
             BigDecimal remainLimit = new BigDecimal(0);
@@ -454,14 +453,6 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
             final int upStatus = this.financialLockUpMapper.updateByPrimaryKeySelective(record);
             FinancialLockUpServiceImpl.logger.info("更新tempAmount金额状态： {}", upStatus);
         }
-    }
-
-    private List<FinancialLockUp> queryWithinThirtyMinutes(final LocalDateTime now) throws Exception {
-        final LocalDateTime beginTime = now.minusMinutes(30);
-        final FinancialLockUpExample example = new FinancialLockUpExample();
-        final FinancialLockUpExample.Criteria criteria = example.createCriteria();
-        criteria.andOperationTimeGreaterThan(beginTime);
-        return this.financialLockUpMapper.selectByExample(example);
     }
 
 }
