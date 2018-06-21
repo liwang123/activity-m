@@ -302,15 +302,14 @@
         FROM
           financial_lock_up
         WHERE
-          where financial_benefits_id =  #{financialBenefitsId,jdbcType=INTEGER};
+          financial_benefits_id =  #{financialBenefitsId,jdbcType=INTEGER};
     </select>
     <select id="sumTempAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
         SELECT
           SUM(temp_amount) total_amount
-
         FROM
           financial_lock_up
         WHERE
-          where financial_benefits_id =  #{financialBenefitsId,jdbcType=INTEGER};
+          financial_benefits_id =  #{financialBenefitsId,jdbcType=INTEGER};
     </select>
 </mapper>

@@ -10,17 +10,23 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.trustnote.activity.common.api.FinancialBenefitsApi;
 import org.trustnote.activity.common.enume.ResultEnum;
+import org.trustnote.activity.common.pojo.Financial;
 import org.trustnote.activity.common.pojo.FinancialLockUp;
 import org.trustnote.activity.common.utils.ExcelUtils;
 import org.trustnote.activity.common.utils.Result;
+import org.trustnote.activity.service.iface.FinancialBenefitsService;
 import org.trustnote.activity.service.iface.FinancialLockUpService;
+import org.trustnote.activity.service.iface.FinancialService;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
 import org.trustnote.activity.stereotype.Frequency;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +44,10 @@ public class FinancialLockUpController {
 
     @Resource
     private FinancialLockUpService financialLockUpService;
+    @Resource
+    private FinancialBenefitsService financialBenefitsService;
+    @Resource
+    private FinancialService financialService;
 
     @ResponseBody
     @RequestMapping(value = "/query", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -92,13 +102,28 @@ public class FinancialLockUpController {
                 return ResultUtil.universalBlankReturn(response, result);
             }
             final FinancialLockUp checkLockUp = this.financialLockUpService.queryLockUp(financialLockUp);
+            final FinancialBenefitsApi financialBenefitsApi = this.financialBenefitsService.queryFinancialBenefitsByIdExcludeNextInfo(financialLockUp.getFinancialBenefitsId());
+            BigDecimal inComeAmount = new BigDecimal(0);
+            if (financialBenefitsApi != null && financialLockUp.getOrderAmount() != null) {
+                final Financial financial = this.financialService.queryOneFinancial(financialBenefitsApi.getFinancialId());
+                //理财周期
+                final BigDecimal numericalv = BigDecimal.valueOf(financial.getNumericalv());
+                //年化利率
+                final BigDecimal rate = BigDecimal.valueOf(financialBenefitsApi.getFinancialRate()).setScale(2, BigDecimal.ROUND_DOWN);
+                //计算收益
+                final BigDecimal all = new BigDecimal(financialLockUp.getOrderAmount()).multiply(numericalv).multiply(rate);
+                inComeAmount = all.divide(new BigDecimal(360), 6, BigDecimal.ROUND_DOWN);
+            }
             int operationStatus = 0;
             if (checkLockUp == null) {
                 operationStatus = this.financialLockUpService.saveFinancialLockUp(financialLockUp);
             }
+            final Map<String, Object> entity = new HashMap<>(2);
+            entity.put("operation_status", operationStatus);
+            entity.put("income_amount", inComeAmount);
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
-            result.setEntity(operationStatus);
+            result.setEntity(entity);
         } catch (final JSONException e) {
             return universalJSONExceptionReturn(FinancialLockUpController.logger, e, response, result);
         } catch (final Exception e) {

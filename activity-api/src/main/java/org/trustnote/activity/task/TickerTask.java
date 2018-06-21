@@ -35,7 +35,7 @@ public class TickerTask {
     /**
      * 每隔10分钟计算周套餐产品的剩余额度
      */
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/2 * * * ?")
     public void validationPaymentWeek() {
         this.financialLockUpService.validationPaymentWeek();
     }
@@ -78,4 +78,5 @@ public class TickerTask {
      public void getBizETHDKKT(){
      tickerService.saveBitZTicker("eth_dkkt");
      }*/
+
 }
