@@ -388,14 +388,15 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
             if (now.isAfter(unLockTime)) {
                 financialLockUp.setLockUpStatus("已解锁");
             } else {
+                financialLockUp.setLockUpStatus("未解锁");
                 if (type == 1) {
-                    if (financialLockUp.getTempAmount().compareTo(new BigDecimal(financialLockUp.getOrderAmount())) == -1) {
+                    if (financialLockUp.getTempAmount() == null || financialLockUp.getOrderAmount() == null) {
                         financialLockUp.setLockUpStatus("未完成");
                     } else {
-                        financialLockUp.setLockUpStatus("未解锁");
+                        if (financialLockUp.getTempAmount().compareTo(new BigDecimal(financialLockUp.getOrderAmount())) == -1) {
+                            financialLockUp.setLockUpStatus("未完成");
+                        }
                     }
-                } else {
-                    financialLockUp.setLockUpStatus("未解锁");
                 }
             }
         }
