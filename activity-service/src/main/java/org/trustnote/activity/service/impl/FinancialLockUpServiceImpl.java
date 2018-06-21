@@ -231,13 +231,8 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 }
                 FinancialLockUpServiceImpl.logger.info("解析data: {}", data);
                 final BigDecimal currentAmount = data.getCurrent_balance().divide(new BigDecimal(1000000));
-                BigDecimal tempAmount = new BigDecimal(0);
+                final BigDecimal tempAmount = new BigDecimal(0);
                 FinancialLockUpServiceImpl.logger.info("合约地址当前余额: {}, 起购额度: {}", currentAmount, benefits.getMinAmount());
-                if (currentAmount.compareTo(new BigDecimal(benefits.getMinAmount())) != -1) {
-                    FinancialLockUpServiceImpl.logger.info("余额大于等于起购额度 同时限购额度为: {}", benefits.getPurchaseLimit());
-                    tempAmount = currentAmount;
-                }
-                FinancialLockUpServiceImpl.logger.info("决定是否更新tempAmount金额以及剩余额度，当前金额为: {}", tempAmount);
                 this.updateTempAmount(tempAmount, financialLockUp.getId());
             }
             final BigDecimal sumLockUpAmount = this.financialLockUpMapper.sumTempAmount(benefits.getId());
