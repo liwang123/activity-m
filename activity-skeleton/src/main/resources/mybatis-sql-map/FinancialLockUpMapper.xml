@@ -292,7 +292,7 @@
     </update>
     <select id="participate" resultType="Map">
         SELECT
-          SUM(id) total_user, SUM(temp_amount) total_amount
+          SUM(1) total_user, SUM(temp_amount) total_amount
         FROM
           financial_lock_up
     </select>
