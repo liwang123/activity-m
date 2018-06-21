@@ -52,26 +52,4 @@ public class FinancialTask {
         this.financialLockUpService.saveLockUpAmount();
     }
 
-
-    /*@Scheduled(cron = "0/3 * * * * ?")
-    public void test1() {
-        FinancialTask.logger.info("每隔3秒定时执行 {}　{}", Thread.currentThread().getId(), Thread.currentThread().getName());
-        try {
-            Thread.sleep(5000);
-        } catch (final InterruptedException e) {
-            e.printStackTrace();
-        }
-        FinancialTask.logger.info("test1执行完毕.");
-    }
-
-    @Scheduled(cron = "0/3 * * * * ?")
-    public void test2() {
-        FinancialTask.logger.info("每隔3秒定时执行 {}　{}", Thread.currentThread().getId(), Thread.currentThread().getName());
-        try {
-            Thread.sleep(2000);
-        } catch (final InterruptedException e) {
-            e.printStackTrace();
-        }
-        FinancialTask.logger.info("test2执行完毕");
-    }*/
 }
