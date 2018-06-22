@@ -88,7 +88,7 @@ public class FinancialBenefitsController {
             final int insertStatus = this.financialBenefitsService.insertFinancialBenefits(financialBenefitsApi);
             if (insertStatus == -1) {
                 result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg("时间不正确");
+                result.setMsg("与其他套餐时间冲突");
             } else if (insertStatus == 0) {
                 result.setCode(ResultEnum.MISSION_FAIL.getCode());
                 result.setMsg(ResultEnum.MISSION_FAIL.getMsg());
@@ -118,9 +118,18 @@ public class FinancialBenefitsController {
             return result.getString(validation);
         }
         try {
-            result.setCode(ResultEnum.OK.getCode());
-            result.setMsg(ResultEnum.OK.getMsg());
-            result.setEntity(this.financialBenefitsService.updateFinancialBenefits(financialBenefitsApi));
+            final int updateStatus = this.financialBenefitsService.updateFinancialBenefits(financialBenefitsApi);
+            if (updateStatus == -1) {
+                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                result.setMsg("与其他套餐时间冲突");
+            } else if (updateStatus == 0) {
+                result.setMsg(ResultEnum.MISSION_FAIL.getMsg());
+                result.setCode(ResultEnum.MISSION_FAIL.getCode());
+            } else {
+                result.setCode(ResultEnum.OK.getCode());
+                result.setMsg(ResultEnum.OK.getMsg());
+            }
+            result.setEntity(updateStatus);
         } catch (final Exception e) {
             return universalExceptionReturn(FinancialBenefitsController.logger, e, response, result);
         }
@@ -231,47 +240,47 @@ public class FinancialBenefitsController {
         final long now = DateTimeUtils.localDateTimeParseLong(LocalDateTime.now());
         if (financialBenefitsApi.getPanicStartTime() <= now) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("请输入正确时间");
+            result.setMsg("抢购开始时间不能小于当前时间");
             return result;
         }
         if (financialBenefitsApi.getPanicEndTime() <= now) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("请输入正确时间");
+            result.setMsg("抢购结束时间不能小于当前时间");
             return result;
         }
         if (financialBenefitsApi.getInterestStartTime() <= now) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("请输入正确时间");
+            result.setMsg("计息开始时间不能小于当前时间");
             return result;
         }
         if (financialBenefitsApi.getInterestEndTime() <= now) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("请输入正确时间");
+            result.setMsg("计息结束时间不能小于当前时间");
             return result;
         }
         if (financialBenefitsApi.getUnlockTime() <= now) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("请输入正确时间");
+            result.setMsg("解锁时间不能小于当前时间");
             return result;
         }
         if (financialBenefitsApi.getUnlockTime() <= financialBenefitsApi.getInterestEndTime()) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("请输入正确时间");
+            result.setMsg("解锁时间不能小于等于计息结束时间");
             return result;
         }
         if (financialBenefitsApi.getPanicEndTime() <= financialBenefitsApi.getPanicStartTime()) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("请输入正确时间");
+            result.setMsg("抢购结束时间不能小于等于抢购开始时间");
             return result;
         }
         if (financialBenefitsApi.getInterestEndTime() <= financialBenefitsApi.getInterestStartTime()) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("请输入正确时间");
+            result.setMsg("计息结束时间不能小于等于计息开始时间");
             return result;
         }
         if (financialBenefitsApi.getInterestStartTime() <= financialBenefitsApi.getPanicEndTime()) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("请输入正确时间");
+            result.setMsg("计息开始时间不能小于抢购结束时间");
             return result;
         }
         if (financialBenefitsApi.getFinancialRate() > 1) {
