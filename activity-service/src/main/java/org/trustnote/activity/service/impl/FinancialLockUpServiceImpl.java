@@ -235,7 +235,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 this.updateTempAmount(currentAmount, financialLockUp.getId());
             }
             final BigDecimal sumLockUpAmount = this.financialLockUpMapper.sumTempAmount(benefits.getId());
-            BigDecimal remainLimit = new BigDecimal(0);
+            BigDecimal remainLimit = null;
             if (sumLockUpAmount != null) {
                 if (benefits.getPanicTotalLimit() != null) {
                     remainLimit = new BigDecimal(benefits.getPanicTotalLimit()).subtract(sumLockUpAmount);
@@ -244,9 +244,11 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 //计算剩余额度
                 final FinancialBenefits fbRecord = FinancialBenefits.builder()
                         .id(benefits.getId())
-                        .remainLimit(remainLimit)
                         .alsoTempAmount(sumLockUpAmount)
                         .build();
+                if (remainLimit != null) {
+                    fbRecord.setRemainLimit(remainLimit);
+                }
                 final int fbUpStatus = this.financialBenefitsMapper.updateByPrimaryKeySelective(fbRecord);
                 FinancialLockUpServiceImpl.logger.info("更新剩余金额状态： {}", fbUpStatus);
             }
