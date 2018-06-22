@@ -36,11 +36,11 @@ public class FinancialTask {
     }
 
     /**
-     * 每隔15分钟计算其他套餐产品的剩余额度
+     * 每隔23分钟计算其他套餐产品的剩余额度
      */
-    @Scheduled(cron = "0 0/20 * * * ?")
+    @Scheduled(cron = "0 0/23 * * * ?")
     public void validationPaymentOther() {
-        this.financialLockUpService.validationPaymentWeek();
+        this.financialLockUpService.validationPaymentOther();
     }
 
 
