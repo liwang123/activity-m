@@ -112,7 +112,7 @@ public class FinancialLockUpController {
                 final BigDecimal rate = BigDecimal.valueOf(financialBenefitsApi.getFinancialRate()).setScale(2, BigDecimal.ROUND_DOWN);
                 //计算收益
                 final BigDecimal all = new BigDecimal(financialLockUp.getOrderAmount()).multiply(numericalv).multiply(rate);
-                inComeAmount = all.divide(new BigDecimal(360), 6, BigDecimal.ROUND_DOWN);
+                inComeAmount = all.divide(new BigDecimal(360), 1, BigDecimal.ROUND_DOWN);
             }
             int operationStatus = 0;
             if (checkLockUp == null) {

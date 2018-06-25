@@ -171,7 +171,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 final BigDecimal rate = BigDecimal.valueOf(financialBenefits.getFinancialRate()).setScale(2, BigDecimal.ROUND_DOWN);
                 //计算收益
                 final BigDecimal all = principal.multiply(numericalv).multiply(rate);
-                final BigDecimal income = all.divide(new BigDecimal(360), 6, BigDecimal.ROUND_DOWN);
+                final BigDecimal income = all.divide(new BigDecimal(360), 1, BigDecimal.ROUND_DOWN);
                 FinancialLockUpServiceImpl.logger.info("本金：{} 理财周期： {} 年化利率： {} 收益： {}", principal, numericalv, rate, income);
                 final FinancialLockUp upLockUp = new FinancialLockUp();
                 upLockUp.setId(financialLockUp.getId());
@@ -235,7 +235,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 FinancialLockUpServiceImpl.logger.info("解析data: {}", data);
                 final BigDecimal currentAmount = data.getCurrent_balance().divide(new BigDecimal(1000000));
                 FinancialLockUpServiceImpl.logger.info("合约地址当前余额: {}, 起购额度: {}", currentAmount, benefits.getMinAmount());
-                this.updateTempAmount(currentAmount, financialLockUp.getId());
+                this.updateTempAmount(currentAmount.setScale(0, BigDecimal.ROUND_DOWN), financialLockUp.getId());
             }
             final BigDecimal sumLockUpAmount = this.financialLockUpMapper.sumTempAmount(benefits.getId());
             BigDecimal remainLimit = null;
@@ -308,6 +308,8 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 final BigDecimal currentAmount = data.getCurrent_balance().divide(new BigDecimal(1000000));
                 BigDecimal lockUpAmount = new BigDecimal(0);
                 FinancialLockUpServiceImpl.logger.info("合约地址当前余额: {}, 起购额度: {} ID: {}", currentAmount, financialBenefits.getMinAmount(), financialLockUp.getId());
+                currentAmount.setScale(0, BigDecimal.ROUND_DOWN);
+                FinancialLockUpServiceImpl.logger.info("取整之后余额: {}", currentAmount);
                 if (currentAmount.compareTo(new BigDecimal(financialBenefits.getMinAmount())) != -1) {
                     FinancialLockUpServiceImpl.logger.info("余额大于等于起购额度，并且套餐类型为: {} 同时限购额度为: {}", financial.getFinancialName(), financialBenefits.getPurchaseLimit());
                     if (financial.getId() == 1) {
