@@ -30,7 +30,7 @@ public class FinancialTask {
     /**
      * 每隔5分钟计算周套餐产品的剩余额度
      */
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/2 * * * ?")
     public void validationPaymentWeek() {
         this.financialLockUpService.validationPaymentWeek();
     }
@@ -38,7 +38,7 @@ public class FinancialTask {
     /**
      * 每隔23分钟计算其他套餐产品的剩余额度
      */
-    @Scheduled(cron = "0 0/23 * * * ?")
+    @Scheduled(cron = "0 0/3 * * * ?")
     public void validationPaymentOther() {
         this.financialLockUpService.validationPaymentOther();
     }
