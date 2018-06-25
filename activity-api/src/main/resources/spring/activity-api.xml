@@ -80,6 +80,7 @@
             <mvc:exclude-mapping path="/financial-lockup/save.htm"/><!-- 合约地址-保存 -->
             <mvc:exclude-mapping path="/financial-lockup/all.htm"/><!-- 合约地址-设备地址查询 -->
             <mvc:exclude-mapping path="/financial-lockup/participate.htm"/><!-- 合约地址-设备地址查询 -->
+            <mvc:exclude-mapping path="/financial-lockup/manual.htm"/><!-- 合约地址-设备地址查询 -->
             <bean class="org.trustnote.activity.utils.SecuritySSOInterceptor" /><!--自定义拦截器 -->
         </mvc:interceptor>
         <mvc:interceptor>
