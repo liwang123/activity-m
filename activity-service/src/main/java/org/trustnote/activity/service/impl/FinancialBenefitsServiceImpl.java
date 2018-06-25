@@ -55,6 +55,14 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         if (!CollectionUtils.isEmpty(panic)) {
             return -1;
         }
+        BigDecimal remainLimit = new BigDecimal(0);
+        if (financialBenefitsApi.getFinancialId() == 1) {
+            remainLimit = new BigDecimal(financialBenefitsApi.getPanicTotalLimit());
+        } else {
+            if (financialBenefitsApi.getPanicTotalLimit() != null) {
+                remainLimit = new BigDecimal(financialBenefitsApi.getPanicTotalLimit());
+            }
+        }
         final FinancialBenefits record = FinancialBenefits.builder()
                 .id(financialBenefitsApi.getId())
                 .financialId(financialBenefitsApi.getFinancialId())
@@ -67,7 +75,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                 .panicTotalLimit(financialBenefitsApi.getPanicTotalLimit())
                 .minAmount(financialBenefitsApi.getMinAmount())
                 .purchaseLimit(financialBenefitsApi.getPurchaseLimit())
-                .remainLimit(new BigDecimal(financialBenefitsApi.getPanicTotalLimit()))
+                .remainLimit(remainLimit)
                 .financialRate(financialBenefitsApi.getFinancialRate())
                 .build();
         return this.financialBenefitsMapper.updateByPrimaryKeySelective(record);
@@ -86,6 +94,10 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         BigDecimal remainLimit = new BigDecimal(0);
         if (financialBenefitsApi.getFinancialId() == 1) {
             remainLimit = new BigDecimal(financialBenefitsApi.getPanicTotalLimit());
+        } else {
+            if (financialBenefitsApi.getPanicTotalLimit() != null) {
+                remainLimit = new BigDecimal(financialBenefitsApi.getPanicTotalLimit());
+            }
         }
         final FinancialBenefits financialBenefits = FinancialBenefits.builder()
                 .financialId(financialBenefitsApi.getFinancialId())
@@ -350,7 +362,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
             if (now.isBefore(benefits.getPanicStartTime())) {
                 statusName = "未开启";
             } else if (now.compareTo(benefits.getPanicStartTime()) >= 0 && now.compareTo(benefits.getPanicEndTime()) < 0) {
-                if (benefits.getRemainLimit().compareTo(new BigDecimal(0)) != 1) {
+                if ((benefits.getRemainLimit().compareTo(new BigDecimal(0)) != 1) && benefits.getPanicTotalLimit() != null) {
                     statusName = "抢购已结束";
                 } else {
                     statusName = "抢购进行中";
