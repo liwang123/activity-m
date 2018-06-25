@@ -151,6 +151,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .financialStatus(benefits.getFinancialStatus())
                     .financialRate(benefits.getFinancialRate())
                     .activityStatus(sb.toString())
+                    .alsoLockUpAmount(benefits.getAlsoLockUpAmount())
+                    .alsoTempAmount(benefits.getAlsoTempAmount())
                     .build();
             if (!CollectionUtils.isEmpty(nextFinancialBenefits)) {
                 financialBenefitsApi.setNextPanicStartTime(DateTimeUtils.localDateTimeParseLong(nextFinancialBenefits.get(0).getPanicStartTime()));
@@ -177,6 +179,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .financialStatus(benefits.getFinancialStatus())
                     .financialRate(benefits.getFinancialRate())
                     .activityStatus("未开启")
+                    .alsoLockUpAmount(benefits.getAlsoLockUpAmount())
+                    .alsoTempAmount(benefits.getAlsoTempAmount())
                     .build();
             //查询未开启后续是否还有
             final List<FinancialBenefits> nextTwo = this.queryFinancialGreaterThanNow(financialId, benefits.getPanicEndTime());
@@ -206,6 +210,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .financialStatus(benefits.getFinancialStatus())
                     .financialRate(benefits.getFinancialRate())
                     .activityStatus("抢购已结束")
+                    .alsoLockUpAmount(benefits.getAlsoLockUpAmount())
+                    .alsoTempAmount(benefits.getAlsoTempAmount())
                     .build();
 
             //查询抢购结束后续是否还有
@@ -245,6 +251,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .minAmount(financialBenefits.getMinAmount())
                     .purchaseLimit(financialBenefits.getPurchaseLimit())
                     .financialRate(financialBenefits.getFinancialRate())
+                    .alsoLockUpAmount(financialBenefits.getAlsoLockUpAmount())
+                    .alsoTempAmount(financialBenefits.getAlsoTempAmount())
                     .build();
             return financialBenefitsApi;
         }
@@ -393,6 +401,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .financialRate(benefits.getFinancialRate())
                     .activityStatus(statusName)
                     .numericalv(financial == null ? 0 : financial.getNumericalv())
+                    .alsoLockUpAmount(benefits.getAlsoLockUpAmount())
+                    .alsoTempAmount(benefits.getAlsoTempAmount())
                     .build();
             lists.add(financialBenefitsApi);
         }
