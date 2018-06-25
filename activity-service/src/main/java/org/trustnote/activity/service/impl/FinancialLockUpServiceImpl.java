@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.trustnote.activity.common.api.FinancialLockUpApi;
 import org.trustnote.activity.common.example.FinancialLockUpExample;
 import org.trustnote.activity.common.pojo.BalanceEntity;
 import org.trustnote.activity.common.pojo.Financial;
@@ -50,7 +51,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
     private FinancialService financialService;
 
     @Override
-    public List<FinancialLockUp> queryFinancialLockUp(final Page<FinancialLockUp> page, final int benefitsId) throws Exception {
+    public List<FinancialLockUpApi> queryFinancialLockUp(final Page<FinancialLockUp> page, final int benefitsId) throws Exception {
         final FinancialLockUpExample example = new FinancialLockUpExample();
         final FinancialLockUpExample.Criteria criteria = example.createCriteria();
         criteria.andFinancialBenefitsIdEqualTo(benefitsId);
@@ -67,7 +68,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
     }
 
     @Override
-    public List<FinancialLockUp> queryFincialLockUpByDeviceAddress(final String deviceAddress) throws Exception {
+    public List<FinancialLockUpApi> queryFincialLockUpByDeviceAddress(final String deviceAddress) throws Exception {
         final FinancialLockUpExample example = new FinancialLockUpExample();
         final FinancialLockUpExample.Criteria criteria = example.createCriteria();
         criteria.andDeviceAddressEqualTo(deviceAddress);
@@ -107,8 +108,11 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
     @Override
     public List<Map<String, String>> export(final int benefitsId) throws Exception {
         final Page<FinancialLockUp> page = new Page<>(1, Integer.MAX_VALUE);
-        final List<FinancialLockUp> financialLockUps = this.queryFinancialLockUp(page, benefitsId);
-        final List<FinancialLockUp> lastFi = this.convert(financialLockUps, 0);
+        final FinancialLockUpExample example = new FinancialLockUpExample();
+        final FinancialLockUpExample.Criteria criteria = example.createCriteria();
+        criteria.andFinancialBenefitsIdEqualTo(benefitsId);
+        final List<FinancialLockUp> financialLockUps = this.financialLockUpMapper.selectByExamplePage(page, example);
+        final List<FinancialLockUp> lastFi = this.convertNonApi(financialLockUps, 0);
         final List<Map<String, String>> contents = new ArrayList<>();
         for (final FinancialLockUp financialLockUp : lastFi) {
             final Map<String, String> map = new HashMap<>(5);
@@ -372,7 +376,53 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         return map;
     }
 
-    private List<FinancialLockUp> convert(final List<FinancialLockUp> financialLockUps, final int type) {
+    private List<FinancialLockUpApi> convert(final List<FinancialLockUp> financialLockUps, final int type) {
+        final LocalDateTime now = LocalDateTime.now();
+        final List<FinancialLockUpApi> financialLockUpApis = new ArrayList<>();
+        for (final FinancialLockUp financialLockUp : financialLockUps) {
+            final FinancialBenefits financialBenefits = this.financialBenefitsMapper.selectByPrimaryKey(financialLockUp.getFinancialBenefitsId());
+            if (financialBenefits == null) {
+                financialLockUp.setLockUpStatus("");
+                continue;
+            }
+            final LocalDateTime unLockTime = financialBenefits.getUnlockTime();
+            this.changeLockUpStatus(type, now, financialLockUp, unLockTime);
+
+            final FinancialLockUpApi financialLockUpApi = FinancialLockUpApi.builder()
+                    .id(financialLockUp.getId())
+                    .sharedAddress(financialLockUp.getSharedAddress())
+                    .deviceAddress(financialLockUp.getDeviceAddress())
+                    .financialBenefitsId(financialLockUp.getFinancialBenefitsId())
+                    .lockUpAmount(financialLockUp.getLockUpAmount())
+                    .incomeAmount(financialLockUp.getIncomeAmount())
+                    .operationTime(DateTimeUtils.localDateTimeParseLong(financialLockUp.getOperationTime()))
+                    .lockUpStatus(financialLockUp.getLockUpStatus())
+                    .orderAmount(financialLockUp.getOrderAmount())
+                    .tempAmount(financialLockUp.getTempAmount())
+                    .build();
+            financialLockUpApis.add(financialLockUpApi);
+        }
+        return financialLockUpApis;
+    }
+
+    private void changeLockUpStatus(final int type, final LocalDateTime now, final FinancialLockUp financialLockUp, final LocalDateTime unLockTime) {
+        if (now.isAfter(unLockTime)) {
+            financialLockUp.setLockUpStatus("已解锁");
+        } else {
+            financialLockUp.setLockUpStatus("未解锁");
+            if (type == 1) {
+                if (financialLockUp.getTempAmount() == null || financialLockUp.getOrderAmount() == null) {
+                    financialLockUp.setLockUpStatus("未完成");
+                } else {
+                    if (financialLockUp.getTempAmount().compareTo(new BigDecimal(financialLockUp.getOrderAmount())) == -1) {
+                        financialLockUp.setLockUpStatus("未完成");
+                    }
+                }
+            }
+        }
+    }
+
+    private List<FinancialLockUp> convertNonApi(final List<FinancialLockUp> financialLockUps, final int type) {
         final LocalDateTime now = LocalDateTime.now();
         for (final FinancialLockUp financialLockUp : financialLockUps) {
             final FinancialBenefits financialBenefits = this.financialBenefitsMapper.selectByPrimaryKey(financialLockUp.getFinancialBenefitsId());
@@ -381,20 +431,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 continue;
             }
             final LocalDateTime unLockTime = financialBenefits.getUnlockTime();
-            if (now.isAfter(unLockTime)) {
-                financialLockUp.setLockUpStatus("已解锁");
-            } else {
-                financialLockUp.setLockUpStatus("未解锁");
-                if (type == 1) {
-                    if (financialLockUp.getTempAmount() == null || financialLockUp.getOrderAmount() == null) {
-                        financialLockUp.setLockUpStatus("未完成");
-                    } else {
-                        if (financialLockUp.getTempAmount().compareTo(new BigDecimal(financialLockUp.getOrderAmount())) == -1) {
-                            financialLockUp.setLockUpStatus("未完成");
-                        }
-                    }
-                }
-            }
+            this.changeLockUpStatus(type, now, financialLockUp, unLockTime);
         }
         return financialLockUps;
     }
