@@ -203,7 +203,6 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
     public void validationPaymentWeek() {
         final long start = System.currentTimeMillis();
         FinancialLockUpServiceImpl.logger.info("-----------------------------------计算周套餐temp_amount开始---------------------------------");
-        final StringBuilder sb = new StringBuilder("http://localhost:3000/checkbalance?address=");
         final LocalDateTime now = LocalDateTime.now();
         //第一步 只查询　在抢购时间段内的周产品
         List<FinancialBenefits> financialBenefits = null;
@@ -212,7 +211,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         } catch (final Exception e) {
             FinancialLockUpServiceImpl.logger.info("查询抢购时间段内的产品异常： {}", e);
         }
-        this.toDoLockUps(financialBenefits, sb);
+        this.toDoLockUps(financialBenefits);
         FinancialLockUpServiceImpl.logger.info("用时: {}", System.currentTimeMillis() - start);
         FinancialLockUpServiceImpl.logger.info("-----------------------------------计算周套餐temp_amount结束---------------------------------");
     }
@@ -223,11 +222,12 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
      * @param financialBenefits
      * @param sb
      */
-    private void toDoLockUps(final List<FinancialBenefits> financialBenefits, final StringBuilder sb) {
+    private void toDoLockUps(final List<FinancialBenefits> financialBenefits) {
         //第二步　遍历产品，取出产品下的合约查询金额
         for (final FinancialBenefits benefits : financialBenefits) {
             final List<FinancialLockUp> financialLockUps = this.queryLockUpByBenefitId(benefits.getId());
             for (final FinancialLockUp financialLockUp : financialLockUps) {
+                final StringBuilder sb = new StringBuilder("http://localhost:3000/checkbalance?address=");
                 sb.append(financialLockUp.getSharedAddress().trim());
                 final BalanceEntity data = this.balanceGet(sb);
                 if (data == null) {
@@ -272,14 +272,13 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         } catch (final Exception e) {
             FinancialLockUpServiceImpl.logger.info("查询抢购时间段内的产品异常： {}", e);
         }
-        this.toDoLockUps(financialBenefits, sb);
+        this.toDoLockUps(financialBenefits);
         FinancialLockUpServiceImpl.logger.info("-----------------------------------计算其他套餐temp_amount结束---------------------------------");
     }
 
     @Override
     public void saveLockUpAmount() {
         FinancialLockUpServiceImpl.logger.info("-----------------------------------计算lock_up_amount开始---------------------------------");
-        final StringBuilder sb = new StringBuilder("http://localhost:3000/checkbalance?address=");
         final LocalDateTime now = LocalDateTime.now();
         //第一步　取出抢购结束时间小于当前时间、并且未计算的理财产品
         List<FinancialBenefits> benefits = null;
@@ -293,6 +292,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
             FinancialLockUpServiceImpl.logger.info("产品ID: {}", financialBenefits.getId());
             final List<FinancialLockUp> financialLockUps = this.queryLockUpByBenefitId(financialBenefits.getId());
             for (final FinancialLockUp financialLockUp : financialLockUps) {
+                final StringBuilder sb = new StringBuilder("http://localhost:3000/checkbalance?address=");
                 final Financial financial;
                 try {
                     financial = this.financialService.queryOneFinancial(financialBenefits.getFinancialId());
@@ -457,6 +457,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
      * @return
      */
     private BalanceEntity balanceGet(final StringBuilder sb) {
+        FinancialLockUpServiceImpl.logger.info("url: {}", sb.toString());
         BalanceEntity data = null;
         // 根据地址获取请求
         final HttpGet request = new HttpGet(sb.toString());
@@ -475,6 +476,8 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
             FinancialLockUpServiceImpl.logger.info("调用nodejs异常： {}", e);
             data = null;
         }
+        sb.delete(0, sb.length());
+        FinancialLockUpServiceImpl.logger.info("url_empty: {}", sb.toString());
         return data;
     }
 

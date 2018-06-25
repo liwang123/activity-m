@@ -22,7 +22,7 @@ public class FinancialTask {
     /**
      * 每天2:00执行计算在计划收益期间的收益
      */
-    @Scheduled(cron = "0 15 14 * * ?")
+    @Scheduled(cron = "0 5 15 * * ?")
     public void calculateInComeAmount() {
         this.financialLockUpService.saveInComeAmount();
     }
@@ -47,7 +47,7 @@ public class FinancialTask {
     /**
      * 每天0:30执行计算抢购活动结束的lockUpAmount
      */
-    @Scheduled(cron = "0 40 14 * * ?")
+    @Scheduled(cron = "0 0 15 * * ?")
     public void calculateLockUpAmount() {
         this.financialLockUpService.saveLockUpAmount();
     }
