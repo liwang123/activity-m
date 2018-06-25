@@ -118,16 +118,28 @@ public class FinancialBenefitsController {
             return result.getString(validation);
         }
         try {
-            final int updateStatus = this.financialBenefitsService.updateFinancialBenefits(financialBenefitsApi);
-            if (updateStatus == -1) {
-                result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg("与其他套餐时间冲突");
-            } else if (updateStatus == 0) {
+            int updateStatus = 0;
+            final FinancialBenefits financialBenefits = this.financialBenefitsService.queryOneFinancialBenefits(financialBenefitsApi.getId());
+            if (financialBenefits != null) {
+                if (financialBenefits.getPanicStartTime().compareTo(LocalDateTime.now()) != 1) {
+                    result.setMsg(ResultEnum.MISSION_FAIL.getMsg());
+                    result.setCode(ResultEnum.MISSION_FAIL.getCode());
+                } else {
+                    updateStatus = this.financialBenefitsService.updateFinancialBenefits(financialBenefitsApi);
+                    if (updateStatus == -1) {
+                        result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                        result.setMsg("与其他套餐时间冲突");
+                    } else if (updateStatus == 0) {
+                        result.setMsg(ResultEnum.MISSION_FAIL.getMsg());
+                        result.setCode(ResultEnum.MISSION_FAIL.getCode());
+                    } else {
+                        result.setCode(ResultEnum.OK.getCode());
+                        result.setMsg(ResultEnum.OK.getMsg());
+                    }
+                }
+            } else {
                 result.setMsg(ResultEnum.MISSION_FAIL.getMsg());
                 result.setCode(ResultEnum.MISSION_FAIL.getCode());
-            } else {
-                result.setCode(ResultEnum.OK.getCode());
-                result.setMsg(ResultEnum.OK.getMsg());
             }
             result.setEntity(updateStatus);
         } catch (final Exception e) {

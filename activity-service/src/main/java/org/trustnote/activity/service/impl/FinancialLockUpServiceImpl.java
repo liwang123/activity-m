@@ -220,7 +220,6 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
      * 验证payment 第二步
      *
      * @param financialBenefits
-     * @param sb
      */
     private void toDoLockUps(final List<FinancialBenefits> financialBenefits) {
         //第二步　遍历产品，取出产品下的合约查询金额
@@ -337,15 +336,14 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
             }
             final BigDecimal sumLockUpAmount = this.financialLockUpMapper.sumLockUpAmount(financialBenefits.getId());
             if (sumLockUpAmount != null) {
-                FinancialLockUpServiceImpl.logger.info("总额度: {}", financialBenefits.getPanicTotalLimit());
-                //计算剩余额度
+                FinancialLockUpServiceImpl.logger.info("已锁额度: {}", sumLockUpAmount);
                 final FinancialBenefits fbRecord = FinancialBenefits.builder()
                         .id(financialBenefits.getId())
                         .calactionLockupStatus(1)
                         .alsoLockUpAmount(sumLockUpAmount)
                         .build();
                 final int fbUpStatus = this.financialBenefitsMapper.updateByPrimaryKeySelective(fbRecord);
-                FinancialLockUpServiceImpl.logger.info("更新剩余金额状态： {}", fbUpStatus);
+                FinancialLockUpServiceImpl.logger.info("更新已锁金额、是否已计算lockup状态： {}", fbUpStatus);
             }
         }
         FinancialLockUpServiceImpl.logger.info("-----------------------------------计算lock_up_amount结束---------------------------------");
