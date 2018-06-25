@@ -15,26 +15,26 @@ import javax.servlet.http.HttpSession;
 public class SecuritySSOInterceptor implements HandlerInterceptor {
 
     @Override
-    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
-        HttpSession session = httpServletRequest.getSession();
-        String username = (String) session.getAttribute(Globa.USER_SESSION_KEY);
+    public boolean preHandle(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse, final Object o) throws Exception {
+        final HttpSession session = httpServletRequest.getSession();
+        final String username = (String) session.getAttribute(Globa.USER_SESSION_KEY);
         if (username != null) {
             return true;
         }else {
             httpServletRequest.setAttribute("code", "400");
-            httpServletRequest.setAttribute("msg", "not login");
+            httpServletRequest.setAttribute("msg", "未登录");
             httpServletRequest.getRequestDispatcher("/user/rejson.htm").forward(httpServletRequest, httpServletResponse);
             return false;
         }
     }
 
     @Override
-    public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
+    public void postHandle(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse, final Object o, final ModelAndView modelAndView) throws Exception {
 
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) throws Exception {
+    public void afterCompletion(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse, final Object o, final Exception e) throws Exception {
 
     }
 }

@@ -54,8 +54,8 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         final FinancialLockUpExample example = new FinancialLockUpExample();
         final FinancialLockUpExample.Criteria criteria = example.createCriteria();
         criteria.andFinancialBenefitsIdEqualTo(benefitsId);
-        example.setOrderByClause("crt_time DESC");
-        return this.convert(this.financialLockUpMapper.selectByExamplePage(page, new FinancialLockUpExample()), 0);
+        example.setOrderByClause("operation_time DESC");
+        return this.convert(this.financialLockUpMapper.selectByExamplePage(page, example), 0);
     }
 
     @Override

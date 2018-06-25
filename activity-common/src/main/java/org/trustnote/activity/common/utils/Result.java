@@ -16,46 +16,46 @@ public class Result {
     private Integer totalCount;
 
     public String getCode() {
-        return code;
+        return this.code;
     }
 
-    public void setCode(String code) {
+    public void setCode(final String code) {
         this.code = code;
     }
 
     public String getMsg() {
-        return msg;
+        return this.msg;
     }
 
-    public void setMsg(String msg) {
+    public void setMsg(final String msg) {
         this.msg = msg;
     }
 
     public Object getEntity() {
-        return entity;
+        return this.entity;
     }
 
-    public void setEntity(Object entity) {
+    public void setEntity(final Object entity) {
         this.entity = entity;
     }
 
     public boolean isHasMore() {
-        return hasMore;
+        return this.hasMore;
     }
 
-    public void setHasMore(boolean hasMore) {
+    public void setHasMore(final boolean hasMore) {
         this.hasMore = hasMore;
     }
 
-    public String getString(Result result) {
-        return JSON.toJSONString(result, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.DisableCircularReferenceDetect);
+    public String getString(final Result result) {
+        return JSON.toJSONString(result, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.WriteNullNumberAsZero, SerializerFeature.DisableCircularReferenceDetect);
     }
 
     public Integer getTotalCount() {
-        return totalCount;
+        return this.totalCount;
     }
 
-    public void setTotalCount(Integer totalCount) {
+    public void setTotalCount(final Integer totalCount) {
         this.totalCount = totalCount;
     }
 }
