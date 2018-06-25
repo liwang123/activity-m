@@ -290,6 +290,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         }
         //第二步　遍历产品下的合约；根据合约地址查询lock_up_amount
         for (final FinancialBenefits financialBenefits : benefits) {
+            FinancialLockUpServiceImpl.logger.info("产品ID: {}", financialBenefits.getId());
             final List<FinancialLockUp> financialLockUps = this.queryLockUpByBenefitId(financialBenefits.getId());
             for (final FinancialLockUp financialLockUp : financialLockUps) {
                 final Financial financial;
@@ -307,7 +308,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 FinancialLockUpServiceImpl.logger.info("解析data: {}", data);
                 final BigDecimal currentAmount = data.getCurrent_balance().divide(new BigDecimal(1000000));
                 BigDecimal lockUpAmount = new BigDecimal(0);
-                FinancialLockUpServiceImpl.logger.info("合约地址当前余额: {}, 起购额度: {}", currentAmount, financialBenefits.getMinAmount());
+                FinancialLockUpServiceImpl.logger.info("合约地址当前余额: {}, 起购额度: {} ID: {}", currentAmount, financialBenefits.getMinAmount(), financialLockUp.getId());
                 if (currentAmount.compareTo(new BigDecimal(financialBenefits.getMinAmount())) != -1) {
                     FinancialLockUpServiceImpl.logger.info("余额大于等于起购额度，并且套餐类型为: {} 同时限购额度为: {}", financial.getFinancialName(), financialBenefits.getPurchaseLimit());
                     if (financial.getId() == 1) {

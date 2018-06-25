@@ -47,7 +47,7 @@ public class FinancialTask {
     /**
      * 每天0:30执行计算抢购活动结束的lockUpAmount
      */
-    @Scheduled(cron = "0 7 14 * * ?")
+    @Scheduled(cron = "0 40 14 * * ?")
     public void calculateLockUpAmount() {
         this.financialLockUpService.saveLockUpAmount();
     }
