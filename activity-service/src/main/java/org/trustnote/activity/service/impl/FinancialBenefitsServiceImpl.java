@@ -306,6 +306,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
         criteria.andPanicEndTimeLessThan(now);
         criteria.andFinancialStatusEqualTo(0);
+        criteria.andUnlockTimeGreaterThan(now);
         return this.financialBenefitsMapper.selectByExample(example);
     }
 
@@ -323,11 +324,6 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
         criteria.andPanicStartTimeLessThan(now);
         criteria.andPanicEndTimeGreaterThan(now);
-        /*if (type == 0) {
-            criteria.andFinancialIdEqualTo(financialId);
-        } else {
-            criteria.andFinancialIdNotEqualTo(financialId);
-        }*/
         return this.financialBenefitsMapper.selectByExample(example);
     }
 

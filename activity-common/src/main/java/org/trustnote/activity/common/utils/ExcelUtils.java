@@ -81,6 +81,7 @@ public class ExcelUtils {
                 sequence[2] = 2;
                 sequence[3] = 3;
                 sequence[4] = 4;
+                sequence[5] = 5;
             }
             int i = 1;
             for (final Map<String, String> map : listContent) {

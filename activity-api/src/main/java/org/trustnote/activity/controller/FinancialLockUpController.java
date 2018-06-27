@@ -155,6 +155,7 @@ public class FinancialLockUpController {
         try {
             final List<String> header = new ArrayList<>();
             header.add("合约地址");
+            header.add("已抢购金额(MN)");
             header.add("锁仓金额(MN)");
             header.add("收益金额(MN)");
             header.add("状态");
