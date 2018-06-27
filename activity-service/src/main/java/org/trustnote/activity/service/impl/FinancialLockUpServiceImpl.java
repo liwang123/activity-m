@@ -149,6 +149,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         final FinancialLockUpExample example = new FinancialLockUpExample();
         final FinancialLockUpExample.Criteria criteria = example.createCriteria();
         criteria.andFinancialBenefitsIdEqualTo(benefitsId);
+        example.setOrderByClause("operation_time DESC");
         final List<FinancialLockUp> financialLockUps = this.financialLockUpMapper.selectByExamplePage(page, example);
         final List<FinancialLockUp> lastFi = this.convertNonApi(financialLockUps, 0);
         final List<Map<String, String>> contents = new ArrayList<>();
