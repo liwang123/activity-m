@@ -15,9 +15,12 @@ public interface CoinService {
     JsonRpcResult getbalance(String address) throws Throwable;
 
     JsonRpcTotal getbalanceAll(String address) throws Throwable;
-    String sendToMultiAddress(JSONArray array) throws Throwable;
 
-    //解析导入Execl数据
+    JsonRpcResult getMainBalance(String code) throws Throwable;
+
+    String sendToMultiAddress(JSONArray array, String code) throws Throwable;
+
     Map<String,String> AnalyData(List list);
 
+    Map<String, String> AnalyDataFinancial(List list);
 }

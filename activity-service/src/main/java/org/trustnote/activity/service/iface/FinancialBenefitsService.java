@@ -27,9 +27,14 @@ public interface FinancialBenefitsService {
 
     int updateFinancialStatus(int id) throws Exception;
 
-    List<FinancialBenefits> queryFinancialInterestGreaterThanNow(final LocalDateTime now) throws Exception;
-
+    /**
+     * 抢购结束时间小于当前时间、并且未发收益的理财产品
+     *
+     * @param now
+     * @return
+     * @throws Exception
+     */
     List<FinancialBenefits> queryFinancialNotCalactionLockUp(LocalDateTime now) throws Exception;
 
-    List<FinancialBenefits> queryFinancialInPanic(LocalDateTime now, int financialId, int type) throws Exception;
+    List<FinancialBenefits> queryFinancialInPanic(LocalDateTime now, int financialId) throws Exception;
 }

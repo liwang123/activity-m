@@ -27,6 +27,8 @@ public class FinancialLockUp {
 
     private BigDecimal tempAmount;
 
+    private Integer calactionStatus;
+
     public Integer getId() {
         return this.id;
     }
@@ -107,4 +109,11 @@ public class FinancialLockUp {
         this.tempAmount = tempAmount;
     }
 
+    public Integer getCalactionStatus() {
+        return this.calactionStatus;
+    }
+
+    public void setCalactionStatus(final Integer calactionStatus) {
+        this.calactionStatus = calactionStatus;
+    }
 }

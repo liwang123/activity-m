@@ -1,7 +1,5 @@
 package org.trustnote.activity.task;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,42 +12,24 @@ import org.trustnote.activity.service.iface.FinancialLockUpService;
 @Component
 @EnableScheduling
 public class FinancialTask {
-    private static final Logger logger = LogManager.getLogger(FinancialTask.class);
 
     @Autowired
     private FinancialLockUpService financialLockUpService;
 
     /**
-     * 每天2:00执行计算在计划收益期间的收益
-     */
-    @Scheduled(cron = "0 0 2 * * ?")
-    public void calculateInComeAmount() {
-        this.financialLockUpService.saveInComeAmount();
-    }
-
-    /**
-     * 每隔5分钟计算周套餐产品的剩余额度
+     * 每隔5分钟计算剩余额度、已抢购额度、已锁额度
      */
     @Scheduled(cron = "0 0/2 * * * ?")
     public void validationPaymentWeek() {
-        this.financialLockUpService.validationPaymentWeek();
+        this.financialLockUpService.validationPayment();
     }
 
     /**
-     * 每隔23分钟计算其他套餐产品的剩余额度
+     * 每隔１小时执行计算收益
      */
-    @Scheduled(cron = "0 0/3 * * * ?")
-    public void validationPaymentOther() {
-        this.financialLockUpService.validationPaymentOther();
-    }
-
-
-    /**
-     * 每天0:30执行计算抢购活动结束的lockUpAmount
-     */
-    @Scheduled(cron = "0 30 0 * * ?")
+    @Scheduled(cron = "* * 1 * * ?")
     public void calculateLockUpAmount() {
-        this.financialLockUpService.saveLockUpAmount();
+        this.financialLockUpService.saveInComeAmount();
     }
 
 }

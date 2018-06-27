@@ -13,10 +13,10 @@ public class JsonRpcResult implements Serializable {
     private JsonRpcResultBase base;
 
     public JsonRpcResultBase getBase() {
-        return base;
+        return this.base;
     }
 
-    public void setBase(JsonRpcResultBase base) {
+    public void setBase(final JsonRpcResultBase base) {
         this.base = base;
     }
 }

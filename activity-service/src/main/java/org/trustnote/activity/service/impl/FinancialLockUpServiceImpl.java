@@ -50,6 +50,14 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
     @Resource
     private FinancialService financialService;
 
+    /**
+     * 分页查询合约信息
+     *
+     * @param page
+     * @param benefitsId
+     * @return
+     * @throws Exception
+     */
     @Override
     public List<FinancialLockUpApi> queryFinancialLockUp(final Page<FinancialLockUp> page, final int benefitsId) throws Exception {
         final FinancialLockUpExample example = new FinancialLockUpExample();
@@ -59,6 +67,13 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         return this.convert(this.financialLockUpMapper.selectByExamplePage(page, example), 0);
     }
 
+    /**
+     * 保存合约信息
+     *
+     * @param financialLockUp
+     * @return
+     * @throws Exception
+     */
     @Override
     public int saveFinancialLockUp(final FinancialLockUp financialLockUp) throws Exception {
         financialLockUp.setIncomeAmount(null);
@@ -67,6 +82,13 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         return this.financialLockUpMapper.insertSelective(financialLockUp);
     }
 
+    /**
+     * 根据设备地址查询合约信息
+     *
+     * @param deviceAddress
+     * @return
+     * @throws Exception
+     */
     @Override
     public List<FinancialLockUpApi> queryFincialLockUpByDeviceAddress(final String deviceAddress) throws Exception {
         final FinancialLockUpExample example = new FinancialLockUpExample();
@@ -75,7 +97,16 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         return this.convert(this.financialLockUpMapper.selectByExample(example), 1);
     }
 
+    /**
+     * 根据id修改认购金额，目前已废弃
+     *
+     * @param id
+     * @param orderAmount
+     * @return
+     * @throws Exception
+     */
     @Override
+    @Deprecated
     public int updateFinancialLockUp(final int id, final int orderAmount) throws Exception {
         final FinancialLockUp financialLockUp = new FinancialLockUp();
         financialLockUp.setId(id);
@@ -105,6 +136,13 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         return null;
     }
 
+    /**
+     * excel导出
+     *
+     * @param benefitsId
+     * @return
+     * @throws Exception
+     */
     @Override
     public List<Map<String, String>> export(final int benefitsId) throws Exception {
         final Page<FinancialLockUp> page = new Page<>(1, Integer.MAX_VALUE);
@@ -117,97 +155,28 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         for (final FinancialLockUp financialLockUp : lastFi) {
             final Map<String, String> map = new HashMap<>(5);
             map.put("0", financialLockUp.getSharedAddress());
-            map.put("1", financialLockUp.getLockUpAmount().toString());
-            map.put("2", financialLockUp.getIncomeAmount() == null ? "" : financialLockUp.getIncomeAmount().toString());
-            map.put("3", financialLockUp.getLockUpStatus());
-            map.put("4", DateTimeUtils.formatDateTime(financialLockUp.getOperationTime(), "yyyy-MM-dd HH:mm:ss"));
+            map.put("1", financialLockUp.getTempAmount().toString());
+            map.put("2", financialLockUp.getLockUpAmount().toString());
+            map.put("3", financialLockUp.getIncomeAmount() == null ? "" : financialLockUp.getIncomeAmount().toString());
+            map.put("4", financialLockUp.getLockUpStatus());
+            map.put("5", DateTimeUtils.formatDateTime(financialLockUp.getOperationTime(), "yyyy-MM-dd HH:mm:ss"));
             contents.add(map);
         }
         return contents;
     }
 
+    /**
+     * 定时计算抢购时间段内的已抢购额度、已锁额度
+     */
     @Override
-    public void saveInComeAmount() {
-        FinancialLockUpServiceImpl.logger.info("-----------------------------------计算收益开始---------------------------------");
-        //第一步 先获取计划收益开始后并且未计算收益的产品；
-        final LocalDateTime now = LocalDateTime.now();
-        final List<FinancialBenefits> benefits;
-        try {
-            benefits = this.financialBenefitsService.queryFinancialInterestGreaterThanNow(now);
-        } catch (final Exception e) {
-            FinancialLockUpServiceImpl.logger.error("获取未计算收益的产品异常： {}", e);
-            return;
-        }
-        FinancialLockUpServiceImpl.logger.info("未计算的收益产品数量为: {}", benefits.size());
-        int index = 1;
-        for (final FinancialBenefits financialBenefits : benefits) {
-            //第二步 根据financial_benefits_id查询lock_up_amount不为空的合约地址计算收益
-            //首先 查询当前产品所属的套餐，得到理财周期
-            FinancialLockUpServiceImpl.logger.info("开始计算第{}个产品，产品ID为:{}", index, financialBenefits.getId());
-            Financial financial;
-            try {
-                financial = this.financialService.queryOneFinancial(financialBenefits.getFinancialId());
-            } catch (final Exception e) {
-                FinancialLockUpServiceImpl.logger.error("获取年化收益率异常： {}", e);
-                financial = null;
-            }
-            if (financial == null) {
-                continue;
-            }
-            final FinancialLockUpExample example = new FinancialLockUpExample();
-            final FinancialLockUpExample.Criteria criteria = example.createCriteria();
-            criteria.andFinancialBenefitsIdEqualTo(financialBenefits.getId());
-            criteria.andLockUpAmountIsNotNull();
-            final List<FinancialLockUp> financialLockUps = this.financialLockUpMapper.selectByExample(example);
-            FinancialLockUpServiceImpl.logger.info("获取当前产品下的合约地址信息数量为: {}", financialLockUps.size());
-            final int j = 1;
-            for (final FinancialLockUp financialLockUp : financialLockUps) {
-                FinancialLockUpServiceImpl.logger.info("开始计算第{}个合约，合约ID为:{}", j, financialLockUp.getId());
-                //本金
-                final BigDecimal principal = financialLockUp.getLockUpAmount();
-                //理财周期
-                final BigDecimal numericalv = BigDecimal.valueOf(financial.getNumericalv());
-                //年化利率
-                final BigDecimal rate = BigDecimal.valueOf(financialBenefits.getFinancialRate()).setScale(2, BigDecimal.ROUND_DOWN);
-                //计算收益
-                final BigDecimal all = principal.multiply(numericalv).multiply(rate);
-                final BigDecimal income = all.divide(new BigDecimal(360), 1, BigDecimal.ROUND_DOWN);
-                FinancialLockUpServiceImpl.logger.info("本金：{} 理财周期： {} 年化利率： {} 收益： {}", principal, numericalv, rate, income);
-                final FinancialLockUp upLockUp = new FinancialLockUp();
-                upLockUp.setId(financialLockUp.getId());
-                upLockUp.setIncomeAmount(income);
-
-                try {
-                    this.financialLockUpMapper.updateByPrimaryKeySelective(upLockUp);
-                } catch (final Exception e) {
-                    FinancialLockUpServiceImpl.logger.error("计算收益金额异常: {}", e);
-                    continue;
-                }
-            }
-            final FinancialBenefits upBenefits = FinancialBenefits.builder()
-                    .id(financialBenefits.getId())
-                    .calactionStatus(1)
-                    .build();
-            try {
-                this.financialBenefitsMapper.updateByPrimaryKeySelective(upBenefits);
-            } catch (final Exception e) {
-                FinancialLockUpServiceImpl.logger.error("更新产品的是否以计算收益状态异常: {}", e);
-                continue;
-            }
-        }
-        index++;
-        FinancialLockUpServiceImpl.logger.info("-----------------------------------计算收益结束---------------------------------");
-    }
-
-    @Override
-    public void validationPaymentWeek() {
+    public void validationPayment() {
         final long start = System.currentTimeMillis();
         FinancialLockUpServiceImpl.logger.info("-----------------------------------计算周套餐temp_amount开始---------------------------------");
         final LocalDateTime now = LocalDateTime.now();
         //第一步 只查询　在抢购时间段内的周产品
         List<FinancialBenefits> financialBenefits = null;
         try {
-            financialBenefits = this.financialBenefitsService.queryFinancialInPanic(now, 1, 0);
+            financialBenefits = this.financialBenefitsService.queryFinancialInPanic(now, 1);
         } catch (final Exception e) {
             FinancialLockUpServiceImpl.logger.info("查询抢购时间段内的产品异常： {}", e);
         }
@@ -217,7 +186,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
     }
 
     /**
-     * 验证payment 第二步
+     * 定时计算抢购时间段内的已抢购额度、已锁额度 第二步
      *
      * @param financialBenefits
      */
@@ -228,94 +197,29 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
             for (final FinancialLockUp financialLockUp : financialLockUps) {
                 final StringBuilder sb = new StringBuilder("http://localhost:3000/checkbalance?address=");
                 sb.append(financialLockUp.getSharedAddress().trim());
-                final BalanceEntity data = this.balanceGet(sb);
-                if (data == null) {
-                    continue;
-                }
-                FinancialLockUpServiceImpl.logger.info("解析data: {}", data);
-                final BigDecimal currentAmount = data.getCurrent_balance().divide(new BigDecimal(1000000));
-                FinancialLockUpServiceImpl.logger.info("合约地址当前余额: {}, 起购额度: {}", currentAmount, benefits.getMinAmount());
-                this.updateTempAmount(currentAmount.setScale(0, BigDecimal.ROUND_DOWN), financialLockUp.getId());
-            }
-            final BigDecimal sumLockUpAmount = this.financialLockUpMapper.sumTempAmount(benefits.getId());
-            BigDecimal remainLimit = null;
-            if (sumLockUpAmount != null) {
-                if (benefits.getPanicTotalLimit() != null) {
-                    remainLimit = new BigDecimal(benefits.getPanicTotalLimit()).subtract(sumLockUpAmount);
-                }
-                FinancialLockUpServiceImpl.logger.info("总额度: {}, 最新剩余额度: {}", benefits.getPanicTotalLimit(), remainLimit);
-                //计算剩余额度
-                final FinancialBenefits fbRecord = FinancialBenefits.builder()
-                        .id(benefits.getId())
-                        .alsoTempAmount(sumLockUpAmount)
-                        .build();
-                if (remainLimit != null) {
-                    fbRecord.setRemainLimit(remainLimit);
-                }
-                final int fbUpStatus = this.financialBenefitsMapper.updateByPrimaryKeySelective(fbRecord);
-                FinancialLockUpServiceImpl.logger.info("更新剩余金额状态： {}", fbUpStatus);
-            }
-        }
-
-    }
-
-    @Override
-    public void validationPaymentOther() {
-        FinancialLockUpServiceImpl.logger.info("-----------------------------------计算其他套餐temp_amount开始---------------------------------");
-        final StringBuilder sb = new StringBuilder("http://localhost:3000/checkbalance?address=");
-        final LocalDateTime now = LocalDateTime.now();
-        //第一步 只查询　在抢购时间段内的除了周产品
-        List<FinancialBenefits> financialBenefits = null;
-        try {
-            financialBenefits = this.financialBenefitsService.queryFinancialInPanic(now, 1, 1);
-        } catch (final Exception e) {
-            FinancialLockUpServiceImpl.logger.info("查询抢购时间段内的产品异常： {}", e);
-        }
-        this.toDoLockUps(financialBenefits);
-        FinancialLockUpServiceImpl.logger.info("-----------------------------------计算其他套餐temp_amount结束---------------------------------");
-    }
-
-    @Override
-    public void saveLockUpAmount() {
-        FinancialLockUpServiceImpl.logger.info("-----------------------------------计算lock_up_amount开始---------------------------------");
-        final LocalDateTime now = LocalDateTime.now();
-        //第一步　取出抢购结束时间小于当前时间、并且未计算的理财产品
-        List<FinancialBenefits> benefits = null;
-        try {
-            benefits = this.financialBenefitsService.queryFinancialNotCalactionLockUp(now);
-        } catch (final Exception e) {
-            FinancialLockUpServiceImpl.logger.info("查询未计算lockup的产品异常： {}", e);
-        }
-        //第二步　遍历产品下的合约；根据合约地址查询lock_up_amount
-        for (final FinancialBenefits financialBenefits : benefits) {
-            FinancialLockUpServiceImpl.logger.info("产品ID: {}", financialBenefits.getId());
-            final List<FinancialLockUp> financialLockUps = this.queryLockUpByBenefitId(financialBenefits.getId());
-            for (final FinancialLockUp financialLockUp : financialLockUps) {
-                final StringBuilder sb = new StringBuilder("http://localhost:3000/checkbalance?address=");
                 final Financial financial;
                 try {
-                    financial = this.financialService.queryOneFinancial(financialBenefits.getFinancialId());
+                    financial = this.financialService.queryOneFinancial(benefits.getFinancialId());
                 } catch (final Exception e) {
                     FinancialLockUpServiceImpl.logger.info("获取套餐异常： {}", e);
                     continue;
                 }
-                sb.append(financialLockUp.getSharedAddress().trim());
                 final BalanceEntity data = this.balanceGet(sb);
                 if (data == null) {
                     continue;
                 }
                 FinancialLockUpServiceImpl.logger.info("解析data: {}", data);
                 final BigDecimal currentAmount = data.getCurrent_balance().divide(new BigDecimal(1000000));
+                FinancialLockUpServiceImpl.logger.info("合约地址当前余额: {}, 起购额度: {} 合约ID: {}", currentAmount, benefits.getMinAmount(), financialLockUp.getId());
                 BigDecimal lockUpAmount = new BigDecimal(0);
-                FinancialLockUpServiceImpl.logger.info("合约地址当前余额: {}, 起购额度: {} ID: {}", currentAmount, financialBenefits.getMinAmount(), financialLockUp.getId());
                 currentAmount.setScale(0, BigDecimal.ROUND_DOWN);
                 FinancialLockUpServiceImpl.logger.info("取整之后余额: {}", currentAmount);
-                if (currentAmount.compareTo(new BigDecimal(financialBenefits.getMinAmount())) != -1) {
-                    FinancialLockUpServiceImpl.logger.info("余额大于等于起购额度，并且套餐类型为: {} 同时限购额度为: {}", financial.getFinancialName(), financialBenefits.getPurchaseLimit());
+                if (currentAmount.compareTo(new BigDecimal(benefits.getMinAmount())) != -1) {
+                    FinancialLockUpServiceImpl.logger.info("余额大于等于起购额度，并且套餐类型为: {} 同时限购额度为: {}", financial.getFinancialName(), benefits.getPurchaseLimit());
                     if (financial.getId() == 1) {
-                        if (currentAmount.compareTo(new BigDecimal(financialBenefits.getPurchaseLimit())) != -1) {
+                        if (currentAmount.compareTo(new BigDecimal(benefits.getPurchaseLimit())) != -1) {
                             FinancialLockUpServiceImpl.logger.info("周套餐：启用限购额度");
-                            lockUpAmount = new BigDecimal(financialBenefits.getPurchaseLimit());
+                            lockUpAmount = new BigDecimal(benefits.getPurchaseLimit());
                         } else {
                             FinancialLockUpServiceImpl.logger.info("周套餐：启用当前余额");
                             lockUpAmount = currentAmount;
@@ -325,30 +229,88 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                         lockUpAmount = currentAmount;
                     }
                 }
-                FinancialLockUpServiceImpl.logger.info("决定是否更新锁仓金额以及剩余额度，当前金额为: {}", lockUpAmount);
-                if (lockUpAmount.compareTo(new BigDecimal(0)) == 1) {
-                    FinancialLockUpServiceImpl.logger.info("开始更新锁仓金额，合约id: {}", financialLockUp.getId());
-                    final FinancialLockUp record = new FinancialLockUp();
-                    record.setId(financialLockUp.getId());
-                    record.setLockUpAmount(lockUpAmount);
-                    final int upStatus = this.financialLockUpMapper.updateByPrimaryKeySelective(record);
-                    FinancialLockUpServiceImpl.logger.info("更新锁仓金额状态： {}", upStatus);
-                    FinancialLockUpServiceImpl.logger.info("开始计算剩余额度, 产品id:{}", financialBenefits.getId());
-                }
+                this.updateTempAndLockUpAmount(currentAmount.setScale(0, BigDecimal.ROUND_DOWN), lockUpAmount, financialLockUp.getId());
             }
-            final BigDecimal sumLockUpAmount = this.financialLockUpMapper.sumLockUpAmount(financialBenefits.getId());
-            if (sumLockUpAmount != null) {
-                FinancialLockUpServiceImpl.logger.info("已锁额度: {}", sumLockUpAmount);
+            final BigDecimal sumTempAmount = this.financialLockUpMapper.sumTempAmount(benefits.getId());
+            final BigDecimal sumLockUpAmount = this.financialLockUpMapper.sumLockUpAmount(benefits.getId());
+            BigDecimal remainLimit = null;
+            if (sumTempAmount != null) {
+                if (benefits.getPanicTotalLimit() != null) {
+                    remainLimit = new BigDecimal(benefits.getPanicTotalLimit()).subtract(sumTempAmount);
+                }
+                FinancialLockUpServiceImpl.logger.info("总额度: {}, 最新剩余额度: {}", benefits.getPanicTotalLimit(), remainLimit);
                 final FinancialBenefits fbRecord = FinancialBenefits.builder()
-                        .id(financialBenefits.getId())
-                        .calactionLockupStatus(1)
-                        .alsoLockUpAmount(sumLockUpAmount)
+                        .id(benefits.getId())
+                        .alsoTempAmount(sumTempAmount)
                         .build();
+                if (sumLockUpAmount != null) {
+                    fbRecord.setAlsoLockUpAmount(sumLockUpAmount);
+                }
+                if (remainLimit != null) {
+                    fbRecord.setRemainLimit(remainLimit);
+                }
                 final int fbUpStatus = this.financialBenefitsMapper.updateByPrimaryKeySelective(fbRecord);
-                FinancialLockUpServiceImpl.logger.info("更新已锁金额、是否已计算lockup状态： {}", fbUpStatus);
+                FinancialLockUpServiceImpl.logger.info("更新剩余金额状态： {}", fbUpStatus);
             }
         }
-        FinancialLockUpServiceImpl.logger.info("-----------------------------------计算lock_up_amount结束---------------------------------");
+    }
+
+    /**
+     * 计算收益
+     */
+    @Override
+    public void saveInComeAmount() {
+        FinancialLockUpServiceImpl.logger.info("-----------------------------------计算收益开始---------------------------------");
+        final LocalDateTime now = LocalDateTime.now();
+        //第一步　取出抢购结束时间小于当前时间、并且未发收益的理财产品
+        List<FinancialBenefits> benefits = null;
+        try {
+            benefits = this.financialBenefitsService.queryFinancialNotCalactionLockUp(now);
+        } catch (final Exception e) {
+            FinancialLockUpServiceImpl.logger.info("查询产品异常： {}", e);
+        }
+        //第二步　遍历产品下的合约；根据合约地址查询lock_up_amount
+        for (final FinancialBenefits financialBenefits : benefits) {
+            FinancialLockUpServiceImpl.logger.info("产品ID: {}", financialBenefits.getId());
+            final List<FinancialLockUp> financialLockUps = this.queryLockUpByBenefitIdAndCalactionStatus(financialBenefits.getId());
+            for (final FinancialLockUp financialLockUp : financialLockUps) {
+                FinancialLockUpServiceImpl.logger.info("_________开始计算收益__________");
+                final Financial financial;
+                try {
+                    financial = this.financialService.queryOneFinancial(financialBenefits.getFinancialId());
+                } catch (final Exception e) {
+                    FinancialLockUpServiceImpl.logger.info("获取套餐异常： {}", e);
+                    continue;
+                }
+
+                //本金
+                final BigDecimal principal = financialLockUp.getLockUpAmount();
+                //理财周期
+                final BigDecimal numericalv = BigDecimal.valueOf(financial.getNumericalv());
+                //年化利率
+                final BigDecimal rate = BigDecimal.valueOf(financialBenefits.getFinancialRate()).setScale(2, BigDecimal.ROUND_DOWN);
+                //计算收益
+                final BigDecimal all = principal.multiply(numericalv).multiply(rate);
+                final BigDecimal income = all.divide(new BigDecimal(360), 1, BigDecimal.ROUND_DOWN);
+                FinancialLockUpServiceImpl.logger.info("合约ID: {} 本金：{} 理财周期： {} 年化利率： {} 收益： {}", financialLockUp.getId(), principal, numericalv, rate, income);
+
+                final FinancialLockUp record = new FinancialLockUp();
+                record.setId(financialLockUp.getId());
+                record.setIncomeAmount(income);
+                record.setCalactionStatus(1);
+
+                final int upStatus;
+                try {
+                    upStatus = this.financialLockUpMapper.updateByPrimaryKeySelective(record);
+                } catch (final Exception e) {
+                    FinancialLockUpServiceImpl.logger.error("计算收益金额异常: {}", e);
+                    continue;
+                }
+
+                FinancialLockUpServiceImpl.logger.info("更新锁仓金额状态： {}", upStatus);
+            }
+        }
+        FinancialLockUpServiceImpl.logger.info("-----------------------------------计算收益结束---------------------------------");
     }
 
     /**
@@ -377,6 +339,13 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         return map;
     }
 
+    /**
+     * 数据转化
+     *
+     * @param financialLockUps
+     * @param type
+     * @return
+     */
     private List<FinancialLockUpApi> convert(final List<FinancialLockUp> financialLockUps, final int type) {
         final LocalDateTime now = LocalDateTime.now();
         final List<FinancialLockUpApi> financialLockUpApis = new ArrayList<>();
@@ -406,6 +375,14 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         return financialLockUpApis;
     }
 
+    /**
+     * 改变状态
+     *
+     * @param type
+     * @param now
+     * @param financialLockUp
+     * @param unLockTime
+     */
     private void changeLockUpStatus(final int type, final LocalDateTime now, final FinancialLockUp financialLockUp, final LocalDateTime unLockTime) {
         if (now.isAfter(unLockTime)) {
             financialLockUp.setLockUpStatus("已解锁");
@@ -451,6 +428,21 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
     }
 
     /**
+     * 根据产品ID、为计算收益字段查询合约
+     *
+     * @param financialBenefitId
+     * @return
+     */
+    private List<FinancialLockUp> queryLockUpByBenefitIdAndCalactionStatus(final int financialBenefitId) {
+        final FinancialLockUpExample example = new FinancialLockUpExample();
+        final FinancialLockUpExample.Criteria criteria = example.createCriteria();
+        criteria.andFinancialBenefitsIdEqualTo(financialBenefitId);
+        criteria.andCalactionStatusEqualTo(0);
+        criteria.andLockUpAmountIsNotNull();
+        return this.financialLockUpMapper.selectByExample(example);
+    }
+
+    /**
      * 调用ndodejs 查询余额
      *
      * @param sb
@@ -487,12 +479,15 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
      * @param tempAmount
      * @param lockUpId
      */
-    private void updateTempAmount(final BigDecimal tempAmount, final int lockUpId) {
+    private void updateTempAndLockUpAmount(final BigDecimal tempAmount, final BigDecimal lockUpAmount, final int lockUpId) {
         if (tempAmount.compareTo(new BigDecimal(0)) == 1) {
             FinancialLockUpServiceImpl.logger.info("开始更新tempAmount金额，合约id: {}", lockUpId);
             final FinancialLockUp record = new FinancialLockUp();
             record.setId(lockUpId);
             record.setTempAmount(tempAmount);
+            if (lockUpAmount.compareTo(new BigDecimal(0)) == 1) {
+                record.setLockUpAmount(lockUpAmount);
+            }
             final int upStatus = this.financialLockUpMapper.updateByPrimaryKeySelective(record);
             FinancialLockUpServiceImpl.logger.info("更新tempAmount金额状态： {}", upStatus);
         }

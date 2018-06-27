@@ -184,18 +184,14 @@ public class FinancialLockUpController {
 
     @ResponseBody
     @RequestMapping(value = "/manual", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String manual(@RequestParam(value = "type") final int type, final HttpServletResponse response) {
+    public String manual(final HttpServletResponse response) {
         final Result result = new Result();
         try {
-            if (type == 1) {
-                this.financialLockUpService.saveLockUpAmount();
-            } else if (type == 2) {
-                this.financialLockUpService.saveInComeAmount();
-            }
+            this.financialLockUpService.saveInComeAmount();
 
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
-            result.setEntity("请稍后....");
+            result.setEntity("计算中，请查看日志...");
         } catch (final Exception e) {
             return universalExceptionReturn(FinancialLockUpController.logger, e, response, result);
         }

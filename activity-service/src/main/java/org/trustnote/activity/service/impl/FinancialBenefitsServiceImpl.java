@@ -300,43 +300,34 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         return this.financialBenefitsMapper.selectByExample(example);
     }
 
-    /**
-     * 根据financialid,当前时间查询大于计息时间，并且未计算收益的
-     *
-     * @param now
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public List<FinancialBenefits> queryFinancialInterestGreaterThanNow(final LocalDateTime now) throws Exception {
-        final FinancialBenefitsExample example = new FinancialBenefitsExample();
-        final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
-        criteria.andInterestStartTimeLessThanOrEqualTo(now);
-        criteria.andInterestEndTimeGreaterThanOrEqualTo(now);
-        criteria.andCalactionStatusEqualTo(0);
-        return this.financialBenefitsMapper.selectByExample(example);
-    }
-
     @Override
     public List<FinancialBenefits> queryFinancialNotCalactionLockUp(final LocalDateTime now) throws Exception {
         final FinancialBenefitsExample example = new FinancialBenefitsExample();
         final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
         criteria.andPanicEndTimeLessThan(now);
-        criteria.andCalactionLockupStatusEqualTo(0);
+        criteria.andFinancialStatusEqualTo(0);
         return this.financialBenefitsMapper.selectByExample(example);
     }
 
+    /**
+     * 查询在抢购时间段内的产品
+     *
+     * @param now
+     * @param financialId
+     * @return
+     * @throws Exception
+     */
     @Override
-    public List<FinancialBenefits> queryFinancialInPanic(final LocalDateTime now, final int financialId, final int type) throws Exception {
+    public List<FinancialBenefits> queryFinancialInPanic(final LocalDateTime now, final int financialId) throws Exception {
         final FinancialBenefitsExample example = new FinancialBenefitsExample();
         final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
         criteria.andPanicStartTimeLessThan(now);
         criteria.andPanicEndTimeGreaterThan(now);
-        if (type == 0) {
+        /*if (type == 0) {
             criteria.andFinancialIdEqualTo(financialId);
         } else {
             criteria.andFinancialIdNotEqualTo(financialId);
-        }
+        }*/
         return this.financialBenefitsMapper.selectByExample(example);
     }
 

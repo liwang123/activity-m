@@ -1019,66 +1019,6 @@ public class FinancialBenefitsExample {
             return (Criteria) this;
         }
 
-        public Criteria andCalactionStatusIsNull() {
-            this.addCriterion("calaction_status is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionStatusIsNotNull() {
-            this.addCriterion("calaction_status is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionStatusEqualTo(final Integer value) {
-            this.addCriterion("calaction_status =", value, "CalactionStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionStatusNotEqualTo(final Integer value) {
-            this.addCriterion("calaction_status <>", value, "CalactionStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionStatusGreaterThan(final Integer value) {
-            this.addCriterion("calaction_status >", value, "CalactionStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionStatusGreaterThanOrEqualTo(final Integer value) {
-            this.addCriterion("calaction_status >=", value, "CalactionStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionStatusLessThan(final Integer value) {
-            this.addCriterion("calaction_status <", value, "CalactionStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionStatusLessThanOrEqualTo(final Integer value) {
-            this.addCriterion("calaction_status <=", value, "CalactionStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionStatusIn(final List<Integer> values) {
-            this.addCriterion("calaction_status in", values, "CalactionStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionStatusNotIn(final List<Integer> values) {
-            this.addCriterion("calaction_status not in", values, "CalactionStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionStatusBetween(final Integer value1, final Integer value2) {
-            this.addCriterion("calaction_status between", value1, value2, "CalactionStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionStatusNotBetween(final Integer value1, final Integer value2) {
-            this.addCriterion("calaction_status not between", value1, value2, "CalactionStatus");
-            return (Criteria) this;
-        }
-
         public Criteria andFinancialRateIsNull() {
             this.addCriterion("financial_rate is null");
             return (Criteria) this;
@@ -1136,66 +1076,6 @@ public class FinancialBenefitsExample {
 
         public Criteria andFinancialRateNotBetween(final Float value1, final Float value2) {
             this.addCriterion("financial_rate not between", value1, value2, "financialRate");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionLockupStatusIsNull() {
-            this.addCriterion("calaction_lockup_status is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionLockupStatusIsNotNull() {
-            this.addCriterion("calaction_lockup_status is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionLockupStatusEqualTo(final Integer value) {
-            this.addCriterion("calaction_lockup_status =", value, "CalactionLockupStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionLockupStatusNotEqualTo(final Integer value) {
-            this.addCriterion("calaction_lockup_status <>", value, "CalactionLockupStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionLockupStatusGreaterThan(final Integer value) {
-            this.addCriterion("calaction_lockup_status >", value, "CalactionLockupStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionLockupStatusGreaterThanOrEqualTo(final Integer value) {
-            this.addCriterion("calaction_lockup_status >=", value, "CalactionLockupStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionLockupStatusLessThan(final Integer value) {
-            this.addCriterion("calaction_lockup_status <", value, "CalactionLockupStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionLockupStatusLessThanOrEqualTo(final Integer value) {
-            this.addCriterion("calaction_lockup_status <=", value, "CalactionLockupStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionLockupStatusIn(final List<Integer> values) {
-            this.addCriterion("calaction_lockup_status in", values, "CalactionLockupStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionLockupStatusNotIn(final List<Integer> values) {
-            this.addCriterion("calaction_lockup_status not in", values, "CalactionLockupStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionLockupStatusBetween(final Integer value1, final Integer value2) {
-            this.addCriterion("calaction_lockup_status between", value1, value2, "CalactionLockupStatus");
-            return (Criteria) this;
-        }
-
-        public Criteria andCalactionLockupStatusNotBetween(final Integer value1, final Integer value2) {
-            this.addCriterion("calaction_lockup_status not between", value1, value2, "CalactionLockupStatus");
             return (Criteria) this;
         }
 

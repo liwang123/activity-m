@@ -609,6 +609,66 @@ public class FinancialLockUpExample {
             return (Criteria) this;
         }
 
+        public Criteria andCalactionStatusIsNull() {
+            this.addCriterion("calaction_status is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusIsNotNull() {
+            this.addCriterion("calaction_status is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusEqualTo(final Integer value) {
+            this.addCriterion("calaction_status =", value, "calactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusNotEqualTo(final Integer value) {
+            this.addCriterion("calaction_status <>", value, "calactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusGreaterThan(final Integer value) {
+            this.addCriterion("calaction_status >", value, "calactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusGreaterThanOrEqualTo(final Integer value) {
+            this.addCriterion("calaction_status >=", value, "calactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusLessThan(final Integer value) {
+            this.addCriterion("calaction_status <", value, "calactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusLessThanOrEqualTo(final Integer value) {
+            this.addCriterion("calaction_status <=", value, "calactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusIn(final List<Integer> values) {
+            this.addCriterion("calaction_status in", values, "calactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusNotIn(final List<Integer> values) {
+            this.addCriterion("calaction_status not in", values, "calactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusBetween(final Integer value1, final Integer value2) {
+            this.addCriterion("calaction_status between", value1, value2, "calactionStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andCalactionStatusNotBetween(final Integer value1, final Integer value2) {
+            this.addCriterion("calaction_status not between", value1, value2, "calactionStatus");
+            return (Criteria) this;
+        }
+
     }
 
     public static class Criteria extends GeneratedCriteria {

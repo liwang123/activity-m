@@ -20,13 +20,9 @@ public interface FinancialLockUpService {
 
     List<Map<String, String>> export(int benefitsId) throws Exception;
 
+    void validationPayment();
+
     void saveInComeAmount();
-
-    void validationPaymentWeek();
-
-    void validationPaymentOther();
-
-    void saveLockUpAmount();
 
     Map<String, BigDecimal> participate() throws Exception;
 

@@ -17,9 +17,7 @@
         <result column="financial_status" jdbcType="INTEGER" property="financialStatus"/>
         <result column="crt_time" jdbcType="TIMESTAMP" property="crtTime"/>
         <result column="upt_time" jdbcType="TIMESTAMP" property="uptTime"/>
-        <result column="calaction_status" jdbcType="INTEGER" property="calactionStatus"/>
         <result column="financial_rate" jdbcType="REAL" property="financialRate"/>
-        <result column="calaction_lockup_status" jdbcType="INTEGER" property="calactionLockupStatus"/>
         <result column="also_lock_up_amount" jdbcType="DECIMAL" property="alsoLockUpAmount"/>
         <result column="also_temp_amount" jdbcType="DECIMAL" property="alsoTempAmount"/>
     </resultMap>
@@ -86,7 +84,7 @@
     <sql id="Base_Column_List">
     id, financial_id, product_name, panic_start_time, panic_end_time, interest_start_time, 
     interest_end_time, unlock_time, panic_total_limit, min_amount, purchase_limit, remain_limit, 
-    financial_status, crt_time, upt_time, calaction_status, financial_rate, calaction_lockup_status, also_lock_up_amount, also_temp_amount
+    financial_status, crt_time, upt_time, financial_rate, also_lock_up_amount, also_temp_amount
   </sql>
     <select id="selectByExample" parameterType="org.trustnote.activity.common.example.FinancialBenefitsExample"
             resultMap="BaseResultMap">
@@ -139,14 +137,14 @@
       panic_start_time, panic_end_time, interest_start_time, 
       interest_end_time, unlock_time, panic_total_limit, 
       min_amount, purchase_limit, remain_limit, 
-      financial_status, crt_time, upt_time, calaction_status,financial_rate,calaction_lockup_status, also_lock_up_amount, also_temp_amount
+      financial_status, crt_time, upt_time,financial_rate, also_lock_up_amount, also_temp_amount
       )
     values (#{id,jdbcType=INTEGER}, #{financialId,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR}, 
       #{panicStartTime,jdbcType=TIMESTAMP}, #{panicEndTime,jdbcType=TIMESTAMP}, #{interestStartTime,jdbcType=TIMESTAMP}, 
       #{interestEndTime,jdbcType=TIMESTAMP}, #{unlockTime,jdbcType=TIMESTAMP}, #{panicTotalLimit,jdbcType=INTEGER},
       #{minAmount,jdbcType=INTEGER}, #{purchaseLimit,jdbcType=INTEGER}, #{remainLimit,jdbcType=DECIMAL},
       #{financialStatus,jdbcType=INTEGER}, #{crtTime,jdbcType=TIMESTAMP}, #{uptTime,jdbcType=TIMESTAMP},
-      #{calactionStatus,jdbcType=INTEGER},#{financialRate,jdbcType=REAL}, #{calactionLockupStatus,jdbcType=INTEGER}, #{alsoLockUpAmount,jdbcType=DECIMAL},
+      #{financialRate,jdbcType=REAL}, #{alsoLockUpAmount,jdbcType=DECIMAL},
       #{alsoTempAmount,jdbcType=DECIMAL}
       )
   </insert>
@@ -198,14 +196,8 @@
             <if test="uptTime != null">
                 upt_time,
             </if>
-            <if test="calactionStatus != null">
-                calaction_status,
-            </if>
             <if test="financialRate != null">
                 financial_rate,
-            </if>
-            <if test="calactionLockupStatus != null">
-                calaction_lockup_status,
             </if>
             <if test="alsoLockUpAmount != null">
                 also_lock_up_amount,
@@ -260,14 +252,8 @@
             <if test="uptTime != null">
                 #{uptTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="calactionStatus != null">
-                #{calactionStatus,jdbcType=INTEGER},
-            </if>
             <if test="financialRate != null">
                 #{financialRate,jdbcType=REAL},
-            </if>
-            <if test="calactionLockupStatus != null">
-                #{calactionLockupStatus,jdbcType=INTEGER},
             </if>
             <if test="alsoLockUpAmount != null">
                 #{alsoLockUpAmount,jdbcType=DECIMAL},
@@ -332,14 +318,8 @@
             <if test="record.uptTime != null">
                 upt_time = #{record.uptTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="record.calactionStatus != null">
-                calaction_status = #{record.calactionStatus,jdbcType=INTEGER},
-            </if>
             <if test="record.financialRate != null">
                 financial_rate = #{record.financialRate,jdbcType=REAL},
-            </if>
-            <if test="record.calactionLockupStatus != null">
-                calaction_lockup_status = #{record.calactionLockupStatus,jdbcType=INTEGER},
             </if>
             <if test="record.alsoLockUpAmount != null">
                 also_lock_up_amount = #{record.alsoLockUpAmount,jdbcType=DECIMAL},
@@ -369,9 +349,7 @@
         financial_status = #{record.financialStatus,jdbcType=INTEGER},
         crt_time = #{record.crtTime,jdbcType=TIMESTAMP},
         upt_time = #{record.uptTime,jdbcType=TIMESTAMP},
-        calaction_status = #{record.calactionStatus,jdbcType=INTEGER},
         financial_rate = #{record.financialRate,jdbcType=REAL},
-        calaction_lockup_status = #{record.calactionLockupStatus,jdbcType=INTEGER},
         also_lock_up_amount = #{record.alsoLockUpAmount,jdbcType=DECIMAL},
         also_temp_amount = #{record.alsoTempAmount,jdbcType=DECIMAL}
         <if test="_parameter != null">
@@ -423,14 +401,8 @@
             <if test="uptTime != null">
                 upt_time = #{uptTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="calactionStatus != null">
-                calaction_status = #{calactionStatus,jdbcType=INTEGER},
-            </if>
             <if test="financialRate != null">
                 financial_rate = #{financialRate,jdbcType=REAL},
-            </if>
-            <if test="calactionLockupStatus != null">
-                calaction_lockup_status = #{calactionLockupStatus,jdbcType=INTEGER},
             </if>
             <if test="alsoLockUpAmount != null">
                 also_lock_up_amount = #{alsoLockUpAmount,jdbcType=DECIMAL},
@@ -457,9 +429,7 @@
       financial_status = #{financialStatus,jdbcType=INTEGER},
       crt_time = #{crtTime,jdbcType=TIMESTAMP},
       upt_time = #{uptTime,jdbcType=TIMESTAMP},
-      calaction_status = #{calactionStatus,jdbcType=INTEGER},
       financial_rate = #{financialRate,jdbcType=REAL},
-      calaction_lockup_status = #{calactionLockupStatus,jdbcType=INTEGER},
       also_lock_up_amount = #{alsoLockUpAmount,jdbcType=DECIMAL},
       also_temp_amount = #{alsoTempAmount,jdbcType=DECIMAL}
     where id = #{id,jdbcType=INTEGER}
