@@ -326,23 +326,23 @@ public class FinancialBenefitsController {
         if (financialBenefitsApi.getFinancialId() == sevenId) {
             final LocalDateTime after = interestStart.plusDays(seven);
             final LocalDateTime afterUnlock = interestStart.plusDays(seven + 1);
-            this.interestTime(interestEnd, after, unlockTime, afterUnlock, result);
+            return this.interestTime(interestEnd, after, unlockTime, afterUnlock, result);
         } else if (financialBenefitsApi.getFinancialId() == thirtyId) {
             final LocalDateTime after = interestStart.plusDays(thirty);
             final LocalDateTime afterUnlock = interestStart.plusDays(thirty + 1);
-            this.interestTime(interestEnd, after, unlockTime, afterUnlock, result);
+            return this.interestTime(interestEnd, after, unlockTime, afterUnlock, result);
         } else if (financialBenefitsApi.getFinancialId() == ninetyId) {
             final LocalDateTime after = interestStart.plusDays(ninety);
             final LocalDateTime afterUnlock = interestStart.plusDays(ninety + 1);
-            this.interestTime(interestEnd, after, unlockTime, afterUnlock, result);
+            return this.interestTime(interestEnd, after, unlockTime, afterUnlock, result);
         } else if (financialBenefitsApi.getFinancialId() == oneHundredAndEightyId) {
             final LocalDateTime after = interestStart.plusDays(oneHundredAndEighty);
             final LocalDateTime afterUnlock = interestStart.plusDays(oneHundredAndEighty + 1);
-            this.interestTime(interestEnd, after, unlockTime, afterUnlock, result);
+            return this.interestTime(interestEnd, after, unlockTime, afterUnlock, result);
         } else if (financialBenefitsApi.getFinancialId() == threeHundredAndSixtyId) {
             final LocalDateTime after = interestStart.plusDays(threeHundredAndSixty);
             final LocalDateTime afterUnlock = interestStart.plusDays(threeHundredAndSixty + 1);
-            this.interestTime(interestEnd, after, unlockTime, afterUnlock, result);
+            return this.interestTime(interestEnd, after, unlockTime, afterUnlock, result);
         }
         if (financialBenefitsApi.getFinancialRate() > 1) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
