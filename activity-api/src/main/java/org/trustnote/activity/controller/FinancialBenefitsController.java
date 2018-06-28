@@ -22,6 +22,7 @@ import org.trustnote.activity.stereotype.Frequency;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -88,7 +89,7 @@ public class FinancialBenefitsController {
             final int insertStatus = this.financialBenefitsService.insertFinancialBenefits(financialBenefitsApi);
             if (insertStatus == -1) {
                 result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg("与其他套餐时间冲突");
+                result.setMsg("抢购时间段已有活动，请检查后重试");
             } else if (insertStatus == 0) {
                 result.setCode(ResultEnum.MISSION_FAIL.getCode());
                 result.setMsg(ResultEnum.MISSION_FAIL.getMsg());
@@ -128,7 +129,7 @@ public class FinancialBenefitsController {
                     updateStatus = this.financialBenefitsService.updateFinancialBenefits(financialBenefitsApi);
                     if (updateStatus == -1) {
                         result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                        result.setMsg("与其他套餐时间冲突");
+                        result.setMsg("抢购时间段已有活动，请检查后重试");
                     } else if (updateStatus == 0) {
                         result.setMsg(ResultEnum.MISSION_FAIL.getMsg());
                         result.setCode(ResultEnum.MISSION_FAIL.getCode());
@@ -248,52 +249,129 @@ public class FinancialBenefitsController {
      * @return
      */
     private Result specialValidation(final FinancialBenefitsApi financialBenefitsApi) {
+        final int seven = 7;
+        final int thirty = 30;
+        final int ninety = 90;
+        final int oneHundredAndEighty = 180;
+        final int threeHundredAndSixty = 360;
+        final long oneDayMs = 86400000;
+
         final Result result = new Result();
         final long now = DateTimeUtils.localDateTimeParseLong(LocalDateTime.now());
         if (financialBenefitsApi.getPanicStartTime() <= now) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("抢购开始时间不能小于当前时间");
+            result.setMsg("抢购开始时间不能早于现在时间");
             return result;
         }
         if (financialBenefitsApi.getPanicEndTime() <= now) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("抢购结束时间不能小于当前时间");
+            result.setMsg("抢购结束时间不能早于现在时间");
             return result;
         }
         if (financialBenefitsApi.getInterestStartTime() <= now) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("计息开始时间不能小于当前时间");
+            result.setMsg("计息开始时间不能早于现在时间");
             return result;
         }
         if (financialBenefitsApi.getInterestEndTime() <= now) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("计息结束时间不能小于当前时间");
+            result.setMsg("计息结束时间不能早于现在时间");
             return result;
         }
         if (financialBenefitsApi.getUnlockTime() <= now) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("解锁时间不能小于当前时间");
+            result.setMsg("解锁时间不能早于现在时间");
             return result;
         }
-        if (financialBenefitsApi.getUnlockTime() <= financialBenefitsApi.getInterestEndTime()) {
+        if (financialBenefitsApi.getUnlockTime() < financialBenefitsApi.getInterestEndTime()) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("解锁时间不能小于等于计息结束时间");
+            result.setMsg("解锁时间不能早于计息结束时间");
             return result;
         }
         if (financialBenefitsApi.getPanicEndTime() <= financialBenefitsApi.getPanicStartTime()) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("抢购结束时间不能小于等于抢购开始时间");
+            result.setMsg("抢购结束时间不能早于抢购开始时间");
             return result;
         }
         if (financialBenefitsApi.getInterestEndTime() <= financialBenefitsApi.getInterestStartTime()) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("计息结束时间不能小于等于计息开始时间");
+            result.setMsg("计息结束时间不能早于计息开始时间");
             return result;
         }
-        if (financialBenefitsApi.getInterestStartTime() <= financialBenefitsApi.getPanicEndTime()) {
+        if (financialBenefitsApi.getInterestStartTime() < financialBenefitsApi.getPanicEndTime()) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
-            result.setMsg("计息开始时间不能小于抢购结束时间");
+            result.setMsg("计息开始时间不能早于抢购结束时间");
             return result;
+        }
+        if (financialBenefitsApi.getInterestStartTime() - financialBenefitsApi.getPanicEndTime() > oneDayMs) {
+            result.setCode(ResultEnum.BAD_REQUEST.getCode());
+            result.setMsg("计息开始时间不正确");
+            return result;
+        }
+        final long interestShort = financialBenefitsApi.getInterestEndTime() - financialBenefitsApi.getInterestStartTime();
+        final long panicShort = financialBenefitsApi.getPanicEndTime() - financialBenefitsApi.getPanicEndTime();
+        final BigDecimal panciDay = new BigDecimal(panicShort).divide(new BigDecimal(oneDayMs), 0, BigDecimal.ROUND_DOWN);
+        final BigDecimal interesDay = new BigDecimal(interestShort).divide(new BigDecimal(oneDayMs), 0, BigDecimal.ROUND_DOWN);
+        if (panciDay.compareTo(new BigDecimal(seven)) == 1) {
+            result.setCode(ResultEnum.BAD_REQUEST.getCode());
+            result.setMsg("抢购时间段不能超过7天");
+            return result;
+        }
+        if (financialBenefitsApi.getFinancialId() == seven) {
+            if (interesDay.compareTo(new BigDecimal(seven)) != 0) {
+                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                result.setMsg("计息结束时间不正确");
+                return result;
+            }
+            if (interesDay.compareTo(new BigDecimal(seven + 1)) == 1) {
+                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                result.setMsg("该解锁时间不可选择");
+                return result;
+            }
+        } else if (financialBenefitsApi.getFinancialId() == thirty) {
+            if (interesDay.compareTo(new BigDecimal(thirty)) != 0) {
+                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                result.setMsg("计息结束时间不正确");
+                return result;
+            }
+            if (interesDay.compareTo(new BigDecimal(thirty + 1)) == 1) {
+                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                result.setMsg("该解锁时间不可选择");
+                return result;
+            }
+        } else if (financialBenefitsApi.getFinancialId() == ninety) {
+            if (interesDay.compareTo(new BigDecimal(ninety)) != 0) {
+                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                result.setMsg("计息结束时间不正确");
+                return result;
+            }
+            if (interesDay.compareTo(new BigDecimal(ninety + 1)) == 1) {
+                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                result.setMsg("该解锁时间不可选择");
+                return result;
+            }
+        } else if (financialBenefitsApi.getFinancialId() == oneHundredAndEighty) {
+            if (interesDay.compareTo(new BigDecimal(oneHundredAndEighty)) != 0) {
+                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                result.setMsg("计息结束时间不正确");
+                return result;
+            }
+            if (interesDay.compareTo(new BigDecimal(oneHundredAndEighty + 1)) == 1) {
+                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                result.setMsg("该解锁时间不可选择");
+                return result;
+            }
+        } else if (financialBenefitsApi.getFinancialId() == threeHundredAndSixty) {
+            if (interesDay.compareTo(new BigDecimal(threeHundredAndSixty)) != 0) {
+                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                result.setMsg("计息结束时间不正确");
+                return result;
+            }
+            if (interesDay.compareTo(new BigDecimal(threeHundredAndSixty + 1)) == 1) {
+                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                result.setMsg("该解锁时间不可选择");
+                return result;
+            }
         }
         if (financialBenefitsApi.getFinancialRate() > 1) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
@@ -310,6 +388,29 @@ public class FinancialBenefitsController {
                 result.setCode(ResultEnum.BAD_REQUEST.getCode());
                 result.setMsg("请输入限额");
                 return result;
+            }
+        } else {
+            if (financialBenefitsApi.getPanicTotalLimit() != null) {
+                if (financialBenefitsApi.getPurchaseLimit() == null) {
+                    result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                    result.setMsg("请输入限额");
+                    return result;
+                }
+                if (financialBenefitsApi.getMinAmount() > financialBenefitsApi.getPanicTotalLimit()) {
+                    result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                    result.setMsg("起购额度不能超过抢购总额度");
+                    return result;
+                }
+                if (financialBenefitsApi.getPurchaseLimit() > financialBenefitsApi.getPanicTotalLimit()) {
+                    result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                    result.setMsg("限购额度不能超过抢购总额度");
+                    return result;
+                }
+                if (financialBenefitsApi.getPurchaseLimit() < financialBenefitsApi.getMinAmount()) {
+                    result.setCode(ResultEnum.BAD_REQUEST.getCode());
+                    result.setMsg("限购额度不能小于起购额度");
+                    return result;
+                }
             }
         }
         return null;
