@@ -22,7 +22,6 @@ import org.trustnote.activity.stereotype.Frequency;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -313,70 +312,37 @@ public class FinancialBenefitsController {
             result.setMsg("计息开始时间不正确");
             return result;
         }
-        final long interestShort = financialBenefitsApi.getInterestEndTime() - financialBenefitsApi.getInterestStartTime();
-        final long panicShort = financialBenefitsApi.getPanicEndTime() - financialBenefitsApi.getPanicEndTime();
-        final BigDecimal panciDay = new BigDecimal(panicShort).divide(new BigDecimal(oneDayMs), 0, BigDecimal.ROUND_DOWN);
-        final BigDecimal interesDay = new BigDecimal(interestShort).divide(new BigDecimal(oneDayMs), 0, BigDecimal.ROUND_DOWN);
-        if (panciDay.compareTo(new BigDecimal(seven)) == 1) {
+        final LocalDateTime panciStart = DateTimeUtils.longParseLocalDateTime(financialBenefitsApi.getPanicStartTime());
+        final LocalDateTime panciEnd = DateTimeUtils.longParseLocalDateTime(financialBenefitsApi.getPanicEndTime());
+        final LocalDateTime interestStart = DateTimeUtils.longParseLocalDateTime(financialBenefitsApi.getInterestStartTime());
+        final LocalDateTime interestEnd = DateTimeUtils.longParseLocalDateTime(financialBenefitsApi.getInterestEndTime());
+        final LocalDateTime unlockTime = DateTimeUtils.longParseLocalDateTime(financialBenefitsApi.getUnlockTime());
+        final LocalDateTime panciMaxEnd = panciStart.plusDays(7);
+        if (panciEnd.compareTo(panciMaxEnd) == 1) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
             result.setMsg("抢购时间段不能超过7天");
             return result;
         }
         if (financialBenefitsApi.getFinancialId() == sevenId) {
-            if (interesDay.compareTo(new BigDecimal(seven)) != 0) {
-                result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg("计息结束时间不正确");
-                return result;
-            }
-            if (interesDay.compareTo(new BigDecimal(seven + 1)) == 1) {
-                result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg("该解锁时间不可选择");
-                return result;
-            }
+            final LocalDateTime after = interestStart.plusDays(seven);
+            final LocalDateTime afterUnlock = interestStart.plusDays(seven + 1);
+            this.interestTime(interestEnd, after, unlockTime, afterUnlock, result);
         } else if (financialBenefitsApi.getFinancialId() == thirtyId) {
-            if (interesDay.compareTo(new BigDecimal(thirty)) != 0) {
-                result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg("计息结束时间不正确");
-                return result;
-            }
-            if (interesDay.compareTo(new BigDecimal(thirty + 1)) == 1) {
-                result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg("该解锁时间不可选择");
-                return result;
-            }
+            final LocalDateTime after = interestStart.plusDays(thirty);
+            final LocalDateTime afterUnlock = interestStart.plusDays(thirty + 1);
+            this.interestTime(interestEnd, after, unlockTime, afterUnlock, result);
         } else if (financialBenefitsApi.getFinancialId() == ninetyId) {
-            if (interesDay.compareTo(new BigDecimal(ninety)) != 0) {
-                result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg("计息结束时间不正确");
-                return result;
-            }
-            if (interesDay.compareTo(new BigDecimal(ninety + 1)) == 1) {
-                result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg("该解锁时间不可选择");
-                return result;
-            }
+            final LocalDateTime after = interestStart.plusDays(ninety);
+            final LocalDateTime afterUnlock = interestStart.plusDays(ninety + 1);
+            this.interestTime(interestEnd, after, unlockTime, afterUnlock, result);
         } else if (financialBenefitsApi.getFinancialId() == oneHundredAndEightyId) {
-            if (interesDay.compareTo(new BigDecimal(oneHundredAndEighty)) != 0) {
-                result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg("计息结束时间不正确");
-                return result;
-            }
-            if (interesDay.compareTo(new BigDecimal(oneHundredAndEighty + 1)) == 1) {
-                result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg("该解锁时间不可选择");
-                return result;
-            }
+            final LocalDateTime after = interestStart.plusDays(oneHundredAndEighty);
+            final LocalDateTime afterUnlock = interestStart.plusDays(oneHundredAndEighty + 1);
+            this.interestTime(interestEnd, after, unlockTime, afterUnlock, result);
         } else if (financialBenefitsApi.getFinancialId() == threeHundredAndSixtyId) {
-            if (interesDay.compareTo(new BigDecimal(threeHundredAndSixty)) != 0) {
-                result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg("计息结束时间不正确");
-                return result;
-            }
-            if (interesDay.compareTo(new BigDecimal(threeHundredAndSixty + 1)) == 1) {
-                result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg("该解锁时间不可选择");
-                return result;
-            }
+            final LocalDateTime after = interestStart.plusDays(threeHundredAndSixty);
+            final LocalDateTime afterUnlock = interestStart.plusDays(threeHundredAndSixty + 1);
+            this.interestTime(interestEnd, after, unlockTime, afterUnlock, result);
         }
         if (financialBenefitsApi.getFinancialRate() > 1) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
@@ -417,6 +383,30 @@ public class FinancialBenefitsController {
                     return result;
                 }
             }
+        }
+        return null;
+    }
+
+    /**
+     * 校验计息结束时间、解锁时间
+     *
+     * @param interestEnd
+     * @param after
+     * @param unlockTime
+     * @param afterUnlock
+     * @param result
+     * @return
+     */
+    private Result interestTime(final LocalDateTime interestEnd, final LocalDateTime after, final LocalDateTime unlockTime, final LocalDateTime afterUnlock, final Result result) {
+        if (interestEnd.compareTo(after) != 0) {
+            result.setCode(ResultEnum.BAD_REQUEST.getCode());
+            result.setMsg("计息结束时间不正确");
+            return result;
+        }
+        if (unlockTime.compareTo(afterUnlock) == 1) {
+            result.setCode(ResultEnum.BAD_REQUEST.getCode());
+            result.setMsg("该解锁时间不可选择");
+            return result;
         }
         return null;
     }
