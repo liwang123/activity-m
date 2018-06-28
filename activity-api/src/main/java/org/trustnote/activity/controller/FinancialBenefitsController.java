@@ -254,6 +254,11 @@ public class FinancialBenefitsController {
         final int ninety = 90;
         final int oneHundredAndEighty = 180;
         final int threeHundredAndSixty = 360;
+        final int sevenId = 1;
+        final int thirtyId = 2;
+        final int ninetyId = 3;
+        final int oneHundredAndEightyId = 4;
+        final int threeHundredAndSixtyId = 5;
         final long oneDayMs = 86400000;
 
         final Result result = new Result();
@@ -317,7 +322,7 @@ public class FinancialBenefitsController {
             result.setMsg("抢购时间段不能超过7天");
             return result;
         }
-        if (financialBenefitsApi.getFinancialId() == seven) {
+        if (financialBenefitsApi.getFinancialId() == sevenId) {
             if (interesDay.compareTo(new BigDecimal(seven)) != 0) {
                 result.setCode(ResultEnum.BAD_REQUEST.getCode());
                 result.setMsg("计息结束时间不正确");
@@ -328,7 +333,7 @@ public class FinancialBenefitsController {
                 result.setMsg("该解锁时间不可选择");
                 return result;
             }
-        } else if (financialBenefitsApi.getFinancialId() == thirty) {
+        } else if (financialBenefitsApi.getFinancialId() == thirtyId) {
             if (interesDay.compareTo(new BigDecimal(thirty)) != 0) {
                 result.setCode(ResultEnum.BAD_REQUEST.getCode());
                 result.setMsg("计息结束时间不正确");
@@ -339,7 +344,7 @@ public class FinancialBenefitsController {
                 result.setMsg("该解锁时间不可选择");
                 return result;
             }
-        } else if (financialBenefitsApi.getFinancialId() == ninety) {
+        } else if (financialBenefitsApi.getFinancialId() == ninetyId) {
             if (interesDay.compareTo(new BigDecimal(ninety)) != 0) {
                 result.setCode(ResultEnum.BAD_REQUEST.getCode());
                 result.setMsg("计息结束时间不正确");
@@ -350,7 +355,7 @@ public class FinancialBenefitsController {
                 result.setMsg("该解锁时间不可选择");
                 return result;
             }
-        } else if (financialBenefitsApi.getFinancialId() == oneHundredAndEighty) {
+        } else if (financialBenefitsApi.getFinancialId() == oneHundredAndEightyId) {
             if (interesDay.compareTo(new BigDecimal(oneHundredAndEighty)) != 0) {
                 result.setCode(ResultEnum.BAD_REQUEST.getCode());
                 result.setMsg("计息结束时间不正确");
@@ -361,7 +366,7 @@ public class FinancialBenefitsController {
                 result.setMsg("该解锁时间不可选择");
                 return result;
             }
-        } else if (financialBenefitsApi.getFinancialId() == threeHundredAndSixty) {
+        } else if (financialBenefitsApi.getFinancialId() == threeHundredAndSixtyId) {
             if (interesDay.compareTo(new BigDecimal(threeHundredAndSixty)) != 0) {
                 result.setCode(ResultEnum.BAD_REQUEST.getCode());
                 result.setMsg("计息结束时间不正确");
