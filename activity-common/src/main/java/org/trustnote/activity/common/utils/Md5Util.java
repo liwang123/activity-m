@@ -16,41 +16,41 @@ public class Md5Util {
 	}
 
 	// 返回形式为数字跟字符串
-	private static String byteToArrayString(byte bByte) {
+	private static String byteToArrayString(final byte bByte) {
 		int iRet = bByte;
 		// System.out.println("iRet="+iRet);
 		if (iRet < 0) {
 			iRet += 256;
 		}
-		int iD1 = iRet / 16;
-		int iD2 = iRet % 16;
-		return strDigits[iD1] + strDigits[iD2];
+		final int iD1 = iRet / 16;
+		final int iD2 = iRet % 16;
+		return Md5Util.strDigits[iD1] + Md5Util.strDigits[iD2];
 	}
 
 	// 转换字节数组为16进制字串
-	private static String byteToString(byte[] bByte) {
-		StringBuffer sBuffer = new StringBuffer();
+	private static String byteToString(final byte[] bByte) {
+		final StringBuffer sBuffer = new StringBuffer();
 		for (int i = 0; i < bByte.length; i++) {
-			sBuffer.append(byteToArrayString(bByte[i]));
+			sBuffer.append(Md5Util.byteToArrayString(bByte[i]));
 		}
 		return sBuffer.toString();
 	}
 
-	public static String getMd5Code(String strObj) {
+	public static String getMd5Code(final String strObj) {
 		String resultString = null;
 		try {
 			resultString = new String(strObj);
-			MessageDigest md = MessageDigest.getInstance("MD5");
+			final MessageDigest md = MessageDigest.getInstance("MD5");
 			// md.digest() 该函数返回值为存放哈希值结果的byte数组
-			resultString = byteToString(md.digest(strObj.getBytes()));
-		} catch (NoSuchAlgorithmException ex) {
+			resultString = Md5Util.byteToString(md.digest(strObj.getBytes()));
+		} catch (final NoSuchAlgorithmException ex) {
 			ex.printStackTrace();
 		}
 		return resultString;
 	}
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		//7337e2f117b38edd90ef8ddd50c31406
-		System.out.println(Md5Util.getMd5Code("^YHN/.,mn" + "wuDPw[dU.)?w"));
+		System.out.println(Md5Util.getMd5Code("^YHN/.,mn" + "$gUA^u5$3EoHJ32O"));
 	}
 }

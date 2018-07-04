@@ -63,6 +63,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         final FinancialLockUpExample example = new FinancialLockUpExample();
         final FinancialLockUpExample.Criteria criteria = example.createCriteria();
         criteria.andFinancialBenefitsIdEqualTo(benefitsId);
+        criteria.andLockUpAmountGreaterThan(new BigDecimal(0));
         example.setOrderByClause("operation_time DESC");
         return this.convert(this.financialLockUpMapper.selectByExamplePage(page, example), 0);
     }
@@ -149,6 +150,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         final FinancialLockUpExample example = new FinancialLockUpExample();
         final FinancialLockUpExample.Criteria criteria = example.createCriteria();
         criteria.andFinancialBenefitsIdEqualTo(benefitsId);
+        criteria.andLockUpAmountGreaterThan(new BigDecimal(0));
         example.setOrderByClause("operation_time DESC");
         final List<FinancialLockUp> financialLockUps = this.financialLockUpMapper.selectByExamplePage(page, example);
         final List<FinancialLockUp> lastFi = this.convertNonApi(financialLockUps, 0);
@@ -167,7 +169,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
     }
 
     /**
-     * 定时计算抢购时间段内的已抢购额度、已锁额度
+     * 定时计算抢购m时间段内的已抢购额度、已锁额度
      */
     @Override
     public void validationPayment() {

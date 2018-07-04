@@ -47,15 +47,16 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
 
     @Override
     public int updateFinancialBenefits(final FinancialBenefitsApi financialBenefitsApi) throws Exception {
-        List<FinancialBenefits> panic = this.queryFinancialBetweenPanic(financialBenefitsApi.getPanicStartTime(), 1, financialBenefitsApi.getId(), financialBenefitsApi.getFinancialId());
+        final List<FinancialBenefits> panic = this.queryFinancialBetweenPanic(financialBenefitsApi.getPanicStartTime(), financialBenefitsApi.getPanicEndTime(),
+                1, financialBenefitsApi.getId(), financialBenefitsApi.getFinancialId());
         if (!CollectionUtils.isEmpty(panic)) {
             return -1;
         }
-        panic = this.queryFinancialBetweenPanic(financialBenefitsApi.getPanicEndTime(), 1, financialBenefitsApi.getId(), financialBenefitsApi.getFinancialId());
-        if (!CollectionUtils.isEmpty(panic)) {
-            return -1;
-        }
-        BigDecimal remainLimit = new BigDecimal(0);
+//        panic = this.queryFinancialBetweenPanic(financialBenefitsApi.getPanicEndTime(), 1, financialBenefitsApi.getId(), financialBenefitsApi.getFinancialId());
+//        if (!CollectionUtils.isEmpty(panic)) {
+//            return -1;
+//        }
+        BigDecimal remainLimit = null;
         if (financialBenefitsApi.getFinancialId() == 1) {
             remainLimit = new BigDecimal(financialBenefitsApi.getPanicTotalLimit());
         } else {
@@ -83,15 +84,16 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
 
     @Override
     public int insertFinancialBenefits(final FinancialBenefitsApi financialBenefitsApi) throws Exception {
-        List<FinancialBenefits> panic = this.queryFinancialBetweenPanic(financialBenefitsApi.getPanicStartTime(), 0, 0, financialBenefitsApi.getFinancialId());
+        final List<FinancialBenefits> panic = this.queryFinancialBetweenPanic(financialBenefitsApi.getPanicStartTime(), financialBenefitsApi.getPanicEndTime(),
+                0, 0, financialBenefitsApi.getFinancialId());
         if (!CollectionUtils.isEmpty(panic)) {
             return -1;
         }
-        panic = this.queryFinancialBetweenPanic(financialBenefitsApi.getPanicEndTime(), 0, 0, financialBenefitsApi.getFinancialId());
-        if (!CollectionUtils.isEmpty(panic)) {
-            return -1;
-        }
-        BigDecimal remainLimit = new BigDecimal(0);
+//        panic = this.queryFinancialBetweenPanic(financialBenefitsApi.getPanicEndTime(), 0, 0, financialBenefitsApi.getFinancialId());
+//        if (!CollectionUtils.isEmpty(panic)) {
+//            return -1;
+//        }
+        BigDecimal remainLimit = null;
         if (financialBenefitsApi.getFinancialId() == 1) {
             remainLimit = new BigDecimal(financialBenefitsApi.getPanicTotalLimit());
         } else {
@@ -336,16 +338,19 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
      * @return
      * @throws Exception
      */
-    public List<FinancialBenefits> queryFinancialBetweenPanic(final long panic, final int type, final int id, final int financialId) throws Exception {
-        final LocalDateTime panicTime = DateTimeUtils.longParseLocalDateTime(panic);
+    public List<FinancialBenefits> queryFinancialBetweenPanic(final long panicStart, final long panicEnd, final int type, final int id, final int financialId) throws Exception {
+        final LocalDateTime panicStartTime = DateTimeUtils.longParseLocalDateTime(panicStart);
+        final LocalDateTime panicEndTime = DateTimeUtils.longParseLocalDateTime(panicEnd);
+
         final FinancialBenefitsExample example = new FinancialBenefitsExample();
+
         final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
-        criteria.andPanicStartTimeLessThanOrEqualTo(panicTime);
-        criteria.andPanicEndTimeGreaterThanOrEqualTo(panicTime);
         criteria.andFinancialIdEqualTo(financialId);
         if (type == 1) {
             criteria.andIdNotEqualTo(id);
         }
+
+        criteria.andOr(panicStartTime, panicEndTime);
         return this.financialBenefitsMapper.selectByExample(example);
     }
 
