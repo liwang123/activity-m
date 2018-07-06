@@ -52,10 +52,6 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         if (!CollectionUtils.isEmpty(panic)) {
             return -1;
         }
-//        panic = this.queryFinancialBetweenPanic(financialBenefitsApi.getPanicEndTime(), 1, financialBenefitsApi.getId(), financialBenefitsApi.getFinancialId());
-//        if (!CollectionUtils.isEmpty(panic)) {
-//            return -1;
-//        }
         BigDecimal remainLimit = null;
         if (financialBenefitsApi.getFinancialId() == 1) {
             remainLimit = new BigDecimal(financialBenefitsApi.getPanicTotalLimit());
@@ -89,10 +85,6 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         if (!CollectionUtils.isEmpty(panic)) {
             return -1;
         }
-//        panic = this.queryFinancialBetweenPanic(financialBenefitsApi.getPanicEndTime(), 0, 0, financialBenefitsApi.getFinancialId());
-//        if (!CollectionUtils.isEmpty(panic)) {
-//            return -1;
-//        }
         BigDecimal remainLimit = null;
         if (financialBenefitsApi.getFinancialId() == 1) {
             remainLimit = new BigDecimal(financialBenefitsApi.getPanicTotalLimit());
@@ -331,10 +323,11 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
 
     /**
      * 根据panic判断是否存在抢购时间段内的数据
-     * @param panic
+     * @param panicStart
+     * @param panicEnd
      * @param type
      * @param id
-     * @param financialId 套餐ＩＤ
+     * @param financialId
      * @return
      * @throws Exception
      */

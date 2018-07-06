@@ -420,10 +420,12 @@ public class FinancialBenefitsExample {
         }
 
         public Criteria andOr(final LocalDateTime value1, final LocalDateTime value2) {
-            this.addCriterion("('" + value1 + "' <= panic_start_time AND '" + value2 + "' >= panic_end_time) " +
+            this.addCriterion("(" +
+                    "('" + value1 + "' <= panic_start_time AND '" + value2 + "' >= panic_end_time) " +
                     "OR ('" + value1 + "' >= panic_start_time AND '" + value2 + "' <= panic_end_time) " +
                     "OR ('" + value1 + "' <= panic_start_time AND ('" + value2 + "' >= panic_start_time AND '" + value2 + "' <= panic_end_time))" +
-                    "OR ('" + value2 + "' >= panic_end_time AND ('" + value1 + "' >= panic_start_time AND '" + value1 + "' <= panic_end_time))");
+                    "OR ('" + value2 + "' >= panic_end_time AND ('" + value1 + "' >= panic_start_time AND '" + value1 + "' <= panic_end_time))" +
+                    ")");
             return (Criteria) this;
         }
 
