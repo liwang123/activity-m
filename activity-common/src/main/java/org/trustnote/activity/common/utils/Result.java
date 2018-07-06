@@ -48,7 +48,7 @@ public class Result {
     }
 
     public String getString(final Result result) {
-        return JSON.toJSONString(result, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.WriteNullNumberAsZero, SerializerFeature.DisableCircularReferenceDetect);
+        return JSON.toJSONString(result, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.DisableCircularReferenceDetect);
     }
 
     public Integer getTotalCount() {

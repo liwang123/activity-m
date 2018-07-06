@@ -125,9 +125,19 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         if (!CollectionUtils.isEmpty(financialBenefits)) {
             final FinancialBenefits benefits = financialBenefits.get(0);
             final StringBuilder sb = new StringBuilder("抢购进行中");
-            if (benefits.getRemainLimit().compareTo(new BigDecimal(0)) != 1) {
+            if (benefits.getPanicTotalLimit() == null) {
                 sb.delete(0, sb.length());
-                sb.append("抢购已结束");
+                sb.append("抢购进行中");
+            } else {
+                if (benefits.getRemainLimit() != null) {
+                    if ((benefits.getRemainLimit().compareTo(new BigDecimal(0)) != 1)) {
+                        sb.delete(0, sb.length());
+                        sb.append("抢购已结束");
+                    } else {
+                        sb.delete(0, sb.length());
+                        sb.append("抢购进行中");
+                    }
+                }
             }
             final FinancialBenefitsApi financialBenefitsApi = FinancialBenefitsApi.builder()
                     .id(benefits.getId())
@@ -355,10 +365,18 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
             if (now.isBefore(benefits.getPanicStartTime())) {
                 statusName = "未开启";
             } else if (now.compareTo(benefits.getPanicStartTime()) >= 0 && now.compareTo(benefits.getPanicEndTime()) < 0) {
-                if ((benefits.getRemainLimit().compareTo(new BigDecimal(0)) != 1) && benefits.getPanicTotalLimit() != null) {
-                    statusName = "抢购已结束";
-                } else {
+                if (benefits.getPanicTotalLimit() == null) {
                     statusName = "抢购进行中";
+                } else {
+                    if (benefits.getRemainLimit() != null) {
+                        if ((benefits.getRemainLimit().compareTo(new BigDecimal(0)) != 1)) {
+                            statusName = "抢购已结束";
+                        } else {
+                            statusName = "抢购进行中";
+                        }
+                    } else {
+                        statusName = "抢购进行中";
+                    }
                 }
             } else {
                 statusName = "抢购已结束";
