@@ -121,9 +121,9 @@ public class FinancialBenefitsController {
             int updateStatus = 0;
             final FinancialBenefits financialBenefits = this.financialBenefitsService.queryOneFinancialBenefits(financialBenefitsApi.getId());
             if (financialBenefits != null) {
-                if (financialBenefits.getPanicStartTime().compareTo(LocalDateTime.now()) != 1) {
+                if (financialBenefits.getPanicStartTime().isBefore(LocalDateTime.now())) {
                     result.setMsg(ResultEnum.MISSION_FAIL.getMsg());
-                    result.setCode(ResultEnum.MISSION_FAIL.getCode());
+                    result.setCode(ResultEnum.MISSION_FAIL.getCode() + "不能编辑已开启产品");
                 } else {
                     updateStatus = this.financialBenefitsService.updateFinancialBenefits(financialBenefitsApi);
                     if (updateStatus == -1) {
