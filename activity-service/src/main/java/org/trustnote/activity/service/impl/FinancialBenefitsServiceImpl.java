@@ -233,7 +233,29 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
     public FinancialBenefitsApi queryFinancialBenefitsById(final int id) throws Exception {
         final FinancialBenefits financialBenefits = this.financialBenefitsMapper.selectByPrimaryKey(id);
         if (financialBenefits != null) {
-            return this.queryFinancialBenefitsByFinancialId(financialBenefits.getFinancialId());
+            final LocalDateTime now = LocalDateTime.now();
+            final FinancialBenefitsApi financialBenefitsApi = this.convertBenefitsToBenefitsApi(financialBenefits, now);
+            if (financialBenefits.getPanicEndTime().compareTo(now) == 1) {
+                final List<FinancialBenefits> nextFinancialBenefits = this.queryFinancialGreaterThanNow(financialBenefits
+                        .getFinancialId(), now);
+                if (!CollectionUtils.isEmpty(nextFinancialBenefits)) {
+                    financialBenefitsApi.setNextPanicStartTime(DateTimeUtils.localDateTimeParseLong(nextFinancialBenefits
+                            .get(0)
+                            .getPanicStartTime()));
+                    financialBenefitsApi.setNextPanicEndTime(DateTimeUtils.localDateTimeParseLong(nextFinancialBenefits.get(0)
+                            .getPanicEndTime()));
+                }
+            } else {
+                final List<FinancialBenefits> nextTwo = this.queryFinancialGreaterThanTime(financialBenefits.getFinancialId(), financialBenefits
+                        .getPanicEndTime());
+                if (!CollectionUtils.isEmpty(nextTwo)) {
+                    financialBenefitsApi.setNextPanicStartTime(DateTimeUtils.localDateTimeParseLong(nextTwo.get(0)
+                            .getPanicStartTime()));
+                    financialBenefitsApi.setNextPanicEndTime(DateTimeUtils.localDateTimeParseLong(nextTwo.get(0)
+                            .getPanicEndTime()));
+                }
+            }
+            return financialBenefitsApi;
         }
         return null;
     }
@@ -304,6 +326,23 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         return this.financialBenefitsMapper.selectByExample(example);
     }
 
+    /**
+     * 根据financialId,抢购结束时间查询大于等于抢购结束时间的产品。
+     *
+     * @param financialId
+     * @param time
+     * @return
+     * @throws Exception
+     */
+    public List<FinancialBenefits> queryFinancialGreaterThanTime(final int financialId, final LocalDateTime time) throws Exception {
+        final FinancialBenefitsExample example = new FinancialBenefitsExample();
+        final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
+        criteria.andFinancialIdEqualTo(financialId);
+        criteria.andPanicStartTimeGreaterThanOrEqualTo(time);
+        example.setOrderByClause("panic_start_time");
+        return this.financialBenefitsMapper.selectByExample(example);
+    }
+
     @Override
     public List<FinancialBenefits> queryFinancialNotCalactionLockUp(final LocalDateTime now) throws Exception {
         final FinancialBenefitsExample example = new FinancialBenefitsExample();
@@ -361,54 +400,58 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         final LocalDateTime now = LocalDateTime.now();
         final List<FinancialBenefitsApi> lists = new ArrayList<>();
         for (final FinancialBenefits benefits : financialBenefits) {
-            String statusName = null;
-            if (now.isBefore(benefits.getPanicStartTime())) {
-                statusName = "未开启";
-            } else if (now.compareTo(benefits.getPanicStartTime()) >= 0 && now.compareTo(benefits.getPanicEndTime()) < 0) {
-                if (benefits.getPanicTotalLimit() == null) {
-                    statusName = "抢购进行中";
-                } else {
-                    if (benefits.getRemainLimit() != null) {
-                        if ((benefits.getRemainLimit().compareTo(new BigDecimal(0)) != 1)) {
-                            statusName = "抢购已结束";
-                        } else {
-                            statusName = "抢购进行中";
-                        }
+            lists.add(this.convertBenefitsToBenefitsApi(benefits, now));
+        }
+        return lists;
+    }
+
+    public FinancialBenefitsApi convertBenefitsToBenefitsApi(final FinancialBenefits benefits, final LocalDateTime now) {
+        final String statusName;
+        if (now.isBefore(benefits.getPanicStartTime())) {
+            statusName = "未开启";
+        } else if (now.compareTo(benefits.getPanicStartTime()) >= 0 && now.compareTo(benefits.getPanicEndTime()) < 0) {
+            if (benefits.getPanicTotalLimit() == null) {
+                statusName = "抢购进行中";
+            } else {
+                if (benefits.getRemainLimit() != null) {
+                    if ((benefits.getRemainLimit().compareTo(new BigDecimal(0)) != 1)) {
+                        statusName = "抢购已结束";
                     } else {
                         statusName = "抢购进行中";
                     }
+                } else {
+                    statusName = "抢购进行中";
                 }
-            } else {
-                statusName = "抢购已结束";
             }
-            Financial financial = null;
-            try {
-                financial = this.financialService.queryOneFinancial(benefits.getFinancialId());
-            } catch (final Exception e) {
-                FinancialBenefitsServiceImpl.logger.info("查询抢购时间段内的产品异常： {}", e);
-            }
-            final FinancialBenefitsApi financialBenefitsApi = FinancialBenefitsApi.builder()
-                    .id(benefits.getId())
-                    .financialId(benefits.getFinancialId())
-                    .productName(benefits.getProductName())
-                    .panicStartTime(DateTimeUtils.localDateTimeParseLong(benefits.getPanicStartTime()))
-                    .panicEndTime(DateTimeUtils.localDateTimeParseLong(benefits.getPanicEndTime()))
-                    .interestStartTime(DateTimeUtils.localDateTimeParseLong(benefits.getInterestStartTime()))
-                    .interestEndTime(DateTimeUtils.localDateTimeParseLong(benefits.getInterestEndTime()))
-                    .unlockTime(DateTimeUtils.localDateTimeParseLong(benefits.getUnlockTime()))
-                    .panicTotalLimit(benefits.getPanicTotalLimit())
-                    .minAmount(benefits.getMinAmount())
-                    .purchaseLimit(benefits.getPurchaseLimit())
-                    .remainLimit(benefits.getRemainLimit())
-                    .financialStatus(benefits.getFinancialStatus())
-                    .financialRate(benefits.getFinancialRate())
-                    .activityStatus(statusName)
-                    .numericalv(financial == null ? 0 : financial.getNumericalv())
-                    .alsoLockUpAmount(benefits.getAlsoLockUpAmount())
-                    .alsoTempAmount(benefits.getAlsoTempAmount())
-                    .build();
-            lists.add(financialBenefitsApi);
+        } else {
+            statusName = "抢购已结束";
         }
-        return lists;
+        Financial financial = null;
+        try {
+            financial = this.financialService.queryOneFinancial(benefits.getFinancialId());
+        } catch (final Exception e) {
+            FinancialBenefitsServiceImpl.logger.info("查询抢购时间段内的产品异常： {}", e);
+        }
+        final FinancialBenefitsApi financialBenefitsApi = FinancialBenefitsApi.builder()
+                .id(benefits.getId())
+                .financialId(benefits.getFinancialId())
+                .productName(benefits.getProductName())
+                .panicStartTime(DateTimeUtils.localDateTimeParseLong(benefits.getPanicStartTime()))
+                .panicEndTime(DateTimeUtils.localDateTimeParseLong(benefits.getPanicEndTime()))
+                .interestStartTime(DateTimeUtils.localDateTimeParseLong(benefits.getInterestStartTime()))
+                .interestEndTime(DateTimeUtils.localDateTimeParseLong(benefits.getInterestEndTime()))
+                .unlockTime(DateTimeUtils.localDateTimeParseLong(benefits.getUnlockTime()))
+                .panicTotalLimit(benefits.getPanicTotalLimit())
+                .minAmount(benefits.getMinAmount())
+                .purchaseLimit(benefits.getPurchaseLimit())
+                .remainLimit(benefits.getRemainLimit())
+                .financialStatus(benefits.getFinancialStatus())
+                .financialRate(benefits.getFinancialRate())
+                .activityStatus(statusName)
+                .numericalv(financial == null ? 0 : financial.getNumericalv())
+                .alsoLockUpAmount(benefits.getAlsoLockUpAmount())
+                .alsoTempAmount(benefits.getAlsoTempAmount())
+                .build();
+        return financialBenefitsApi;
     }
 }
