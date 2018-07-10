@@ -235,7 +235,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         if (financialBenefits != null) {
             final LocalDateTime now = LocalDateTime.now();
             final FinancialBenefitsApi financialBenefitsApi = this.convertBenefitsToBenefitsApi(financialBenefits, now);
-            if (financialBenefits.getPanicEndTime().compareTo(now) == 1) {
+            if (financialBenefits.getPanicEndTime().isAfter(now)) {
                 final List<FinancialBenefits> nextFinancialBenefits = this.queryFinancialGreaterThanNow(financialBenefits
                         .getFinancialId(), now);
                 if (!CollectionUtils.isEmpty(nextFinancialBenefits)) {

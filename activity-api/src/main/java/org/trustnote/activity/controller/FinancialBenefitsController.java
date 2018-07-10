@@ -318,7 +318,7 @@ public class FinancialBenefitsController {
         final LocalDateTime interestEnd = DateTimeUtils.longParseLocalDateTime(financialBenefitsApi.getInterestEndTime());
         final LocalDateTime unlockTime = DateTimeUtils.longParseLocalDateTime(financialBenefitsApi.getUnlockTime());
         final LocalDateTime panciMaxEnd = panciStart.plusDays(7);
-        if (panciEnd.compareTo(panciMaxEnd) == 1) {
+        if (panciEnd.compareTo(panciMaxEnd) > 0) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
             result.setMsg("抢购时间段不能超过7天");
             return result;
@@ -403,7 +403,7 @@ public class FinancialBenefitsController {
             result.setMsg("计息结束时间不正确");
             return result;
         }
-        if (unlockTime.compareTo(afterUnlock) == 1) {
+        if (unlockTime.compareTo(afterUnlock) > 0) {
             result.setCode(ResultEnum.BAD_REQUEST.getCode());
             result.setMsg("该解锁时间不可选择");
             return result;
