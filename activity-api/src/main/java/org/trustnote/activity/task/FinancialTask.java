@@ -19,15 +19,15 @@ public class FinancialTask {
     /**
      * 每隔5分钟计算剩余额度、已抢购额度、已锁额度
      */
-    @Scheduled(cron = "0 0/2 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void validationPaymentWeek() {
         this.financialLockUpService.validationPayment();
     }
 
     /**
-     * 每隔１小时执行计算收益
+     * 每隔10分钟执行计算收益
      */
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/10 * * * ?")
     public void calculateLockUpAmount() {
         this.financialLockUpService.saveInComeAmount();
     }
