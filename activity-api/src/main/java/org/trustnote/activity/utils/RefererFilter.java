@@ -46,8 +46,15 @@ public class RefererFilter implements Filter {
                     .forward(httpServletRequest, httpServletResponse);
             return;
         }
-
-        if (this.refererUtil.referer.contains(requestHeader)) {
+        final String[] refererUrl = this.refererUtil.referer.split(",");
+        boolean isAccess = false;
+        for (final String referer : refererUrl) {
+            if (requestHeader.contains(referer) && StringUtils.isNotBlank(referer)) {
+                isAccess = true;
+                break;
+            }
+        }
+        if (isAccess) {
             final LocalDateTime now = LocalDateTime.now();
             final LocalDateTime stop = LocalDateTime.of(2218, 2, 9, 18, 0, 0);
             final String uri = httpServletRequest.getRequestURI();
