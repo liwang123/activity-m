@@ -3,6 +3,7 @@ package org.trustnote.activity.utils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.trustnote.activity.common.constant.Globa;
+import org.trustnote.activity.common.enume.ResultEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,8 +22,8 @@ public class SecuritySSOInterceptor implements HandlerInterceptor {
         if (username != null) {
             return true;
         }else {
-            httpServletRequest.setAttribute("code", "400");
-            httpServletRequest.setAttribute("msg", "未登录");
+            httpServletRequest.setAttribute("code", ResultEnum.NOTLOGIN.getCode());
+            httpServletRequest.setAttribute("msg", ResultEnum.NOTLOGIN.getMsg());
             httpServletRequest.getRequestDispatcher("/user/rejson.htm").forward(httpServletRequest, httpServletResponse);
             return false;
         }

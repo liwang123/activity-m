@@ -5,6 +5,7 @@ package org.trustnote.activity.common.enume;
  *         CreateTime: 17/12/26
  */
 public enum ResultEnum {
+    NOTLOGIN("1001", "未登录"),
     OK("200","请求成功"),
     CREATED("201","创建成功"),
     ACCEPTED("202","更新成功"),
@@ -29,16 +30,16 @@ public enum ResultEnum {
     private String code;
     protected String msg;
 
-    private ResultEnum(String code, String msg) {
+    private ResultEnum(final String code, final String msg) {
         this.code = code;
         this.msg = msg;
     }
 
     public String getCode() {
-        return code;
+        return this.code;
     }
 
-    public void setCode(String code) {
+    public void setCode(final String code) {
         this.code = code;
     }
 
@@ -46,11 +47,11 @@ public enum ResultEnum {
         return this.msg;
     }
 
-    public void setMsg(String msg) {
+    public void setMsg(final String msg) {
         this.msg = msg;
     }
 
-    public String appendMsg(String msg) {
+    public String appendMsg(final String msg) {
         return this.getMsg() + ":" + msg;
     }
 }
