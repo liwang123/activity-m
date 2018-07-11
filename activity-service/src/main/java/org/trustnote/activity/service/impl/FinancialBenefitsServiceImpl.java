@@ -235,25 +235,13 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         if (financialBenefits != null) {
             final LocalDateTime now = LocalDateTime.now();
             final FinancialBenefitsApi financialBenefitsApi = this.convertBenefitsToBenefitsApi(financialBenefits, now);
-            if (financialBenefits.getPanicEndTime().isAfter(now)) {
-                final List<FinancialBenefits> nextFinancialBenefits = this.queryFinancialGreaterThanNow(financialBenefits
-                        .getFinancialId(), now);
-                if (!CollectionUtils.isEmpty(nextFinancialBenefits)) {
-                    financialBenefitsApi.setNextPanicStartTime(DateTimeUtils.localDateTimeParseLong(nextFinancialBenefits
-                            .get(0)
-                            .getPanicStartTime()));
-                    financialBenefitsApi.setNextPanicEndTime(DateTimeUtils.localDateTimeParseLong(nextFinancialBenefits.get(0)
-                            .getPanicEndTime()));
-                }
-            } else {
-                final List<FinancialBenefits> nextTwo = this.queryFinancialGreaterThanTime(financialBenefits.getFinancialId(), financialBenefits
-                        .getPanicEndTime());
-                if (!CollectionUtils.isEmpty(nextTwo)) {
-                    financialBenefitsApi.setNextPanicStartTime(DateTimeUtils.localDateTimeParseLong(nextTwo.get(0)
-                            .getPanicStartTime()));
-                    financialBenefitsApi.setNextPanicEndTime(DateTimeUtils.localDateTimeParseLong(nextTwo.get(0)
-                            .getPanicEndTime()));
-                }
+            final List<FinancialBenefits> nextTwo = this.queryFinancialGreaterThanTime(financialBenefits.getFinancialId(), financialBenefits
+                    .getPanicEndTime());
+            if (!CollectionUtils.isEmpty(nextTwo)) {
+                financialBenefitsApi.setNextPanicStartTime(DateTimeUtils.localDateTimeParseLong(nextTwo.get(0)
+                        .getPanicStartTime()));
+                financialBenefitsApi.setNextPanicEndTime(DateTimeUtils.localDateTimeParseLong(nextTwo.get(0)
+                        .getPanicEndTime()));
             }
             return financialBenefitsApi;
         }
