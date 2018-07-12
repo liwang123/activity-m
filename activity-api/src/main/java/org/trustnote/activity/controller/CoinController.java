@@ -98,7 +98,7 @@ public class CoinController {
         } catch (final JsonRpcClientException e) {
             CoinController.logger.error("exception: {}", e);
             result.setCode(ResultEnum.MISSION_FAIL.getCode());
-            result.setMsg(ResultEnum.MISSION_FAIL.getMsg());
+            result.setMsg(e.getMessage());
             result.setEntity("地址错误.");
             return result.getString(result);
         } catch (final Exception e) {
