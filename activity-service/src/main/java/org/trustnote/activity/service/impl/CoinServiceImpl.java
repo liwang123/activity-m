@@ -89,7 +89,7 @@ public class CoinServiceImpl implements CoinService {
         if (CoinServiceImpl.SMART_URL.equals(code)) {
             clientUrl = this.financialUrl;
         }
-        final JsonRpcHttpClient client = TrustnoteRpcUtil.getClient(clientUrl);
+        final JsonRpcHttpClient client = TrustnoteRpcUtil.getHeadless2Client(clientUrl);
         CoinServiceImpl.logger.info("client-url: {}", client.getServiceUrl());
         final String[] params = new String[]{""};
         final Map<String, String> headers = new HashMap<>(2);
@@ -116,11 +116,11 @@ public class CoinServiceImpl implements CoinService {
      */
     @Override
     public String sendToMultiAddress(final JSONArray array, final String code) throws Throwable {
-        String clientUrl = this.url;
+        JsonRpcHttpClient client = TrustnoteRpcUtil.getClient(this.url);
         if (CoinServiceImpl.SMART_URL.equals(code)) {
-            clientUrl = this.financialUrl;
+            client = TrustnoteRpcUtil.getHeadless2Client(this.financialUrl);
         }
-        final JsonRpcHttpClient client = TrustnoteRpcUtil.getClient(clientUrl);
+
         CoinServiceImpl.logger.info("client-url: {}", client.getServiceUrl());
         final Map<String, String> headers = new HashMap<>(2);
         headers.put("id", "1");

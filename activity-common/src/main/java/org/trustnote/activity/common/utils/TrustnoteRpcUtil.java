@@ -14,16 +14,41 @@ import java.net.URL;
 public class TrustnoteRpcUtil {
     private static final Logger logger = LogManager.getLogger(TrustnoteRpcUtil.class);
 
-    private static JsonRpcHttpClient client = null;
+    private static JsonRpcHttpClient client1 = null;
 
-    public static JsonRpcHttpClient getClient(String url) {
-        if (client == null) {
+    private static JsonRpcHttpClient client2 = null;
+
+    /**
+     * 普通client
+     *
+     * @param url
+     * @return
+     */
+    public static JsonRpcHttpClient getClient(final String url) {
+        if (TrustnoteRpcUtil.client1 == null) {
             try {
-                client = new JsonRpcHttpClient(new URL(url));
-            } catch (MalformedURLException e) {
-                logger.error("error: {}", e);
+                TrustnoteRpcUtil.client1 = new JsonRpcHttpClient(new URL(url));
+            } catch (final MalformedURLException e) {
+                TrustnoteRpcUtil.logger.error("error: {}", e);
             }
         }
-        return client;
+        return TrustnoteRpcUtil.client1;
+    }
+
+    /**
+     * 持仓收益client
+     *
+     * @param url
+     * @return
+     */
+    public static JsonRpcHttpClient getHeadless2Client(final String url) {
+        if (TrustnoteRpcUtil.client2 == null) {
+            try {
+                TrustnoteRpcUtil.client2 = new JsonRpcHttpClient(new URL(url));
+            } catch (final MalformedURLException e) {
+                TrustnoteRpcUtil.logger.error("error: {}", e);
+            }
+        }
+        return TrustnoteRpcUtil.client2;
     }
 }
