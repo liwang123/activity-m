@@ -45,6 +45,8 @@
             <mvc:mapping path="/**" />
             <!-- 以下配置排除过滤规则配置 -->
             <mvc:exclude-mapping path="/user/*"/><!-- 用户操作 -->
+            <mvc:exclude-mapping path="/exchange-order/*"/>
+            <mvc:exclude-mapping path="/expend/*"/>
             <mvc:exclude-mapping path="/download/record.htm" /><!-- 下载统计 -->
             <mvc:exclude-mapping path="/media/queryMedia.htm"/>
             <mvc:exclude-mapping path="/feedback/*" />

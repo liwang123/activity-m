@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.trustnote.activity.skeleton.mybatis.mapper.ExchangeOrderMapper">
+    <resultMap id="BaseResultMap" type="org.trustnote.activity.common.pojo.ExchangeOrder">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="currency" jdbcType="VARCHAR" property="currency"/>
+        <result column="quantity" jdbcType="DECIMAL" property="quantity"/>
+        <result column="payment" jdbcType="VARCHAR" property="payment"/>
+        <result column="receipt" jdbcType="DECIMAL" property="receipt"/>
+        <result column="from_address" jdbcType="VARCHAR" property="fromAddress"/>
+        <result column="to_address" jdbcType="VARCHAR" property="toAddress"/>
+        <result column="ttt_address" jdbcType="VARCHAR" property="tttAddress"/>
+        <result column="device_address" jdbcType="VARCHAR" property="deviceAddress"/>
+        <result column="rate" jdbcType="DECIMAL" property="rate"/>
+        <result column="states" jdbcType="INTEGER" property="states"/>
+        <result column="invite_code" jdbcType="VARCHAR" property="inviteCode"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    id, currency, quantity, payment, receipt, from_address, to_address, ttt_address, 
+    device_address, rate, states, invite_code, create_time, update_time
+  </sql>
+    <select id="selectByExample" parameterType="org.trustnote.activity.common.example.ExchangeOrderExample"
+            resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from exchange_order
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from exchange_order
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from exchange_order
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <delete id="deleteByExample" parameterType="org.trustnote.activity.common.example.ExchangeOrderExample">
+        delete from exchange_order
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="org.trustnote.activity.common.pojo.ExchangeOrder" useGeneratedKeys="true"
+            keyProperty="id">
+    insert into exchange_order (id, currency, quantity, 
+      payment, receipt, from_address, 
+      to_address, ttt_address, device_address, 
+      rate, states, invite_code, 
+      create_time, update_time)
+    values (#{id,jdbcType=BIGINT}, #{currency,jdbcType=VARCHAR}, #{quantity,jdbcType=DECIMAL}, 
+      #{payment,jdbcType=VARCHAR}, #{receipt,jdbcType=DECIMAL}, #{fromAddress,jdbcType=VARCHAR}, 
+      #{toAddress,jdbcType=VARCHAR}, #{tttAddress,jdbcType=VARCHAR}, #{deviceAddress,jdbcType=VARCHAR}, 
+      #{rate,jdbcType=DECIMAL}, #{states,jdbcType=INTEGER}, #{inviteCode,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+    <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.ExchangeOrder">
+        insert into exchange_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="currency != null">
+                currency,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+            <if test="payment != null">
+                payment,
+            </if>
+            <if test="receipt != null">
+                receipt,
+            </if>
+            <if test="fromAddress != null">
+                from_address,
+            </if>
+            <if test="toAddress != null">
+                to_address,
+            </if>
+            <if test="tttAddress != null">
+                ttt_address,
+            </if>
+            <if test="deviceAddress != null">
+                device_address,
+            </if>
+            <if test="rate != null">
+                rate,
+            </if>
+            <if test="states != null">
+                states,
+            </if>
+            <if test="inviteCode != null">
+                invite_code,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="currency != null">
+                #{currency,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                #{quantity,jdbcType=DECIMAL},
+            </if>
+            <if test="payment != null">
+                #{payment,jdbcType=VARCHAR},
+            </if>
+            <if test="receipt != null">
+                #{receipt,jdbcType=DECIMAL},
+            </if>
+            <if test="fromAddress != null">
+                #{fromAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="toAddress != null">
+                #{toAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="tttAddress != null">
+                #{tttAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceAddress != null">
+                #{deviceAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="rate != null">
+                #{rate,jdbcType=DECIMAL},
+            </if>
+            <if test="states != null">
+                #{states,jdbcType=INTEGER},
+            </if>
+            <if test="inviteCode != null">
+                #{inviteCode,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="org.trustnote.activity.common.example.ExchangeOrderExample"
+            resultType="java.lang.Long">
+        select count(*) from exchange_order
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update exchange_order
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=BIGINT},
+            </if>
+            <if test="record.currency != null">
+                currency = #{record.currency,jdbcType=VARCHAR},
+            </if>
+            <if test="record.quantity != null">
+                quantity = #{record.quantity,jdbcType=DECIMAL},
+            </if>
+            <if test="record.payment != null">
+                payment = #{record.payment,jdbcType=VARCHAR},
+            </if>
+            <if test="record.receipt != null">
+                receipt = #{record.receipt,jdbcType=DECIMAL},
+            </if>
+            <if test="record.fromAddress != null">
+                from_address = #{record.fromAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="record.toAddress != null">
+                to_address = #{record.toAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="record.tttAddress != null">
+                ttt_address = #{record.tttAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="record.deviceAddress != null">
+                device_address = #{record.deviceAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="record.rate != null">
+                rate = #{record.rate,jdbcType=DECIMAL},
+            </if>
+            <if test="record.states != null">
+                states = #{record.states,jdbcType=INTEGER},
+            </if>
+            <if test="record.inviteCode != null">
+                invite_code = #{record.inviteCode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update exchange_order
+        set id = #{record.id,jdbcType=BIGINT},
+        currency = #{record.currency,jdbcType=VARCHAR},
+        quantity = #{record.quantity,jdbcType=DECIMAL},
+        payment = #{record.payment,jdbcType=VARCHAR},
+        receipt = #{record.receipt,jdbcType=DECIMAL},
+        from_address = #{record.fromAddress,jdbcType=VARCHAR},
+        to_address = #{record.toAddress,jdbcType=VARCHAR},
+        ttt_address = #{record.tttAddress,jdbcType=VARCHAR},
+        device_address = #{record.deviceAddress,jdbcType=VARCHAR},
+        rate = #{record.rate,jdbcType=DECIMAL},
+        states = #{record.states,jdbcType=INTEGER},
+        invite_code = #{record.inviteCode,jdbcType=VARCHAR},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="org.trustnote.activity.common.pojo.ExchangeOrder">
+        update exchange_order
+        <set>
+            <if test="currency != null">
+                currency = #{currency,jdbcType=VARCHAR},
+            </if>
+            <if test="quantity != null">
+                quantity = #{quantity,jdbcType=DECIMAL},
+            </if>
+            <if test="payment != null">
+                payment = #{payment,jdbcType=VARCHAR},
+            </if>
+            <if test="receipt != null">
+                receipt = #{receipt,jdbcType=DECIMAL},
+            </if>
+            <if test="fromAddress != null">
+                from_address = #{fromAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="toAddress != null">
+                to_address = #{toAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="tttAddress != null">
+                ttt_address = #{tttAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceAddress != null">
+                device_address = #{deviceAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="rate != null">
+                rate = #{rate,jdbcType=DECIMAL},
+            </if>
+            <if test="states != null">
+                states = #{states,jdbcType=INTEGER},
+            </if>
+            <if test="inviteCode != null">
+                invite_code = #{inviteCode,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="org.trustnote.activity.common.pojo.ExchangeOrder">
+    update exchange_order
+    set currency = #{currency,jdbcType=VARCHAR},
+      quantity = #{quantity,jdbcType=DECIMAL},
+      payment = #{payment,jdbcType=VARCHAR},
+      receipt = #{receipt,jdbcType=DECIMAL},
+      from_address = #{fromAddress,jdbcType=VARCHAR},
+      to_address = #{toAddress,jdbcType=VARCHAR},
+      ttt_address = #{tttAddress,jdbcType=VARCHAR},
+      device_address = #{deviceAddress,jdbcType=VARCHAR},
+      rate = #{rate,jdbcType=DECIMAL},
+      states = #{states,jdbcType=INTEGER},
+      invite_code = #{inviteCode,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="selectByPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from exchange_order where states !=1
+        <if test="status != null">
+            and states=#{status}
+        </if>
+        order by create_time desc LIMIT #{offset},#{length}
+    </select>
+
+    <select id="countByOrder" resultType="java.lang.Integer">
+        select count(*) from exchange_order where states !=1
+        <if test="status != null">
+            and states=#{status}
+        </if>
+    </select>
+
+</mapper>
