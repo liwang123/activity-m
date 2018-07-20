@@ -1,5 +1,6 @@
 package org.trustnote.activity.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,6 +8,7 @@ import org.trustnote.activity.common.dto.ExchangeOrderDTO;
 import org.trustnote.activity.common.model.ResponseResult;
 import org.trustnote.activity.common.pojo.CheckAccount;
 import org.trustnote.activity.common.pojo.ExchangeOrder;
+import org.trustnote.activity.common.utils.OkHttpUtils;
 import org.trustnote.activity.common.utils.Sending;
 import org.trustnote.activity.common.utils.SendingPool;
 import org.trustnote.activity.service.iface.ExchangeOrderService;
@@ -16,6 +18,8 @@ import org.trustnote.activity.skeleton.mybatis.orm.Page;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class ExchangeOrderImpl implements ExchangeOrderService {
@@ -51,17 +55,30 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
     public ResponseResult manualMoney(final Long id) {
         final ExchangeOrder exchangeOrder = this.exchangeOrderMapper.selectByPrimaryKey(id);
         if (exchangeOrder.getCreateTime().plusMinutes(10).isBefore(LocalDateTime.now())) {
-            exchangeOrder.setRate(new BigDecimal(1));
+            final BigDecimal rate = this.getRate();
+            if (rate == null) {
+                return ResponseResult.failure(3004, "Failed to obtain exchange rate");
+            }
+            exchangeOrder.setRate(rate);
         }
         //调取打款接口
-
+        
         this.addRecord(exchangeOrder);
         //调取推送设备信息接口
-        
+
 
         return ResponseResult.success();
     }
 
+
+    private BigDecimal getRate() {
+        final String url = "https://api.bit-z.pro/api_v1/ticker";
+        final Map<String, String> map = new HashMap<>();
+        map.put("coin", "ttt_btc");
+        final String body = OkHttpUtils.get(url, map);
+        final JSONObject jsonObject = (JSONObject) JSONObject.parse(body);
+        return new BigDecimal(jsonObject.getJSONObject("data").get("last").toString());
+    }
 
     private void addRecord(final ExchangeOrder exchangeOrder) {
         final CheckAccount checkAccount = CheckAccount.builder()
@@ -75,6 +92,6 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
 
     private void sendMail(final ExchangeOrder exchangeOrder) {
         final SendingPool pool = SendingPool.getInstance();
-        pool.addThread(new Sending("13333611437@qq.com", "TrustNote email", "有订单未处理"));
+        pool.addThread(new Sending("13333611437@qq.com", "TrustNote email", "有订单未处理" + exchangeOrder));
     }
 }

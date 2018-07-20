@@ -117,6 +117,8 @@
             <artifactId>bucket4j-core</artifactId>
             <version>3.0.2</version>
         </dependency>
+        <!-- 新增-->
+        
         <dependency>
             <groupId>com.qcloud</groupId>
             <artifactId>cos_api</artifactId>
