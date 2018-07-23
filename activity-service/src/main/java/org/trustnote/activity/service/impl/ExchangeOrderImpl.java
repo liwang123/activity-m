@@ -1,6 +1,7 @@
 package org.trustnote.activity.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Maps;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
     @Override
     public synchronized void insertExchangeOrder(final ExchangeOrderDTO exchangeOrderDTO) {
         final ExchangeOrder exchangeOrder = new ExchangeOrder();
+        exchangeOrder.setCreateTime(LocalDateTime.now());
         BeanUtils.copyProperties(exchangeOrderDTO, exchangeOrder);
         this.exchangeOrderMapper.insertSelective(exchangeOrder);
         if (exchangeOrder.getStates() == 4 && exchangeOrderDTO.getReceipt().compareTo(new BigDecimal(0.5)) == -1) {
@@ -54,20 +56,54 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
     @Override
     public ResponseResult manualMoney(final Long id) {
         final ExchangeOrder exchangeOrder = this.exchangeOrderMapper.selectByPrimaryKey(id);
-        if (exchangeOrder.getCreateTime().plusMinutes(10).isBefore(LocalDateTime.now())) {
-            final BigDecimal rate = this.getRate();
-            if (rate == null) {
-                return ResponseResult.failure(3004, "Failed to obtain exchange rate");
-            }
-            exchangeOrder.setRate(rate);
+        final BigDecimal rate = this.getRate();
+        if (rate == null) {
+            return ResponseResult.failure(3004, "Failed to obtain exchange rate");
         }
-        //调取打款接口
-        
+        exchangeOrder.setRate(rate);
+        final BigDecimal checkBalance = this.checkBalance();
+        final BigDecimal amount = exchangeOrder.getReceipt().divide(exchangeOrder.getRate());
+        if (checkBalance.compareTo(amount) != 1) {
+            exchangeOrder.setStates(2);
+            this.exchangeOrderMapper.updateByPrimaryKeySelective(exchangeOrder);
+            return ResponseResult.failure(3005, "NOT ENOUGH MONEY");
+        }
+        //转账
+        final String url = "http://150.109.32.56:9000/payToAddress";
+        final Map<String, String> param = Maps.newHashMap();
+        param.put("address", exchangeOrder.getTttAddress());
+        param.put("amount", amount.toString());
+        final String body = OkHttpUtils.post(url, param);
+        final JSONObject jsonObject = (JSONObject) JSONObject.parse(body);
+        new BigDecimal(jsonObject.getJSONObject("data").get("last").toString());
+        //如果打款成功
+        exchangeOrder.setStates(4);
+        this.exchangeOrderMapper.updateByPrimaryKeySelective(exchangeOrder);
+        exchangeOrder.setQuantity(amount);
         this.addRecord(exchangeOrder);
         //调取推送设备信息接口
-
-
+        final String deviceUrl = "http://150.109.32.56:9000/postTransferResult";
+        final HashMap<String, String> params = Maps.newHashMap();
+        params.put("device_address", exchangeOrder.getDeviceAddress());
+        params.put("rate", exchangeOrder.getRate().toString());
+        params.put("amount", amount.toString());
+        final String deciveBody = OkHttpUtils.post(deviceUrl, params);
         return ResponseResult.success();
+    }
+
+    @Override
+    public BigDecimal checkBalance() {
+        final String url = "http://150.109.32.56:9000/getWalletBalance";
+        final String body = OkHttpUtils.get(url, null);
+        final JSONObject jsonObject = (JSONObject) JSONObject.parse(body);
+        final BigDecimal checkBanlance = new BigDecimal(jsonObject.getJSONObject("data").get("balance").toString());
+        return checkBanlance;
+    }
+
+    @Override
+    public String getExchangeOrder() {
+
+        return null;
     }
 
 
@@ -90,7 +126,8 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         this.checkAccountMapper.insertSelective(checkAccount);
     }
 
-    private void sendMail(final ExchangeOrder exchangeOrder) {
+    @Override
+    public void sendMail(final ExchangeOrder exchangeOrder) {
         final SendingPool pool = SendingPool.getInstance();
         pool.addThread(new Sending("13333611437@qq.com", "TrustNote email", "有订单未处理" + exchangeOrder));
     }

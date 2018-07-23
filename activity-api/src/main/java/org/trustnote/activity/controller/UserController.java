@@ -77,26 +77,26 @@ public class UserController {
                 result.setMsg(ResultEnum.BAD_REQUEST.appendMsg("The password is mandatory."));
                 return result.getString(result);
             }
-            if (StringUtils.isBlank(loginu.getCode())) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg(ResultEnum.BAD_REQUEST.appendMsg("The code is mandatory."));
-                return result.getString(result);
-            }
-            final String scode = (String) session.getAttribute("code");
-            if (StringUtils.isBlank(scode)) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg(ResultEnum.BAD_REQUEST.appendMsg(""));
-                return result.getString(result);
-            }
-            if (!loginu.getCode().toLowerCase().equals(scode.toLowerCase())) {
-                UserController.logger.info("scode.toLowerCase(){}" + scode.toLowerCase() + "code" + loginu.getCode().toLowerCase());
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg(ResultEnum.BAD_REQUEST.appendMsg("Incorrect verification code."));
-                return result.getString(result);
-            }
+//            if (StringUtils.isBlank(loginu.getCode())) {
+//                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+//                result.setMsg(ResultEnum.BAD_REQUEST.appendMsg("The code is mandatory."));
+//                return result.getString(result);
+//            }
+//            final String scode = (String) session.getAttribute("code");
+//            if (StringUtils.isBlank(scode)) {
+//                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+//                result.setMsg(ResultEnum.BAD_REQUEST.appendMsg(""));
+//                return result.getString(result);
+//            }
+//            if (!loginu.getCode().toLowerCase().equals(scode.toLowerCase())) {
+//                UserController.logger.info("scode.toLowerCase(){}" + scode.toLowerCase() + "code" + loginu.getCode().toLowerCase());
+//                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//                result.setCode(ResultEnum.BAD_REQUEST.getCode());
+//                result.setMsg(ResultEnum.BAD_REQUEST.appendMsg("Incorrect verification code."));
+//                return result.getString(result);
+//            }
             final User userDao = new User();
             BeanUtils.copyProperties(userDao, loginu);
             //查询是否存在登陆错误信息

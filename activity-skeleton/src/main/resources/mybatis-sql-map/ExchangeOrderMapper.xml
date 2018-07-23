@@ -125,7 +125,8 @@
       #{rate,jdbcType=DECIMAL}, #{states,jdbcType=INTEGER}, #{inviteCode,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-    <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.ExchangeOrder">
+    <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.ExchangeOrder"
+            useGeneratedKeys="true" keyProperty="id">
         insert into exchange_order
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -359,8 +360,9 @@
     <select id="selectByPage" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
+
         from exchange_order where states !=1
-        <if test="status != null">
+        <if test="status != 0">
             and states=#{status}
         </if>
         order by create_time desc LIMIT #{offset},#{length}
@@ -368,7 +370,7 @@
 
     <select id="countByOrder" resultType="java.lang.Integer">
         select count(*) from exchange_order where states !=1
-        <if test="status != null">
+        <if test="status != 0">
             and states=#{status}
         </if>
     </select>

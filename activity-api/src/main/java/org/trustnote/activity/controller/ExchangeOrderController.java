@@ -6,8 +6,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.trustnote.activity.common.dto.ExchangeOrderDTO;
 import org.trustnote.activity.common.model.ResponseResult;
+import org.trustnote.activity.common.utils.DateTimeUtils;
 import org.trustnote.activity.service.iface.ExchangeOrderService;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/exchange-order")
@@ -53,5 +59,41 @@ public class ExchangeOrderController {
         return this.exchangeOrderService.manualMoney(id);
     }
 
+    /**
+     * 地址余额
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/check-balance", method = RequestMethod.GET)
+    public ResponseResult checkBalance() {
+        final BigDecimal checkBalance = this.exchangeOrderService.checkBalance();
+        return ResponseResult.success(checkBalance);
+    }
 
+
+    /**
+     * 导出execl
+     *
+     * @param response
+     */
+    @RequestMapping(value = "/export-order", method = RequestMethod.GET)
+    public void exportCathecticCountCSV(final HttpServletResponse response) {
+        final String fileName = "cathectic Total" + DateTimeUtils.formatDateTime(DateTimeUtils.secondPattern) + ".csv";
+        response.setContentType("text/csv;charset=GBK");
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+        PrintWriter printWriter = null;
+        try {
+            printWriter = response.getWriter();
+            final String content = this.exchangeOrderService.getExchangeOrder();
+            printWriter.write(content);
+            printWriter.flush();
+        } catch (final IOException e) {
+
+        } finally {
+            if (printWriter != null) {
+                printWriter.close();
+            }
+        }
+    }
 }
