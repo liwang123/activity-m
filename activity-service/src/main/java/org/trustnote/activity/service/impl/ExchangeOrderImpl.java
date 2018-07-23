@@ -1,7 +1,6 @@
 package org.trustnote.activity.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.Maps;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,7 +69,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         }
         //转账
         final String url = "http://150.109.32.56:9000/payToAddress";
-        final Map<String, String> param = Maps.newHashMap();
+        final Map<String, String> param = new HashMap<>();
         param.put("address", exchangeOrder.getTttAddress());
         param.put("amount", amount.toString());
         final String body = OkHttpUtils.post(url, param);
@@ -83,7 +82,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         this.addRecord(exchangeOrder);
         //调取推送设备信息接口
         final String deviceUrl = "http://150.109.32.56:9000/postTransferResult";
-        final HashMap<String, String> params = Maps.newHashMap();
+        final HashMap<String, String> params = new HashMap<>();
         params.put("device_address", exchangeOrder.getDeviceAddress());
         params.put("rate", exchangeOrder.getRate().toString());
         params.put("amount", amount.toString());
