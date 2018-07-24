@@ -60,6 +60,9 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
     @Override
     public ResponseResult manualMoney(final Long id) {
         final ExchangeOrder exchangeOrder = this.exchangeOrderMapper.selectByPrimaryKey(id);
+        if (exchangeOrder.getStates() == 1) {
+            return ResponseResult.failure(3010, "request error");
+        }
         final BigDecimal rate = this.getRate();
         if (rate.compareTo(new BigDecimal(0)) == 0) {
             this.sendExceptionMail("getRate connect timeout");
@@ -108,7 +111,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         final String postTransferResult = this.postTransferResult(exchangeOrder);
         if (postTransferResult == null) {
             this.sendExceptionMail("推送设备信息失败" + exchangeOrder);
-            return ResponseResult.failure(3006, postTransferResult);
+            return ResponseResult.failure(3009, postTransferResult);
         }
         return ResponseResult.success(postTransferResult);
     }
