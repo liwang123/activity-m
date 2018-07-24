@@ -78,7 +78,7 @@
         </where>
     </sql>
     <sql id="Base_Column_List">
-    id, currency, quantity, payment, receipt, from_address, to_address, ttt_address, 
+    id, currency, quantity, payment, receipt, from_address, to_address, ttt_address,
     device_address, rate, states, invite_code, create_time, update_time
   </sql>
     <select id="selectByExample" parameterType="org.trustnote.activity.common.example.ExchangeOrderExample"

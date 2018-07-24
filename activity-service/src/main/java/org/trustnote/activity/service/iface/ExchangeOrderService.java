@@ -19,4 +19,7 @@ public interface ExchangeOrderService {
     String getExchangeOrder();
 
     void sendMail(ExchangeOrder exchangeOrder);
+
+    BigDecimal getRate();
+
 }

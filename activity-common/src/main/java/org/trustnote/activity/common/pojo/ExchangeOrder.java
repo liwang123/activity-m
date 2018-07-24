@@ -36,6 +36,8 @@ public class ExchangeOrder {
 
     private LocalDateTime createTime;
 
+    private String creTime;
+
     private LocalDateTime updateTime;
 
 }

@@ -30,7 +30,7 @@ public class ExchangeTask {
     /**
      * 每隔10分钟处理未支付订单
      */
-    @Scheduled(cron = "0 0/10 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void handleOrders() {
         final ExchangeOrderExample exchangeOrderExample = new ExchangeOrderExample();
         exchangeOrderExample.createCriteria().andStatesEqualTo(1);
@@ -71,10 +71,13 @@ public class ExchangeTask {
                     final JSONObject jsonObject = (JSONObject) JSONObject.parse(body);
                     final BigDecimal balance = new BigDecimal(jsonObject.get("balance").toString());
                     final int unconfirmed_transactions_count = (int) jsonObject.get("unconfirmedBalance");
-                    if (balance.compareTo(order.getReceipt()) != -1 && unconfirmed_transactions_count == 0) {
-                        order.setStates(3);
-                        this.exchangeOrderMapper.updateByPrimaryKeySelective(order);
-                        this.exchangeOrderService.sendMail(order);
+                    if (unconfirmed_transactions_count == 0) {
+                        if (balance.compareTo(new BigDecimal(0.05)) == -1) {
+                            this.exchangeOrderService.manualMoney(order.getId());
+                        } else {
+                            this.exchangeOrderMapper.updateByPrimaryKeySelective(order);
+                            this.exchangeOrderService.sendMail(order);
+                        }
                     }
                 });
     }
