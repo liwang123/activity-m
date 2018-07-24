@@ -31,7 +31,7 @@ public class ExchangeTask {
     /**
      * 每隔10分钟处理未支付订单
      */
-    @Scheduled(cron = "0 0/2 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void handleOrders() {
         final ExchangeOrderExample exchangeOrderExample = new ExchangeOrderExample();
         exchangeOrderExample.createCriteria().andStatesEqualTo(1);
@@ -46,11 +46,13 @@ public class ExchangeTask {
 //                    final BigDecimal btcMoney = new BigDecimal(jsonObject.get("data").toString());
                     final String url = "https://testnet.blockchain.info/q/addressbalance/" + order.getToAddress();
                     final String body = OkHttpUtils.get(url, null);
+                    System.out.println(body);
                     if (body != null) {
-                        final BigDecimal btcMoney = new BigDecimal(body).divide(new BigDecimal(100000000));
+                        final BigDecimal btcMoney = new BigDecimal(body).divide(new BigDecimal(100000000), 8, BigDecimal.ROUND_HALF_EVEN);
                         if (btcMoney.compareTo(new BigDecimal(0.01)) == 1) {
-                            order.setQuantity(order.getReceipt().divide(order.getRate()));
                             order.setReceipt(btcMoney);
+                            order.setRate(this.exchangeOrderService.getRate());
+                            order.setQuantity(order.getReceipt().divide(order.getRate(), 8, BigDecimal.ROUND_HALF_EVEN));
                             order.setStates(5);
                             this.exchangeOrderMapper.updateByPrimaryKeySelective(order);
                         }
@@ -62,7 +64,7 @@ public class ExchangeTask {
     /**
      * 每隔10分钟处理待确认订单
      */
-    @Scheduled(cron = "0 0/2 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void unconfirmedOrders() {
         final ExchangeOrderExample exchangeOrderExample = new ExchangeOrderExample();
         exchangeOrderExample.createCriteria().andStatesEqualTo(5);

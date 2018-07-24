@@ -32,7 +32,6 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
 
     @Override
     public synchronized void insertExchangeOrder(final ExchangeOrderDTO exchangeOrderDTO) {
-        final BigDecimal rate = this.getRate();
         final ExchangeOrder exchangeOrder = ExchangeOrder.builder()
                 .currency(exchangeOrderDTO.getCurrency())
                 .deviceAddress(exchangeOrderDTO.getDeviceAddress())
@@ -41,7 +40,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
                 .inviteCode(exchangeOrderDTO.getInviteCode())
                 .payment(exchangeOrderDTO.getPayment())
                 .states(1)
-                .rate(rate).build();
+                .build();
         this.exchangeOrderMapper.insertSelective(exchangeOrder);
     }
 
@@ -70,7 +69,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         if (checkBalance.compareTo(new BigDecimal(-1)) == 0) {
             return ResponseResult.failure(3007, "checkBalance connect timeout");
         }
-        final BigDecimal quantity = exchangeOrder.getReceipt().divide(exchangeOrder.getRate());
+        final BigDecimal quantity = exchangeOrder.getReceipt().divide(exchangeOrder.getRate(), 8, BigDecimal.ROUND_HALF_EVEN);
         if (checkBalance.compareTo(quantity) != 1) {
             exchangeOrder.setStates(2);
             this.exchangeOrderMapper.updateByPrimaryKeySelective(exchangeOrder);
