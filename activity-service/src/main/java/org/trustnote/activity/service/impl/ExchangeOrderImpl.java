@@ -62,11 +62,13 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         final ExchangeOrder exchangeOrder = this.exchangeOrderMapper.selectByPrimaryKey(id);
         final BigDecimal rate = this.getRate();
         if (rate.compareTo(new BigDecimal(0)) == 0) {
+            this.sendExceptionMail("getRate connect timeout");
             return ResponseResult.failure(3004, "getRate connect timeout");
         }
         exchangeOrder.setRate(rate);
         final BigDecimal checkBalance = this.checkBalance();
         if (checkBalance.compareTo(new BigDecimal(-1)) == 0) {
+            this.sendExceptionMail("checkBalance connect timeout");
             return ResponseResult.failure(3007, "checkBalance connect timeout");
         }
         final BigDecimal quantity = exchangeOrder.getReceipt().divide(exchangeOrder.getRate(), 0, BigDecimal.ROUND_HALF_EVEN);
@@ -76,15 +78,15 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
             this.sendMail(exchangeOrder);
             return ResponseResult.failure(3005, "NOT ENOUGH MONEY");
         }
-
         exchangeOrder.setQuantity(quantity);
         //转账
         final String url = "http://150.109.32.56:9000/payToAddress";
         final Map<String, String> param = new HashMap<>();
         param.put("address", exchangeOrder.getTttAddress());
         param.put("amount", exchangeOrder.getQuantity().toString());
-        final String body = OkHttpUtils.post(url, param);
+        final String body = OkHttpUtils.get(url, param);
         if (body == null) {
+            this.sendExceptionMail("payToAddress connect timeout");
             return ResponseResult.failure(3008, "payToAddress connect timeout");
         }
         final JSONObject jsonObject = (JSONObject) JSONObject.parse(body);
@@ -97,12 +99,17 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         } else {
             exchangeOrder.setStates(6);
             this.exchangeOrderMapper.updateByPrimaryKeySelective(exchangeOrder);
+            this.sendExceptionMail(body);
             return ResponseResult.failure(3006, body);
         }
         this.exchangeOrderMapper.updateByPrimaryKeySelective(exchangeOrder);
         this.addRecord(exchangeOrder);
         //调取推送设备信息接口
         final String postTransferResult = this.postTransferResult(exchangeOrder);
+        if (postTransferResult == null) {
+            this.sendExceptionMail("推送设备信息失败" + exchangeOrder);
+            return ResponseResult.failure(3006, postTransferResult);
+        }
         return ResponseResult.success(postTransferResult);
     }
 
@@ -165,4 +172,10 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         final SendingPool pool = SendingPool.getInstance();
         pool.addThread(new Sending("13333611437@qq.com", "TrustNote email", "有订单未处理" + exchangeOrder));
     }
+
+    private void sendExceptionMail(final String msg) {
+        final SendingPool pool = SendingPool.getInstance();
+        pool.addThread(new Sending("13333611437@qq.com", "TrustNote email", "有订单有异常" + msg));
+    }
+
 }

@@ -38,12 +38,6 @@ public class ExchangeTask {
         final List<ExchangeOrder> exchangeOrders = this.exchangeOrderMapper.selectByExample(exchangeOrderExample);
         exchangeOrders.stream()
                 .forEach(order -> {
-                    //查询order并提出BTC地址是否有钱
-//                    final String url = "http://150.109.32.56:9000/getBtcBalance";
-//                    final HashMap<String, String> param = Maps.newHashMap();
-//                    final String body = OkHttpUtils.get(url, param);
-//                    final JSONObject jsonObject = (JSONObject) JSONObject.parse(body);
-//                    final BigDecimal btcMoney = new BigDecimal(jsonObject.get("data").toString());
                     final String url = "https://testnet.blockchain.info/q/addressbalance/" + order.getToAddress();
                     final String body = OkHttpUtils.get(url, null);
                     System.out.println(body);
