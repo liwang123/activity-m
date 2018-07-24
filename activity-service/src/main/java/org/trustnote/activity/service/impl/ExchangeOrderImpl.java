@@ -1,17 +1,17 @@
 package org.trustnote.activity.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.trustnote.activity.common.dto.ExchangeEmailOrderDTO;
 import org.trustnote.activity.common.dto.ExchangeOrderDTO;
 import org.trustnote.activity.common.model.ResponseResult;
 import org.trustnote.activity.common.pojo.CheckAccount;
 import org.trustnote.activity.common.pojo.ExchangeOrder;
-import org.trustnote.activity.common.utils.DateTimeUtils;
-import org.trustnote.activity.common.utils.OkHttpUtils;
-import org.trustnote.activity.common.utils.Sending;
-import org.trustnote.activity.common.utils.SendingPool;
+import org.trustnote.activity.common.utils.*;
 import org.trustnote.activity.service.iface.ExchangeOrderService;
 import org.trustnote.activity.skeleton.mybatis.mapper.CheckAccountMapper;
 import org.trustnote.activity.skeleton.mybatis.mapper.ExchangeOrderMapper;
@@ -150,8 +150,26 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
 
     @Override
     public String getExchangeOrder() {
+        final List<String> columns = Arrays.asList("购买币种", "购买数量", "支付方式", "收到BTC数量", "收款BTC地址", "钱包地址", "汇率", "状态", "邀请码", "设备码", "创建时间");
 
-        return null;
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(StringUtils.join(columns, ","));
+        final List<ExchangeOrder> exchangeOrderList = this.exchangeOrderMapper.selectByExample(null);
+        exchangeOrderList.stream().forEach(exchangeOrder -> {
+            stringBuilder.append("\r")
+                    .append(exchangeOrder.getCurrency()).append(",")
+                    .append(exchangeOrder.getQuantity()).append(",")
+                    .append(exchangeOrder.getPayment()).append(",")
+                    .append(exchangeOrder.getReceipt()).append(",")
+                    .append(exchangeOrder.getToAddress()).append(",")
+                    .append(exchangeOrder.getTttAddress()).append(",")
+                    .append(exchangeOrder.getRate()).append(",")
+                    .append(StatesUtils.getStates(exchangeOrder.getStates())).append(",")
+                    .append(exchangeOrder.getInviteCode()).append(",")
+                    .append(exchangeOrder.getDeviceAddress()).append(",")
+                    .append(exchangeOrder.getCreateTime().toString().replaceAll("T", " "));
+        });
+        return stringBuilder.toString();
     }
 
 
@@ -180,13 +198,18 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
 
     @Override
     public void sendMail(final ExchangeOrder exchangeOrder) {
+        final ExchangeEmailOrderDTO exchangeEmailOrderDTO = ExchangeEmailOrderDTO.builder()
+                .state(StatesUtils.getStates(exchangeOrder.getStates()))
+                .build();
+        BeanUtils.copyProperties(exchangeOrder, exchangeEmailOrderDTO);
         this.list.stream().forEach(email -> {
             final SendingPool pool = SendingPool.getInstance();
-            pool.addThread(new Sending(email, "TrustNote email", "有订单未处理" + exchangeOrder));
+            pool.addThread(new Sending(email, "TrustNote email", "有订单未处理" + exchangeEmailOrderDTO));
         });
     }
 
-    private void sendExceptionMail(final String msg) {
+    @Override
+    public void sendExceptionMail(final String msg) {
         this.list.stream().forEach(email -> {
             final SendingPool pool = SendingPool.getInstance();
             pool.addThread(new Sending(email, "TrustNote email", "有订单有异常" + msg));

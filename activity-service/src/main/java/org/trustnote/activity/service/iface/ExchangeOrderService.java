@@ -20,6 +20,8 @@ public interface ExchangeOrderService {
 
     void sendMail(ExchangeOrder exchangeOrder);
 
+    void sendExceptionMail(final String msg);
+
     BigDecimal getRate();
 
 }
