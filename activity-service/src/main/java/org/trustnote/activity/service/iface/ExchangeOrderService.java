@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public interface ExchangeOrderService {
     void insertExchangeOrder(final ExchangeOrderDTO exchangeOrderDTO);
 
-    Page getAllOrder(int pageIndex, int pageSize, int status);
+    Page getAllOrder(int pageIndex, int pageSize, int status, String condition);
 
     ResponseResult manualMoney(Long id);
 

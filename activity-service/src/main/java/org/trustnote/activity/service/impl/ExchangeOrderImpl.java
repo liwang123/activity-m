@@ -52,15 +52,15 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
     }
 
     @Override
-    public Page getAllOrder(final int pageIndex, final int pageSize, final int status) {
+    public Page getAllOrder(final int pageIndex, final int pageSize, final int status, final String condition) {
         final Page<ExchangeOrder> page = new Page<>(pageIndex, pageSize);
-        final List<ExchangeOrder> exchangeOrderList = this.exchangeOrderMapper.selectByPage((pageIndex - 1) * pageSize, pageSize, status);
+        final List<ExchangeOrder> exchangeOrderList = this.exchangeOrderMapper.selectByPage((pageIndex - 1) * pageSize, pageSize, status, condition);
         exchangeOrderList.stream()
                 .forEach(exchangeOrder -> {
                     exchangeOrder.setCreTime(DateTimeUtils.formatDateTime(exchangeOrder.getCreateTime(), DateTimeUtils.secondPattern));
                 });
         page.setResult(exchangeOrderList);
-        page.setTotalCount(this.exchangeOrderMapper.countByOrder(status));
+        page.setTotalCount(this.exchangeOrderMapper.countByOrder(status, condition));
         return page;
     }
 

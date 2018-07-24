@@ -43,8 +43,8 @@ public class ExchangeOrderController {
      * @return
      */
     @RequestMapping(value = "/query-order", method = RequestMethod.GET)
-    public ResponseResult queryOrder(final int pageIndex, final int pageSize, final int status) {
-        final Page allOrder = this.exchangeOrderService.getAllOrder(pageIndex, pageSize, status);
+    public ResponseResult queryOrder(final int pageIndex, final int pageSize, final int status, final String condition) {
+        final Page allOrder = this.exchangeOrderService.getAllOrder(pageIndex, pageSize, status, condition);
         return ResponseResult.success(allOrder);
     }
 

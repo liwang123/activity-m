@@ -360,19 +360,36 @@
     <select id="selectByPage" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-
-        from exchange_order where states !=1
-        <if test="status != 0">
-            and states=#{status}
-        </if>
+        from exchange_order
+        <where>
+            states !=1
+            <if test="status != 0">
+                and states=#{status}
+            </if>
+            <if test="condition != null">
+                and ttt_address=#{condition} OR
+                to_address=#{condition} OR
+                device_address=#{condition} OR
+                invite_code=#{condition}
+            </if>
+        </where>
         order by create_time desc LIMIT #{offset},#{length}
     </select>
 
     <select id="countByOrder" resultType="java.lang.Integer">
-        select count(*) from exchange_order where states !=1
-        <if test="status != 0">
-            and states=#{status}
-        </if>
+        select count(*) from exchange_order
+        <where>
+            states !=1
+            <if test="status != 0">
+                and states=#{status}
+            </if>
+            <if test="condition != null">
+                and ttt_address=#{condition} OR
+                to_address=#{condition} OR
+                device_address=#{condition} OR
+                invite_code=#{condition}
+            </if>
+        </where>
     </select>
 
 </mapper>

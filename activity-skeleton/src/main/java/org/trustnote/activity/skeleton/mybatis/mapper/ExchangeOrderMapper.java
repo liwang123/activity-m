@@ -29,8 +29,8 @@ public interface ExchangeOrderMapper {
 
     int updateByPrimaryKey(ExchangeOrder record);
 
-    List<ExchangeOrder> selectByPage(@Param("offset") int offset, @Param("length") int length, @Param("status") int status);
+    List<ExchangeOrder> selectByPage(@Param("offset") int offset, @Param("length") int length, @Param("status") int status, @Param("condition") String condition);
 
 
-    int countByOrder(@Param("status") int status);
+    int countByOrder(@Param("status") int status, @Param("condition") String condition);
 }
