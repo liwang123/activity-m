@@ -124,11 +124,11 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
     private String postTransferResult(final ExchangeOrder exchangeOrder) {
         final String deviceUrl = "http://150.109.32.56:9000/getTransferResult";
         final HashMap<String, String> params = new HashMap<>();
-        params.put("device_address", exchangeOrder.getDeviceAddress());
+        params.put("from_address", exchangeOrder.getDeviceAddress());
         params.put("rate", exchangeOrder.getRate().toString());
         params.put("amount", exchangeOrder.getQuantity().toString());
-        params.put("receipt", exchangeOrder.getTttAddress());
-        final String deciveBody = OkHttpUtils.post(deviceUrl, params);
+        params.put("receipt", exchangeOrder.getReceipt().toString());
+        final String deciveBody = OkHttpUtils.rpcRequestBodyPost(deviceUrl, params);
         return deciveBody;
     }
 
