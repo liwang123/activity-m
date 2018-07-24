@@ -2,6 +2,7 @@ package org.trustnote.activity.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.trustnote.activity.common.dto.ExchangeOrderDTO;
 import org.trustnote.activity.common.model.ResponseResult;
@@ -29,6 +30,9 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
 
     @Autowired
     private CheckAccountMapper checkAccountMapper;
+
+    @Value("${exChangeUrl}")
+    private String exChangeUrl;
 
     private final List<String> list = Arrays.asList("13333611437@qq.com", "jing.zhang@thingtrust.com");
 
@@ -86,7 +90,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         }
         exchangeOrder.setQuantity(quantity);
         //转账
-        final String url = "http://150.109.32.56:9000/payToAddress";
+        final String url = this.exChangeUrl + "/payToAddress";
         final Map<String, String> param = new HashMap<>();
         param.put("address", exchangeOrder.getTttAddress());
         param.put("amount", exchangeOrder.getQuantity().toString());
@@ -122,7 +126,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
     }
 
     private String postTransferResult(final ExchangeOrder exchangeOrder) {
-        final String deviceUrl = "http://150.109.32.56:9000/getTransferResult";
+        final String deviceUrl = this.exChangeUrl + "/getTransferResult";
         final HashMap<String, String> params = new HashMap<>();
         params.put("from_address", exchangeOrder.getDeviceAddress());
         params.put("rate", exchangeOrder.getRate().toString());
@@ -134,7 +138,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
 
     @Override
     public BigDecimal checkBalance() {
-        final String url = "http://150.109.32.56:9000/getWalletBalance";
+        final String url = this.exChangeUrl + "/getWalletBalance";
         final String body = OkHttpUtils.get(url, null);
         if (body == null) {
             return new BigDecimal(-1);

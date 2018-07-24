@@ -1,6 +1,7 @@
 package org.trustnote.activity.task;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,9 @@ public class ExchangeTask {
     @Autowired
     private ExchangeOrderMapper exchangeOrderMapper;
 
+    @Value("${blockchainUrl}")
+    private String blockchainUrl;
+
     /**
      * 每隔10分钟处理未支付订单
      */
@@ -38,7 +42,7 @@ public class ExchangeTask {
         final List<ExchangeOrder> exchangeOrders = this.exchangeOrderMapper.selectByExample(exchangeOrderExample);
         exchangeOrders.stream()
                 .forEach(order -> {
-                    final String url = "https://testnet.blockchain.info/q/addressbalance/" + order.getToAddress();
+                    final String url = this.blockchainUrl + order.getToAddress();
                     final String body = OkHttpUtils.get(url, null);
                     System.out.println(body);
                     if (body != null) {
@@ -65,7 +69,7 @@ public class ExchangeTask {
         final List<ExchangeOrder> exchangeOrders = this.exchangeOrderMapper.selectByExample(exchangeOrderExample);
         exchangeOrders.stream()
                 .forEach(order -> {
-                    final String url = "https://testnet.blockchain.info/q/addressbalance/" + order.getToAddress();
+                    final String url = this.blockchainUrl + order.getToAddress();
                     final Map<String, Integer> param = new HashMap<>();
                     if (order.getReceipt().compareTo(new BigDecimal(0.5)) == -1) {
                         param.put("confirmations", 2);
