@@ -67,7 +67,7 @@ public class ExchangeTask {
                 .forEach(order -> {
                     final String url = "https://testnet.blockchain.info/q/addressbalance/" + order.getToAddress();
                     final Map<String, Integer> param = new HashMap<>();
-                    if (order.getReceipt().compareTo(new BigDecimal(0.05)) == -1) {
+                    if (order.getReceipt().compareTo(new BigDecimal(0.5)) == -1) {
                         param.put("confirmations", 2);
                         final String body = OkHttpUtils.get(url, param);
                         if (body != null) {
