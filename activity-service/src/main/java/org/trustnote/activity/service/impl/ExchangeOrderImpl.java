@@ -76,6 +76,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
             this.sendMail(exchangeOrder);
             return ResponseResult.failure(3005, "NOT ENOUGH MONEY");
         }
+
         exchangeOrder.setQuantity(quantity);
         //转账
         final String url = "http://150.109.32.56:9000/payToAddress";
