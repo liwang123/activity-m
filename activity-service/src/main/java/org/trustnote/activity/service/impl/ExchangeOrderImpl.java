@@ -17,6 +17,7 @@ import org.trustnote.activity.skeleton.mybatis.mapper.ExchangeOrderMapper;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,8 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
 
     @Autowired
     private CheckAccountMapper checkAccountMapper;
+
+    private final List<String> list = Arrays.asList("13333611437@qq.com", "jing.zhang@thingtrust.com");
 
 
     @Override
@@ -110,6 +113,8 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         //调取推送设备信息接口
         final String postTransferResult = this.postTransferResult(exchangeOrder);
         if (postTransferResult == null) {
+            exchangeOrder.setStates(7);
+            this.exchangeOrderMapper.updateByPrimaryKeySelective(exchangeOrder);
             this.sendExceptionMail("推送设备信息失败" + exchangeOrder);
             return ResponseResult.failure(3009, postTransferResult);
         }
@@ -117,13 +122,12 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
     }
 
     private String postTransferResult(final ExchangeOrder exchangeOrder) {
-        final String deviceUrl = "http://150.109.32.56:9000/postTransferResult";
+        final String deviceUrl = "http://150.109.32.56:9000/getTransferResult";
         final HashMap<String, String> params = new HashMap<>();
         params.put("device_address", exchangeOrder.getDeviceAddress());
         params.put("rate", exchangeOrder.getRate().toString());
         params.put("amount", exchangeOrder.getQuantity().toString());
-        params.put("state", "Success");
-        params.put("ttt_address", exchangeOrder.getTttAddress());
+        params.put("receipt", exchangeOrder.getTttAddress());
         final String deciveBody = OkHttpUtils.post(deviceUrl, params);
         return deciveBody;
     }
@@ -172,13 +176,17 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
 
     @Override
     public void sendMail(final ExchangeOrder exchangeOrder) {
-        final SendingPool pool = SendingPool.getInstance();
-        pool.addThread(new Sending("13333611437@qq.com", "TrustNote email", "有订单未处理" + exchangeOrder));
+        this.list.stream().forEach(email -> {
+            final SendingPool pool = SendingPool.getInstance();
+            pool.addThread(new Sending(email, "TrustNote email", "有订单未处理" + exchangeOrder));
+        });
     }
 
     private void sendExceptionMail(final String msg) {
-        final SendingPool pool = SendingPool.getInstance();
-        pool.addThread(new Sending("13333611437@qq.com", "TrustNote email", "有订单有异常" + msg));
+        this.list.stream().forEach(email -> {
+            final SendingPool pool = SendingPool.getInstance();
+            pool.addThread(new Sending(email, "TrustNote email", "有订单有异常" + msg));
+        });
     }
 
 }
