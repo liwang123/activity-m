@@ -13,10 +13,12 @@ import org.trustnote.activity.common.enume.StatesEnum;
 import org.trustnote.activity.common.model.ResponseResult;
 import org.trustnote.activity.common.pojo.CheckAccount;
 import org.trustnote.activity.common.pojo.ExchangeOrder;
+import org.trustnote.activity.common.pojo.ExchangeRate;
 import org.trustnote.activity.common.utils.*;
 import org.trustnote.activity.service.iface.ExchangeOrderService;
 import org.trustnote.activity.skeleton.mybatis.mapper.CheckAccountMapper;
 import org.trustnote.activity.skeleton.mybatis.mapper.ExchangeOrderMapper;
+import org.trustnote.activity.skeleton.mybatis.mapper.ExchangeRateMapper;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
 
 import java.math.BigDecimal;
@@ -32,6 +34,9 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
 
     @Autowired
     private CheckAccountMapper checkAccountMapper;
+
+    @Autowired
+    private ExchangeRateMapper exchangeRateMapper;
 
     @Value("${exChangeUrl}")
     private String exChangeUrl;
@@ -78,10 +83,9 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         }
 
         final BigDecimal rate = this.getRate();
-        if (rate.compareTo(new BigDecimal(0)) == 0) {
-            return ResponseResult.failure(StatesEnum.RATE_CONNECT_ERROR.getMsg() + exchangeOrder);
-        }
-
+//        if (rate.compareTo(new BigDecimal(0)) == 0) {
+//            return ResponseResult.failure(StatesEnum.RATE_CONNECT_ERROR.getMsg() + exchangeOrder);
+//        }
         exchangeOrder.setRate(rate);
 
         final BigDecimal checkBalance = this.checkBalance();
@@ -183,11 +187,14 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         final Map<String, String> map = new HashMap<>();
         map.put("coin", "ttt_btc");
         final String body = OkHttpUtils.get(this.rateUrl, map);
-        if (body == null) {
-            return new BigDecimal(0);
-        }
         final JSONObject jsonObject = (JSONObject) JSONObject.parse(body);
-        return new BigDecimal(jsonObject.getJSONObject("data").get("last").toString());
+        final int code = (int) jsonObject.get("code");
+        if (code == 0) {
+            return new BigDecimal(jsonObject.getJSONObject("data").get("last").toString());
+        }
+        this.sendExceptionMail(StatesEnum.RATE_CONNECT_ERROR.getMsg());
+        final ExchangeRate exchangeRate = this.exchangeRateMapper.selectByPrimaryKey(3);
+        return exchangeRate.getRate();
     }
 
     @Override

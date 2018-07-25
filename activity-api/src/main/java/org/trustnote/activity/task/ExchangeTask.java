@@ -8,9 +8,11 @@ import org.springframework.stereotype.Component;
 import org.trustnote.activity.common.enume.StatesEnum;
 import org.trustnote.activity.common.example.ExchangeOrderExample;
 import org.trustnote.activity.common.pojo.ExchangeOrder;
+import org.trustnote.activity.common.pojo.ExchangeRate;
 import org.trustnote.activity.common.utils.OkHttpUtils;
 import org.trustnote.activity.service.iface.ExchangeOrderService;
 import org.trustnote.activity.skeleton.mybatis.mapper.ExchangeOrderMapper;
+import org.trustnote.activity.skeleton.mybatis.mapper.ExchangeRateMapper;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -29,6 +31,10 @@ public class ExchangeTask {
 
     @Autowired
     private ExchangeOrderMapper exchangeOrderMapper;
+
+    @Autowired
+    private ExchangeRateMapper exchangeRateMapper;
+
 
     @Value("${blockchainUrl}")
     private String blockchainUrl;
@@ -117,6 +123,16 @@ public class ExchangeTask {
                         this.exchangeOrderMapper.updateByPrimaryKeySelective(order);
                     }
                 });
+    }
+
+    /**
+     * 处理汇率
+     */
+    @Scheduled(cron = "0 0 0/1 * * ?")
+    public void getExchangeRate() {
+        final ExchangeRate exchangeRate = this.exchangeRateMapper.selectByPrimaryKey(3);
+        exchangeRate.setRate(this.exchangeOrderService.getRate());
+        this.exchangeRateMapper.updateByPrimaryKeySelective(exchangeRate);
     }
 
 
