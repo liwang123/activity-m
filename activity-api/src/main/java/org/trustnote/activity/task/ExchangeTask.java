@@ -108,7 +108,7 @@ public class ExchangeTask {
     }
 
     /**
-     * 每隔10分钟处理未支付订单
+     * 每隔10分钟处理余额不足订单
      */
     @Scheduled(cron = "0 0/50 * * * ?")
     public void handleNotEnoughOrders() {

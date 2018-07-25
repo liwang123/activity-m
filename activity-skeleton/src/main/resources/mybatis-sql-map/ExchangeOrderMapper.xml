@@ -362,7 +362,6 @@
         <include refid="Base_Column_List"/>
         from exchange_order
         <where>
-            states !=1
             <if test="status != 0">
                 and states=#{status}
             </if>
@@ -379,7 +378,6 @@
     <select id="countByOrder" resultType="java.lang.Integer">
         select count(*) from exchange_order
         <where>
-            states !=1
             <if test="status != 0">
                 and states=#{status}
             </if>
