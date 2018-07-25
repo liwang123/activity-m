@@ -113,7 +113,11 @@ public class ExchangeTask {
         final List<ExchangeOrder> exchangeOrders = this.exchangeOrderMapper.selectByExample(exchangeOrderExample);
         exchangeOrders.stream()
                 .forEach(order -> {
-//                    final BigDecimal checkBalance = this.exchangeOrderService.checkBalance();
+                    final BigDecimal checkBalance = this.exchangeOrderService.checkBalance();
+                    if (checkBalance.compareTo(order.getQuantity()) == 1) {
+                        order.setStates(3);
+                        this.exchangeOrderMapper.updateByPrimaryKeySelective(order);
+                    }
                 });
     }
 

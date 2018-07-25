@@ -1,5 +1,6 @@
 package org.trustnote.activity.service.iface;
 
+import org.trustnote.activity.common.dto.ConfirmBalanceDTO;
 import org.trustnote.activity.common.dto.ExchangeOrderDTO;
 import org.trustnote.activity.common.model.ResponseResult;
 import org.trustnote.activity.common.pojo.ExchangeOrder;
@@ -23,5 +24,7 @@ public interface ExchangeOrderService {
     void sendExceptionMail(final String msg);
 
     BigDecimal getRate();
+
+    ConfirmBalanceDTO confirmBalance(Long id);
 
 }

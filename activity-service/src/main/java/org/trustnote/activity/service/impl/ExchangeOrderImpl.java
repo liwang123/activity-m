@@ -6,6 +6,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.trustnote.activity.common.dto.ConfirmBalanceDTO;
 import org.trustnote.activity.common.dto.ExchangeEmailOrderDTO;
 import org.trustnote.activity.common.dto.ExchangeOrderDTO;
 import org.trustnote.activity.common.model.ResponseResult;
@@ -148,6 +149,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         return checkBanlance;
     }
 
+
     @Override
     public String getExchangeOrder() {
         final List<String> columns = Arrays.asList("购买币种", "购买数量", "支付方式", "收到BTC数量", "收款BTC地址", "钱包地址", "汇率", "状态", "邀请码", "设备码", "创建时间");
@@ -184,6 +186,21 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         }
         final JSONObject jsonObject = (JSONObject) JSONObject.parse(body);
         return new BigDecimal(jsonObject.getJSONObject("data").get("last").toString());
+    }
+
+    @Override
+    public ConfirmBalanceDTO confirmBalance(final Long id) {
+        final BigDecimal checkBalance = this.checkBalance();
+        final ExchangeOrder exchangeOrder = this.exchangeOrderMapper.selectByPrimaryKey(id);
+        final ConfirmBalanceDTO confirmBalanceDTO = ConfirmBalanceDTO.builder()
+                .balance(checkBalance)
+                .quantity(exchangeOrder.getQuantity())
+                .states("不可以")
+                .build();
+        if (checkBalance.compareTo(exchangeOrder.getQuantity()) == 1) {
+            confirmBalanceDTO.setStates("可以");
+        }
+        return confirmBalanceDTO;
     }
 
     private void addRecord(final ExchangeOrder exchangeOrder) {
