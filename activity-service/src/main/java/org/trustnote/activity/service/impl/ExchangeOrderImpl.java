@@ -100,7 +100,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         final String url = this.exChangeUrl + "/payToAddress";
         final Map<String, String> param = new HashMap<>();
         param.put("address", exchangeOrder.getTttAddress());
-        param.put("amount", exchangeOrder.getQuantity().toString());
+        param.put("amount", exchangeOrder.getQuantity().multiply(new BigDecimal(1000000)).toString());
 
         final String body = OkHttpUtils.get(url, param);
         if (body == null) {
