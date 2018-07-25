@@ -78,7 +78,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
     public ResponseResult manualMoney(final Long id) {
         final ExchangeOrder exchangeOrder = this.exchangeOrderMapper.selectByPrimaryKey(id);
 
-        if (exchangeOrder.getStates() != 2 || exchangeOrder.getStates() != 3) {
+        if (exchangeOrder.getStates() == 1) {
             return ResponseResult.failure(StatesEnum.REQUEST_ERROR.getMsg());
         }
         final BigDecimal rate = this.getRate();
