@@ -55,4 +55,6 @@ public class FinancialBenefitsApi {
     private Integer numericalv;
     private BigDecimal alsoLockUpAmount;
     private BigDecimal alsoTempAmount;
+    @NotNull(message = "请输入TFans数量")
+    private Integer tFans;
 }

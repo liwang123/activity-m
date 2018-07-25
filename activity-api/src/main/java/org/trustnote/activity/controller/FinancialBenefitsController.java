@@ -43,6 +43,7 @@ public class FinancialBenefitsController {
     @RequestMapping(value = "/query", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String query(@RequestParam(value = "limit") final int limit,
                         @RequestParam(value = "offset") final int offset,
+                        @RequestParam(value = "financialId", required = false) final Integer financialId,
                         final HttpServletResponse response) {
         FinancialBenefitsController.logger.info("paramers: {} {}", limit, offset);
         final Result result = new Result();
@@ -59,7 +60,10 @@ public class FinancialBenefitsController {
             if (null != page && pageNo < page.getTotalPages()) {
                 hasMore = true;
             }
-            result.setEntity(this.financialBenefitsService.queryFinancialBenefits(page));
+
+            result.setEntity(this.financialBenefitsService.queryFinancialBenefitsReMap(FinancialBenefitsApi.builder()
+                    .financialId(financialId)
+                    .build(), page));
             result.setTotalCount(page.getTotalCount());
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());

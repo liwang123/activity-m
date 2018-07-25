@@ -52,4 +52,6 @@ public class FinancialBenefits {
     private BigDecimal alsoLockUpAmount;
 
     private BigDecimal alsoTempAmount;
+
+    private Integer tFans;
 }

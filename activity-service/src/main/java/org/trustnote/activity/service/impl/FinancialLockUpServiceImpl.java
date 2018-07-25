@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.trustnote.activity.common.api.FinancialBenefitsApi;
 import org.trustnote.activity.common.api.FinancialLockUpApi;
 import org.trustnote.activity.common.example.FinancialLockUpExample;
 import org.trustnote.activity.common.pojo.BalanceEntity;
@@ -136,6 +137,76 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         }
         return null;
     }
+
+    @Override
+    public Map<String, BigDecimal> statisticalAmount(final FinancialBenefitsApi financialBenefitsApi) {
+        final Map<String, BigDecimal> statistical = new HashMap<>(6);
+        final FinancialLockUpExample example = this.conditionsExample(financialBenefitsApi, 0, 0);
+        //已锁总额度、已抢购总额度
+        final Map<String, BigDecimal> mapAlso = this.financialLockUpMapper.statisticalAmount(example);
+        this.inDataMap(mapAlso, statistical, 0);
+        //当前已锁总额度、当前已抢购总额度
+        final Map<String, BigDecimal> mapCurr = this.financialLockUpMapper.statisticalAmount(this.conditionsExample(financialBenefitsApi, 1, 0));
+        this.inDataMap(mapCurr, statistical, 1);
+        //收益、tfans
+        final Map<String, BigDecimal> mapInComeTfans = this.financialLockUpMapper.statisticalInComeTfans(this.conditionsExample(financialBenefitsApi, 0, 1));
+        this.inDataMap(mapInComeTfans, statistical, 2);
+        return statistical;
+    }
+
+    /**
+     * 根据不同条件查询产品记录
+     *
+     * @param financialBenefitsApi
+     * @param type                 0 不需要计算解锁时间  1 需要计算解锁时间
+     * @param status               0 不需要计算已发收益  1 需要计算已发收益
+     * @return
+     */
+    private FinancialLockUpExample conditionsExample(final FinancialBenefitsApi financialBenefitsApi, final int type, final int status) {
+        final FinancialLockUpExample example = new FinancialLockUpExample();
+        final FinancialLockUpExample.Criteria criteria = example.createCriteria();
+        LocalDateTime now = null;
+        if (type == 1) {
+            now = LocalDateTime.now();
+        }
+        final List<Integer> ids = this.financialBenefitsService.queryFinancialFinancialId(financialBenefitsApi, now, status);
+        if (!CollectionUtils.isEmpty(ids)) {
+            criteria.andFinancialBenefitsIdIn(ids);
+        }
+
+        return example;
+    }
+
+    /**
+     * 组装数据
+     *
+     * @param map
+     * @param statistical
+     * @param type
+     */
+    private void inDataMap(final Map<String, BigDecimal> map, final Map<String, BigDecimal> statistical, final int type) {
+        final int curr = 1;
+        final int inComeTfans = 2;
+        final String keyFirst = "firstValue";
+        final String keySecond = "secondValue";
+        String keyOne = "tempAmountAlso";
+        String keyTwo = "lockUpAmountAlso";
+        if (type == curr) {
+            keyOne = "tempAmountCurr";
+            keyTwo = "lockUpAmountCurr";
+        } else if (type == inComeTfans) {
+            keyOne = "inComeAmountAlso";
+            keyTwo = "tFansAmountAlso";
+        }
+        if (map == null) {
+            statistical.put(keyOne, new BigDecimal(0));
+            statistical.put(keyTwo, new BigDecimal(0));
+        } else {
+            statistical.put(keyOne, map.get(keyFirst) == null ? new BigDecimal(0) : map.get(keyFirst));
+            statistical.put(keyTwo, map.get(keySecond) == null ? new BigDecimal(0) : map.get(keySecond));
+        }
+    }
+
 
     /**
      * excel导出
@@ -293,11 +364,15 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 //计算收益
                 final BigDecimal all = principal.multiply(numericalv).multiply(rate);
                 final BigDecimal income = all.divide(new BigDecimal(360), 1, BigDecimal.ROUND_DOWN);
-                FinancialLockUpServiceImpl.logger.info("合约ID: {} 本金：{} 理财周期： {} 年化利率： {} 收益： {}", financialLockUp.getId(), principal, numericalv, rate, income);
+                final BigDecimal tfans = income.multiply(new BigDecimal(financialBenefits.getTFans()))
+                        .setScale(0, BigDecimal.ROUND_DOWN);
+                FinancialLockUpServiceImpl.logger.info("合约ID: {} 本金：{} 理财周期： {} 年化利率： {} 收益： {} tfans: {}", financialLockUp
+                        .getId(), principal, numericalv, rate, income, tfans);
 
                 final FinancialLockUp record = new FinancialLockUp();
                 record.setId(financialLockUp.getId());
                 record.setIncomeAmount(income);
+                record.setTFansAmount(tfans.intValue());
                 record.setCalactionStatus(1);
 
                 final int upStatus;
@@ -370,6 +445,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                     .lockUpStatus(financialLockUp.getLockUpStatus())
                     .orderAmount(financialLockUp.getOrderAmount())
                     .tempAmount(financialLockUp.getTempAmount())
+                    .tFansAmount(financialLockUp.getTFansAmount())
                     .build();
             financialLockUpApis.add(financialLockUpApi);
         }

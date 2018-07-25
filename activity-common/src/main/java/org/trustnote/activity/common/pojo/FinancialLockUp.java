@@ -1,11 +1,20 @@
 package org.trustnote.activity.common.pojo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
  * @author zhuxl
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class FinancialLockUp {
     private Integer id;
 
@@ -29,91 +38,8 @@ public class FinancialLockUp {
 
     private Integer calactionStatus;
 
-    public Integer getId() {
-        return this.id;
-    }
+    private Integer tFansAmount;
 
-    public void setId(final Integer id) {
-        this.id = id;
-    }
+    private String walletAddress;
 
-    public String getSharedAddress() {
-        return this.sharedAddress;
-    }
-
-    public void setSharedAddress(final String sharedAddress) {
-        this.sharedAddress = sharedAddress == null ? null : sharedAddress.trim();
-    }
-
-    public String getDeviceAddress() {
-        return this.deviceAddress;
-    }
-
-    public void setDeviceAddress(final String deviceAddress) {
-        this.deviceAddress = deviceAddress == null ? null : deviceAddress.trim();
-    }
-
-    public Integer getFinancialBenefitsId() {
-        return this.financialBenefitsId;
-    }
-
-    public void setFinancialBenefitsId(final Integer financialBenefitsId) {
-        this.financialBenefitsId = financialBenefitsId;
-    }
-
-    public BigDecimal getLockUpAmount() {
-        return this.lockUpAmount;
-    }
-
-    public void setLockUpAmount(final BigDecimal lockUpAmount) {
-        this.lockUpAmount = lockUpAmount;
-    }
-
-    public BigDecimal getIncomeAmount() {
-        return this.incomeAmount;
-    }
-
-    public void setIncomeAmount(final BigDecimal incomeAmount) {
-        this.incomeAmount = incomeAmount;
-    }
-
-    public LocalDateTime getOperationTime() {
-        return this.operationTime;
-    }
-
-    public void setOperationTime(final LocalDateTime operationTime) {
-        this.operationTime = operationTime;
-    }
-
-    public String getLockUpStatus() {
-        return this.lockUpStatus;
-    }
-
-    public void setLockUpStatus(final String lockUpStatus) {
-        this.lockUpStatus = lockUpStatus;
-    }
-
-    public Integer getOrderAmount() {
-        return this.orderAmount;
-    }
-
-    public void setOrderAmount(final Integer orderAmount) {
-        this.orderAmount = orderAmount;
-    }
-
-    public BigDecimal getTempAmount() {
-        return this.tempAmount;
-    }
-
-    public void setTempAmount(final BigDecimal tempAmount) {
-        this.tempAmount = tempAmount;
-    }
-
-    public Integer getCalactionStatus() {
-        return this.calactionStatus;
-    }
-
-    public void setCalactionStatus(final Integer calactionStatus) {
-        this.calactionStatus = calactionStatus;
-    }
 }

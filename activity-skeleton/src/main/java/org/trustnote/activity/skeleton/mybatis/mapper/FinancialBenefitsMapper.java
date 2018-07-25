@@ -34,4 +34,5 @@ public interface FinancialBenefitsMapper {
     int updateByPrimaryKeySelective(FinancialBenefits record);
 
     int updateByPrimaryKey(FinancialBenefits record);
+
 }

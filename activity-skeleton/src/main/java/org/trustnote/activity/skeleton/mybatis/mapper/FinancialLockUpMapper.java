@@ -42,4 +42,8 @@ public interface FinancialLockUpMapper {
     BigDecimal sumLockUpAmount(int financialBenefitsId);
 
     BigDecimal sumTempAmount(int financialBenefitsId);
+
+    Map<String, BigDecimal> statisticalAmount(FinancialLockUpExample example);
+
+    Map<String, BigDecimal> statisticalInComeTfans(FinancialLockUpExample example);
 }

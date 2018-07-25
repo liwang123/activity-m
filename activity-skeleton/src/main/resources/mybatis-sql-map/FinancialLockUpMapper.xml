@@ -12,6 +12,7 @@
         <result column="order_amount" jdbcType="INTEGER" property="orderAmount"/>
         <result column="temp_amount" jdbcType="DECIMAL" property="tempAmount"/>
         <result column="calaction_status" jdbcType="INTEGER" property="calactionStatus"/>
+        <result column="tfans_amount" jdbcType="INTEGER" property="tFansAmount"/>
     </resultMap>
     <sql id="Example_Where_Clause">
         <where>
@@ -75,7 +76,7 @@
     </sql>
     <sql id="Base_Column_List">
     id, shared_address, device_address, financial_benefits_id, lock_up_amount, income_amount, 
-    operation_time, order_amount, temp_amount,calaction_status
+    operation_time, order_amount, temp_amount,calaction_status,tfans_amount
   </sql>
     <select id="selectByExample" parameterType="org.trustnote.activity.common.example.FinancialLockUpExample"
             resultMap="BaseResultMap">
@@ -126,10 +127,10 @@
     <insert id="insert" parameterType="org.trustnote.activity.common.pojo.FinancialLockUp">
     insert into financial_lock_up (id, shared_address, device_address, 
       financial_benefits_id, lock_up_amount, income_amount, 
-      operation_time, order_amount, temp_amount, calaction_status)
+      operation_time, order_amount, temp_amount, calaction_status, tfans_amount)
     values (#{id,jdbcType=INTEGER}, #{sharedAddress,jdbcType=VARCHAR}, #{deviceAddress,jdbcType=VARCHAR}, 
       #{financialBenefitsId,jdbcType=INTEGER}, #{lockUpAmount,jdbcType=DECIMAL}, #{incomeAmount,jdbcType=DECIMAL},
-      #{operationTime,jdbcType=TIMESTAMP}, #{orderAmount,jdbcType=INTEGER}, #{tempAmount,jdbcType=DECIMAL}, #{calactionStatus,jdbcType=INTEGER})
+      #{operationTime,jdbcType=TIMESTAMP}, #{orderAmount,jdbcType=INTEGER}, #{tempAmount,jdbcType=DECIMAL}, #{calactionStatus,jdbcType=INTEGER}, #{tFansAmount,jdbcType=INTEGER})
   </insert>
     <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.FinancialLockUp">
         insert into financial_lock_up
@@ -164,6 +165,9 @@
             <if test="calactionStatus != null">
                 calaction_status,
             </if>
+            <if test="tFansAmount != null">
+                tfans_amount,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -195,6 +199,9 @@
             </if>
             <if test="calactionStatus != null">
                 #{calactionStatus,jdbcType=INTEGER},
+            </if>
+            <if test="tFansAmount != null">
+                #{tFansAmount,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -238,6 +245,9 @@
             <if test="record.calactionStatus != null">
                 calaction_status = #{record.calactionStatus,jdbcType=INTEGER},
             </if>
+            <if test="record.tFansAmount != null">
+                tfans_amount = #{record.tFansAmount,jdbcType=INTEGER},
+            </if>
         </set>
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
@@ -254,7 +264,8 @@
         operation_time = #{record.operationTime,jdbcType=TIMESTAMP},
         order_amount = #{record.orderAmount,jdbcType=INTEGER},
         temp_amount = #{record.tempAmount,jdbcType=DECIMAL},
-        calaction_status = #{record.calactionStatus,jdbcType=INTEGER}
+        calaction_status = #{record.calactionStatus,jdbcType=INTEGER},
+        tfans_amount = #{record.tFansAmount,jdbcType=INTEGER}
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
         </if>
@@ -289,6 +300,9 @@
             <if test="calactionStatus != null">
                 calaction_status = #{calactionStatus,jdbcType=INTEGER},
             </if>
+            <if test="tFansAmount != null">
+                tfans_amount = #{tFansAmount,jdbcType=INTEGER},
+            </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
@@ -302,7 +316,8 @@
       operation_time = #{operationTime,jdbcType=TIMESTAMP},
       order_amount = #{orderAmount,jdbcType=INTEGER},
       temp_amount = #{tempAmount,jdbcType=DECIMAL},
-      calaction_status = #{calactionStatus,jdbcType=INTEGER}
+      calaction_status = #{calactionStatus,jdbcType=INTEGER},
+      tfans_amount = #{tFansAmount,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
     </update>
     <select id="participate" resultType="Map">
@@ -326,5 +341,25 @@
           financial_lock_up
         WHERE
           financial_benefits_id =  #{financialBenefitsId,jdbcType=INTEGER};
+    </select>
+    <select id="statisticalAmount" parameterType="org.trustnote.activity.common.example.FinancialLockUpExample"
+            resultType="Map">
+        SELECT
+        SUM(temp_amount) firstValue, SUM(lock_up_amount) secondValue
+        FROM
+        financial_lock_up
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <select id="statisticalInComeTfans" parameterType="org.trustnote.activity.common.example.FinancialLockUpExample"
+            resultType="Map">
+        SELECT
+        SUM(income_amount) firstValue, SUM(tfans_amount) secondValue
+        FROM
+        financial_lock_up
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
     </select>
 </mapper>

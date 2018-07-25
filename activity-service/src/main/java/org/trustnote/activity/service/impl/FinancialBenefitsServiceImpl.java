@@ -10,6 +10,7 @@ import org.trustnote.activity.common.pojo.Financial;
 import org.trustnote.activity.common.pojo.FinancialBenefits;
 import org.trustnote.activity.common.utils.DateTimeUtils;
 import org.trustnote.activity.service.iface.FinancialBenefitsService;
+import org.trustnote.activity.service.iface.FinancialLockUpService;
 import org.trustnote.activity.service.iface.FinancialService;
 import org.trustnote.activity.skeleton.mybatis.mapper.FinancialBenefitsMapper;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
@@ -18,7 +19,9 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zhuxl
@@ -31,15 +34,21 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
     private FinancialBenefitsMapper financialBenefitsMapper;
     @Resource
     private FinancialService financialService;
+    @Resource
+    private FinancialLockUpService financialLockUpService;
 
     @Override
-    public FinancialBenefits queryOneFinancialBenefits(final int id) throws Exception {
+    public FinancialBenefits queryOneFinancialBenefits(final int id) {
         return this.financialBenefitsMapper.selectByPrimaryKey(id);
     }
 
     @Override
-    public List<FinancialBenefitsApi> queryFinancialBenefits(final Page<FinancialBenefits> page) throws Exception {
+    public List<FinancialBenefitsApi> queryFinancialBenefits(final FinancialBenefitsApi financialBenefitsApi, final Page<FinancialBenefits> page) {
         final FinancialBenefitsExample example = new FinancialBenefitsExample();
+        final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
+        if (financialBenefitsApi.getFinancialId() != null) {
+            criteria.andFinancialIdEqualTo(financialBenefitsApi.getFinancialId());
+        }
         example.setOrderByClause("id DESC");
         final List<FinancialBenefits> financialBenefits = this.financialBenefitsMapper.selectByExampleAndPage(page, example);
         return this.convertPojoToApi(financialBenefits);
@@ -74,6 +83,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                 .purchaseLimit(financialBenefitsApi.getPurchaseLimit())
                 .remainLimit(remainLimit)
                 .financialRate(financialBenefitsApi.getFinancialRate())
+                .tFans(financialBenefitsApi.getTFans())
                 .build();
         return this.financialBenefitsMapper.updateByPrimaryKeySelective(record);
     }
@@ -106,6 +116,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                 .purchaseLimit(financialBenefitsApi.getPurchaseLimit())
                 .remainLimit(remainLimit)
                 .financialRate(financialBenefitsApi.getFinancialRate())
+                .tFans(financialBenefitsApi.getTFans())
                 .build();
         return this.financialBenefitsMapper.insertSelective(financialBenefits);
     }
@@ -157,6 +168,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .activityStatus(sb.toString())
                     .alsoLockUpAmount(benefits.getAlsoLockUpAmount())
                     .alsoTempAmount(benefits.getAlsoTempAmount())
+                    .tFans(benefits.getTFans())
                     .build();
             if (!CollectionUtils.isEmpty(nextFinancialBenefits)) {
                 financialBenefitsApi.setNextPanicStartTime(DateTimeUtils.localDateTimeParseLong(nextFinancialBenefits.get(0).getPanicStartTime()));
@@ -185,6 +197,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .activityStatus("未开启")
                     .alsoLockUpAmount(benefits.getAlsoLockUpAmount())
                     .alsoTempAmount(benefits.getAlsoTempAmount())
+                    .tFans(benefits.getTFans())
                     .build();
             //查询未开启后续是否还有
             final List<FinancialBenefits> nextTwo = this.queryFinancialGreaterThanNow(financialId, benefits.getPanicEndTime());
@@ -216,6 +229,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .activityStatus("抢购已结束")
                     .alsoLockUpAmount(benefits.getAlsoLockUpAmount())
                     .alsoTempAmount(benefits.getAlsoTempAmount())
+                    .tFans(benefits.getTFans())
                     .build();
 
             //查询抢购结束后续是否还有
@@ -249,7 +263,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
     }
 
     @Override
-    public FinancialBenefitsApi queryFinancialBenefitsByIdExcludeNextInfo(final int id) throws Exception {
+    public FinancialBenefitsApi queryFinancialBenefitsByIdExcludeNextInfo(final int id) {
         final FinancialBenefits financialBenefits = this.financialBenefitsMapper.selectByPrimaryKey(id);
         if (financialBenefits != null) {
             final FinancialBenefitsApi financialBenefitsApi = FinancialBenefitsApi.builder()
@@ -267,6 +281,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .financialRate(financialBenefits.getFinancialRate())
                     .alsoLockUpAmount(financialBenefits.getAlsoLockUpAmount())
                     .alsoTempAmount(financialBenefits.getAlsoTempAmount())
+                    .tFans(financialBenefits.getTFans())
                     .build();
             return financialBenefitsApi;
         }
@@ -274,7 +289,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
     }
 
     @Override
-    public int updateFinancialStatus(final int id) throws Exception {
+    public int updateFinancialStatus(final int id) {
         final FinancialBenefits record = FinancialBenefits.builder()
                 .id(id)
                 .financialStatus(1)
@@ -305,7 +320,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
      * @param now
      * @return
      */
-    public List<FinancialBenefits> queryFinancialGreaterThanNow(final int financialId, final LocalDateTime now) throws Exception {
+    public List<FinancialBenefits> queryFinancialGreaterThanNow(final int financialId, final LocalDateTime now) {
         final FinancialBenefitsExample example = new FinancialBenefitsExample();
         final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
         criteria.andFinancialIdEqualTo(financialId);
@@ -320,9 +335,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
      * @param financialId
      * @param time
      * @return
-     * @throws Exception
      */
-    public List<FinancialBenefits> queryFinancialGreaterThanTime(final int financialId, final LocalDateTime time) throws Exception {
+    public List<FinancialBenefits> queryFinancialGreaterThanTime(final int financialId, final LocalDateTime time) {
         final FinancialBenefitsExample example = new FinancialBenefitsExample();
         final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
         criteria.andFinancialIdEqualTo(financialId);
@@ -332,7 +346,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
     }
 
     @Override
-    public List<FinancialBenefits> queryFinancialNotCalactionLockUp(final LocalDateTime now) throws Exception {
+    public List<FinancialBenefits> queryFinancialNotCalactionLockUp(final LocalDateTime now) {
         final FinancialBenefitsExample example = new FinancialBenefitsExample();
         final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
         criteria.andPanicEndTimeLessThan(now);
@@ -347,15 +361,43 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
      * @param now
      * @param financialId
      * @return
-     * @throws Exception
      */
     @Override
-    public List<FinancialBenefits> queryFinancialInPanic(final LocalDateTime now, final int financialId) throws Exception {
+    public List<FinancialBenefits> queryFinancialInPanic(final LocalDateTime now, final int financialId) {
         final FinancialBenefitsExample example = new FinancialBenefitsExample();
         final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
         criteria.andPanicStartTimeLessThan(now);
         criteria.andPanicEndTimeGreaterThan(now);
         return this.financialBenefitsMapper.selectByExample(example);
+    }
+
+    @Override
+    public Map<String, Object> queryFinancialBenefitsReMap(final FinancialBenefitsApi financialBenefitsApi, final Page<FinancialBenefits> page) {
+        final Map<String, Object> entity = new HashMap<>(2);
+        final List<FinancialBenefitsApi> financialBenefitsApis = this.queryFinancialBenefits(financialBenefitsApi, page);
+        entity.put("grid_data", financialBenefitsApis);
+        entity.put("statistical", this.financialLockUpService.statisticalAmount(financialBenefitsApi));
+        return entity;
+    }
+
+    @Override
+    public List<Integer> queryFinancialFinancialId(final FinancialBenefitsApi financialBenefitsApi, final LocalDateTime now, final int type) {
+        final List<Integer> financialBenefitsIds = new ArrayList<>();
+        final FinancialBenefitsExample example = new FinancialBenefitsExample();
+        final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
+        if (financialBenefitsApi.getFinancialId() != null) {
+            criteria.andFinancialIdEqualTo(financialBenefitsApi.getFinancialId());
+        }
+        if (now != null) {
+            criteria.andUnlockTimeGreaterThan(now);
+        }
+        if (type == 1) {
+            criteria.andFinancialStatusEqualTo(1);
+        }
+        this.financialBenefitsMapper.selectByExample(example)
+                .stream()
+                .forEach(event -> financialBenefitsIds.add(event.getId()));
+        return financialBenefitsIds;
     }
 
     /**
@@ -366,9 +408,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
      * @param id
      * @param financialId
      * @return
-     * @throws Exception
      */
-    public List<FinancialBenefits> queryFinancialBetweenPanic(final long panicStart, final long panicEnd, final int type, final int id, final int financialId) throws Exception {
+    public List<FinancialBenefits> queryFinancialBetweenPanic(final long panicStart, final long panicEnd, final int type, final int id, final int financialId) {
         final LocalDateTime panicStartTime = DateTimeUtils.longParseLocalDateTime(panicStart);
         final LocalDateTime panicEndTime = DateTimeUtils.longParseLocalDateTime(panicEnd);
 
@@ -439,7 +480,9 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                 .numericalv(financial == null ? 0 : financial.getNumericalv())
                 .alsoLockUpAmount(benefits.getAlsoLockUpAmount())
                 .alsoTempAmount(benefits.getAlsoTempAmount())
+                .tFans(benefits.getTFans())
                 .build();
         return financialBenefitsApi;
     }
+
 }

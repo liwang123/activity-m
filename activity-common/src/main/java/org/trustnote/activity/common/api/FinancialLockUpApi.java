@@ -34,4 +34,6 @@ public class FinancialLockUpApi {
     private Integer orderAmount;
 
     private BigDecimal tempAmount;
+
+    private Integer tFansAmount;
 }

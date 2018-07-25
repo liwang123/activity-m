@@ -6,6 +6,7 @@ import org.trustnote.activity.skeleton.mybatis.orm.Page;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zhuxl
@@ -13,7 +14,7 @@ import java.util.List;
 public interface FinancialBenefitsService {
     FinancialBenefits queryOneFinancialBenefits(int id) throws Exception;
 
-    List<FinancialBenefitsApi> queryFinancialBenefits(Page<FinancialBenefits> page) throws Exception;
+    List<FinancialBenefitsApi> queryFinancialBenefits(FinancialBenefitsApi financialBenefitsApi, Page<FinancialBenefits> page) throws Exception;
 
     int updateFinancialBenefits(FinancialBenefitsApi financialBenefitsApi) throws Exception;
 
@@ -37,4 +38,15 @@ public interface FinancialBenefitsService {
     List<FinancialBenefits> queryFinancialNotCalactionLockUp(LocalDateTime now) throws Exception;
 
     List<FinancialBenefits> queryFinancialInPanic(LocalDateTime now, int financialId) throws Exception;
+
+    Map<String, Object> queryFinancialBenefitsReMap(FinancialBenefitsApi financialBenefitsApi, Page<FinancialBenefits> page);
+
+    /**
+     * 根据套餐类型ID、当前时间查询未解锁的产品ID
+     *
+     * @param financialBenefitsApi
+     * @param now
+     * @return
+     */
+    List<Integer> queryFinancialFinancialId(FinancialBenefitsApi financialBenefitsApi, LocalDateTime now, int type);
 }

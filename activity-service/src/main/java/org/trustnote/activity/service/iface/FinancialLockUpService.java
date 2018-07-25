@@ -1,5 +1,6 @@
 package org.trustnote.activity.service.iface;
 
+import org.trustnote.activity.common.api.FinancialBenefitsApi;
 import org.trustnote.activity.common.api.FinancialLockUpApi;
 import org.trustnote.activity.common.pojo.FinancialLockUp;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
@@ -29,4 +30,12 @@ public interface FinancialLockUpService {
     int updateFinancialLockUp(final int id, final int orderAmount) throws Exception;
 
     FinancialLockUp queryLockUp(final FinancialLockUp financialLockUp) throws Exception;
+
+    /**
+     * 根据产品ID查询统计信息
+     *
+     * @param financialBenefitsApi
+     * @return
+     */
+    Map<String, BigDecimal> statisticalAmount(FinancialBenefitsApi financialBenefitsApi);
 }

@@ -98,12 +98,16 @@ public class FinancialLockUpController {
             if (StringUtils.isBlank(financialLockUp.getDeviceAddress())) {
                 return ResultUtil.universalBlankReturn(response, result);
             }
+            if (StringUtils.isBlank(financialLockUp.getWalletAddress())) {
+                return ResultUtil.universalBlankReturn(response, result);
+            }
             if (null == financialLockUp.getFinancialBenefitsId()) {
                 return ResultUtil.universalBlankReturn(response, result);
             }
             final FinancialLockUp checkLockUp = this.financialLockUpService.queryLockUp(financialLockUp);
             final FinancialBenefitsApi financialBenefitsApi = this.financialBenefitsService.queryFinancialBenefitsByIdExcludeNextInfo(financialLockUp.getFinancialBenefitsId());
             BigDecimal inComeAmount = new BigDecimal(0);
+            BigDecimal tFansAmount = new BigDecimal(0);
             if (financialBenefitsApi != null && financialLockUp.getOrderAmount() != null) {
                 final Financial financial = this.financialService.queryOneFinancial(financialBenefitsApi.getFinancialId());
                 //理财周期
@@ -113,14 +117,17 @@ public class FinancialLockUpController {
                 //计算收益
                 final BigDecimal all = new BigDecimal(financialLockUp.getOrderAmount()).multiply(numericalv).multiply(rate);
                 inComeAmount = all.divide(new BigDecimal(360), 1, BigDecimal.ROUND_DOWN);
+                tFansAmount = inComeAmount.multiply(new BigDecimal(financialBenefitsApi.getTFans()))
+                        .setScale(0, BigDecimal.ROUND_DOWN);
             }
             int operationStatus = 0;
             if (checkLockUp == null) {
                 operationStatus = this.financialLockUpService.saveFinancialLockUp(financialLockUp);
             }
-            final Map<String, Object> entity = new HashMap<>(2);
+            final Map<String, Object> entity = new HashMap<>(3);
             entity.put("operation_status", operationStatus);
             entity.put("income_amount", inComeAmount);
+            entity.put("tfans_amount", tFansAmount);
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
             result.setEntity(entity);
