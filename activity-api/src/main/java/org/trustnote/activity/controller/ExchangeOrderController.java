@@ -29,7 +29,7 @@ public class ExchangeOrderController {
      * @param exchangeOrderDTO
      * @return
      */
-    @RequestMapping(value = "/save-order", method = RequestMethod.POST)
+    @RequestMapping(value = "/save-order", method = RequestMethod.GET)
     public ResponseResult createOrder(final ExchangeOrderDTO exchangeOrderDTO) {
         this.exchangeOrderService.insertExchangeOrder(exchangeOrderDTO);
         return ResponseResult.success();
