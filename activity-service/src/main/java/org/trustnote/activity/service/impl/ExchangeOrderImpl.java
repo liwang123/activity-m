@@ -78,14 +78,10 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
     public ResponseResult manualMoney(final Long id) {
         final ExchangeOrder exchangeOrder = this.exchangeOrderMapper.selectByPrimaryKey(id);
 
-        if (exchangeOrder.getStates() == 1) {
+        if (exchangeOrder.getStates() != 2 || exchangeOrder.getStates() != 3) {
             return ResponseResult.failure(StatesEnum.REQUEST_ERROR.getMsg());
         }
-
         final BigDecimal rate = this.getRate();
-//        if (rate.compareTo(new BigDecimal(0)) == 0) {
-//            return ResponseResult.failure(StatesEnum.RATE_CONNECT_ERROR.getMsg() + exchangeOrder);
-//        }
         exchangeOrder.setRate(rate);
 
         final BigDecimal checkBalance = this.checkBalance();

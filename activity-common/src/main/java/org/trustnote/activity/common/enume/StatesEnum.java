@@ -14,7 +14,7 @@ public enum StatesEnum {
     PUSH_FAILE(7, "推送消息失败"),
     REQUEST_OK(200, "请求成功"),
     CAN(2001, "可以"),
-    REQUEST_ERROR(3001, "request error"),
+    REQUEST_ERROR(3001, "该订单不支持转账"),
     RATE_CONNECT_ERROR(3002, "getRate connect timeout"),
     CHECK_BALANCE_ERROR(3003, "checkBalance connect timeout"),
     NOT_ENOUGH_MONEY(3004, "NOT ENOUGH MONEY"),
