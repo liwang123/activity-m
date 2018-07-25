@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.trustnote.activity.common.dto.ConfirmBalanceDTO;
 import org.trustnote.activity.common.dto.ExchangeEmailOrderDTO;
 import org.trustnote.activity.common.dto.ExchangeOrderDTO;
+import org.trustnote.activity.common.enume.StatesEnum;
 import org.trustnote.activity.common.model.ResponseResult;
 import org.trustnote.activity.common.pojo.CheckAccount;
 import org.trustnote.activity.common.pojo.ExchangeOrder;
@@ -35,6 +36,9 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
     @Value("${exChangeUrl}")
     private String exChangeUrl;
 
+    @Value("${rateUrl}")
+    private String rateUrl;
+
     private final List<String> list = Arrays.asList("13333611437@qq.com", "jing.zhang@thingtrust.com");
 
 
@@ -47,7 +51,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
                 .toAddress(exchangeOrderDTO.getToAddress())
                 .inviteCode(exchangeOrderDTO.getInviteCode())
                 .payment(exchangeOrderDTO.getPayment())
-                .states(1)
+                .states(StatesEnum.NON_PAYMENT.getCode())
                 .build();
         this.exchangeOrderMapper.insertSelective(exchangeOrder);
     }
@@ -68,61 +72,61 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
     @Override
     public ResponseResult manualMoney(final Long id) {
         final ExchangeOrder exchangeOrder = this.exchangeOrderMapper.selectByPrimaryKey(id);
+
         if (exchangeOrder.getStates() == 1) {
-            return ResponseResult.failure(3010, "request error");
+            return ResponseResult.failure(StatesEnum.REQUEST_ERROR.getMsg());
         }
+
         final BigDecimal rate = this.getRate();
         if (rate.compareTo(new BigDecimal(0)) == 0) {
-            this.sendExceptionMail("getRate connect timeout");
-            return ResponseResult.failure(3004, "getRate connect timeout");
+            return ResponseResult.failure(StatesEnum.RATE_CONNECT_ERROR.getMsg() + exchangeOrder);
         }
+
         exchangeOrder.setRate(rate);
+
         final BigDecimal checkBalance = this.checkBalance();
         if (checkBalance.compareTo(new BigDecimal(-1)) == 0) {
-            this.sendExceptionMail("checkBalance connect timeout");
-            return ResponseResult.failure(3007, "checkBalance connect timeout");
+            return ResponseResult.failure(StatesEnum.CHECK_BALANCE_ERROR.getMsg() + exchangeOrder);
         }
+
         final BigDecimal quantity = exchangeOrder.getReceipt().divide(exchangeOrder.getRate(), 0, BigDecimal.ROUND_HALF_EVEN);
         if (checkBalance.compareTo(quantity) != 1) {
-            exchangeOrder.setStates(2);
+            exchangeOrder.setStates(StatesEnum.NOT_ENOUGH.getCode());
             this.exchangeOrderMapper.updateByPrimaryKeySelective(exchangeOrder);
-            this.sendMail(exchangeOrder);
-            return ResponseResult.failure(3005, "NOT ENOUGH MONEY");
+            return ResponseResult.failure(StatesEnum.NOT_ENOUGH_MONEY.getMsg() + exchangeOrder);
         }
         exchangeOrder.setQuantity(quantity);
-        //转账
+
         final String url = this.exChangeUrl + "/payToAddress";
         final Map<String, String> param = new HashMap<>();
         param.put("address", exchangeOrder.getTttAddress());
         param.put("amount", exchangeOrder.getQuantity().toString());
+
         final String body = OkHttpUtils.get(url, param);
         if (body == null) {
-            this.sendExceptionMail("payToAddress connect timeout");
-            return ResponseResult.failure(3008, "payToAddress connect timeout");
+            return ResponseResult.failure(StatesEnum.PAY_ADDRESS_FAILE.getMsg() + exchangeOrder);
         }
+
         final JSONObject jsonObject = (JSONObject) JSONObject.parse(body);
         final int code = (int) jsonObject.get("code");
-        if (code == 200) {
-            exchangeOrder.setStates(4);
-        } else if (code == 501) {
-            exchangeOrder.setStates(2);
-            this.sendMail(exchangeOrder);
+        if (code == StatesEnum.REQUEST_OK.getCode()) {
+            exchangeOrder.setStates(StatesEnum.COMPLETE.getCode());
         } else {
-            exchangeOrder.setStates(6);
+            exchangeOrder.setStates(StatesEnum.TRANSFER_FAILE.getCode());
             this.exchangeOrderMapper.updateByPrimaryKeySelective(exchangeOrder);
-            this.sendExceptionMail(body);
-            return ResponseResult.failure(3006, body);
+            return ResponseResult.failure(body + StatesEnum.TRANSFER_FAILE.getMsg() + exchangeOrder);
         }
+
         this.exchangeOrderMapper.updateByPrimaryKeySelective(exchangeOrder);
         this.addRecord(exchangeOrder);
-        //调取推送设备信息接口
+
         final String postTransferResult = this.postTransferResult(exchangeOrder);
         if (postTransferResult == null) {
-            exchangeOrder.setStates(7);
+            exchangeOrder.setStates(StatesEnum.PUSH_FAILE.getCode());
             this.exchangeOrderMapper.updateByPrimaryKeySelective(exchangeOrder);
-            this.sendExceptionMail("推送设备信息失败" + exchangeOrder);
-            return ResponseResult.failure(3009, postTransferResult);
+            return ResponseResult.failure(StatesEnum.PUSH_FAILE.getMsg() + exchangeOrder);
         }
+
         return ResponseResult.success(postTransferResult);
     }
 
@@ -153,7 +157,6 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
     @Override
     public String getExchangeOrder() {
         final List<String> columns = Arrays.asList("购买币种", "购买数量", "支付方式", "收到BTC数量", "收款BTC地址", "钱包地址", "汇率", "状态", "邀请码", "设备码", "创建时间");
-
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(StringUtils.join(columns, ","));
         final List<ExchangeOrder> exchangeOrderList = this.exchangeOrderMapper.selectByExample(null);
@@ -177,10 +180,9 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
 
     @Override
     public BigDecimal getRate() {
-        final String url = "https://api.bit-z.pro/api_v1/ticker";
         final Map<String, String> map = new HashMap<>();
         map.put("coin", "ttt_btc");
-        final String body = OkHttpUtils.get(url, map);
+        final String body = OkHttpUtils.get(this.rateUrl, map);
         if (body == null) {
             return new BigDecimal(0);
         }
@@ -195,10 +197,10 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         final ConfirmBalanceDTO confirmBalanceDTO = ConfirmBalanceDTO.builder()
                 .balance(checkBalance)
                 .quantity(exchangeOrder.getQuantity())
-                .states("不可以")
+                .states(StatesEnum.NOT_CAN.getMsg())
                 .build();
         if (checkBalance.compareTo(exchangeOrder.getQuantity()) == 1) {
-            confirmBalanceDTO.setStates("可以");
+            confirmBalanceDTO.setStates(StatesEnum.CAN.getMsg());
         }
         return confirmBalanceDTO;
     }

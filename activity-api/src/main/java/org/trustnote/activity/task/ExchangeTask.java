@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.trustnote.activity.common.enume.StatesEnum;
 import org.trustnote.activity.common.example.ExchangeOrderExample;
 import org.trustnote.activity.common.pojo.ExchangeOrder;
 import org.trustnote.activity.common.utils.OkHttpUtils;
@@ -44,7 +45,6 @@ public class ExchangeTask {
                 .forEach(order -> {
                     final String url = this.blockchainUrl + order.getToAddress();
                     final String body = OkHttpUtils.get(url, null);
-                    System.out.println(body);
                     if (body != null) {
                         try {
                             final BigDecimal btcMoney = new BigDecimal(body).divide(new BigDecimal(100000000), 8, BigDecimal.ROUND_HALF_EVEN);
@@ -52,17 +52,15 @@ public class ExchangeTask {
                                 order.setReceipt(btcMoney);
                                 order.setRate(this.exchangeOrderService.getRate());
                                 order.setQuantity(order.getReceipt().divide(order.getRate(), 8, BigDecimal.ROUND_HALF_EVEN));
-                                order.setStates(5);
+                                order.setStates(StatesEnum.NOT_CONFIRM.getCode());
                                 this.exchangeOrderMapper.updateByPrimaryKeySelective(order);
                             }
                         } catch (final Exception e) {
-                            this.exchangeOrderService.sendExceptionMail(e.getMessage());
+                            this.exchangeOrderService.sendExceptionMail(e.getMessage() + order);
                         }
                     }
                 });
     }
-
-
     /**
      * 每隔10分钟处理待确认订单
      */
@@ -91,14 +89,14 @@ public class ExchangeTask {
                             if (body != null) {
                                 final BigDecimal balance = new BigDecimal(body);
                                 if (balance.compareTo(order.getReceipt()) != -1) {
-                                    order.setStates(3);
+                                    order.setStates(StatesEnum.TO_PAYMENT.getCode());
                                     this.exchangeOrderMapper.updateByPrimaryKeySelective(order);
                                     this.exchangeOrderService.sendMail(order);
                                 }
                             }
                         }
                     } catch (final Exception e) {
-                        this.exchangeOrderService.sendExceptionMail(e.getMessage());
+                        this.exchangeOrderService.sendExceptionMail(e.getMessage() + order);
                     }
                 });
     }
@@ -115,7 +113,7 @@ public class ExchangeTask {
                 .forEach(order -> {
                     final BigDecimal checkBalance = this.exchangeOrderService.checkBalance();
                     if (checkBalance.compareTo(order.getQuantity()) == 1) {
-                        order.setStates(3);
+                        order.setStates(StatesEnum.TO_PAYMENT.getCode());
                         this.exchangeOrderMapper.updateByPrimaryKeySelective(order);
                     }
                 });
