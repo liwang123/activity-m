@@ -1,4 +1,4 @@
-package org.trustnote.activity.common.pojo;
+package org.trustnote.activity.common.dto;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ExchangeOrder {
+public class ExchangeEmailOrderDTO {
     private Long id;
 
     private String currency;
@@ -20,8 +20,6 @@ public class ExchangeOrder {
 
     private BigDecimal receipt;
 
-    private String fromAddress;
-
     private String toAddress;
 
     private String tttAddress;
@@ -30,14 +28,10 @@ public class ExchangeOrder {
 
     private BigDecimal rate;
 
-    private Integer states;
+    private String state;
 
     private String inviteCode;
 
     private LocalDateTime createTime;
-
-    private String creTime;
-
-    private LocalDateTime updateTime;
 
 }

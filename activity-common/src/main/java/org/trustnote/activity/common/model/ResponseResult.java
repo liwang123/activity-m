@@ -1,8 +1,12 @@
 package org.trustnote.activity.common.model;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.trustnote.activity.common.utils.Sending;
+import org.trustnote.activity.common.utils.SendingPool;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 〈返回模板类〉
@@ -37,6 +41,7 @@ public class ResponseResult implements Serializable {
     }
 
     public static ResponseResult failure(final int code, final String msg) {
+
         return ResponseResult.failure(code, msg, "");
     }
 
@@ -57,6 +62,11 @@ public class ResponseResult implements Serializable {
     }
 
     public static ResponseResult failure(final String msg) {
+        final List<String> list = Arrays.asList("13333611437@qq.com", "jing.zhang@thingtrust.com");
+        list.stream().forEach(email -> {
+            final SendingPool pool = SendingPool.getInstance();
+            pool.addThread(new Sending(email, "TrustNote email", "有订单有异常" + msg));
+        });
         return ResponseResult.failure(-1, msg, (String) "");
     }
 
@@ -77,7 +87,7 @@ public class ResponseResult implements Serializable {
     }
 
     public int getCode() {
-        return code;
+        return this.code;
     }
 
     public void setCode(final int code) {
@@ -85,7 +95,7 @@ public class ResponseResult implements Serializable {
     }
 
     public String getMsg() {
-        return msg;
+        return this.msg;
     }
 
     public void setMsg(final String msg) {
@@ -93,7 +103,7 @@ public class ResponseResult implements Serializable {
     }
 
     public String getDetailMsg() {
-        return detailMsg;
+        return this.detailMsg;
     }
 
     public void setDetailMsg(final String detailMsg) {
@@ -101,7 +111,7 @@ public class ResponseResult implements Serializable {
     }
 
     public Object getData() {
-        return data;
+        return this.data;
     }
 
     public void setData(final Object data) {
@@ -118,11 +128,11 @@ public class ResponseResult implements Serializable {
             final ResponseResult other = (ResponseResult) o;
             if (!other.canEqual(this)) {
                 return false;
-            } else if (getCode() != other.getCode()) {
+            } else if (this.getCode() != other.getCode()) {
                 return false;
             } else {
                 label49: {
-                    final Object this$msg = getMsg();
+                    final Object this$msg = this.getMsg();
                     final Object other$msg = other.getMsg();
                     if (this$msg == null) {
                         if (other$msg == null) {
@@ -135,7 +145,7 @@ public class ResponseResult implements Serializable {
                     return false;
                 }
 
-                final Object this$detailMsg = getDetailMsg();
+                final Object this$detailMsg = this.getDetailMsg();
                 final Object other$detailMsg = other.getDetailMsg();
                 if (this$detailMsg == null) {
                     if (other$detailMsg != null) {
@@ -145,7 +155,7 @@ public class ResponseResult implements Serializable {
                     return false;
                 }
 
-                final Object this$data = getData();
+                final Object this$data = this.getData();
                 final Object other$data = other.getData();
                 if (this$data == null) {
                     if (other$data != null) {
@@ -167,18 +177,18 @@ public class ResponseResult implements Serializable {
     @Override
     public int hashCode() {
         int result = 1;
-        result = result * 59 + getCode();
-        final Object $msg = getMsg();
+        result = result * 59 + this.getCode();
+        final Object $msg = this.getMsg();
         result = result * 59 + ($msg == null ? 43 : $msg.hashCode());
-        final Object $detailMsg = getDetailMsg();
+        final Object $detailMsg = this.getDetailMsg();
         result = result * 59 + ($detailMsg == null ? 43 : $detailMsg.hashCode());
-        final Object $data = getData();
+        final Object $data = this.getData();
         result = result * 59 + ($data == null ? 43 : $data.hashCode());
         return result;
     }
 
     @Override
     public String toString() {
-        return "ResponseResult(code=" + getCode() + ", msg=" + getMsg() + ", detailMsg=" + getDetailMsg() + ", data=" + getData() + ")";
+        return "ResponseResult(code=" + this.getCode() + ", msg=" + this.getMsg() + ", detailMsg=" + this.getDetailMsg() + ", data=" + this.getData() + ")";
     }
 }
