@@ -42,7 +42,7 @@ public class ExchangeTask {
     /**
      * 每隔10分钟处理未支付订单
      */
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void handleOrders() {
         final ExchangeOrderExample exchangeOrderExample = new ExchangeOrderExample();
         exchangeOrderExample.createCriteria().andStatesEqualTo(1);
