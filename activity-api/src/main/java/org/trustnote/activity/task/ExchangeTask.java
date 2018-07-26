@@ -59,10 +59,11 @@ public class ExchangeTask {
                                 order.setRate(this.exchangeOrderService.getRate());
                                 order.setQuantity(order.getReceipt().divide(order.getRate(), 0, BigDecimal.ROUND_HALF_DOWN));
                                 order.setStates(StatesEnum.NOT_CONFIRM.getCode());
-                            } else {
+                                this.exchangeOrderMapper.updateByPrimaryKeySelective(order);
+                            } else if (btcMoney.compareTo(new BigDecimal(0)) == 1) {
                                 order.setStates(StatesEnum.LESS.getCode());
+                                this.exchangeOrderMapper.updateByPrimaryKeySelective(order);
                             }
-                            this.exchangeOrderMapper.updateByPrimaryKeySelective(order);
                         } catch (final Exception e) {
                             this.exchangeOrderService.sendExceptionMail(e.getMessage() + order);
                         }
