@@ -149,7 +149,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
             return new BigDecimal(-1);
         }
         final JSONObject jsonObject = (JSONObject) JSONObject.parse(body);
-        final BigDecimal checkBanlance = new BigDecimal(jsonObject.getJSONObject("data").get("balance").toString());
+        final BigDecimal checkBanlance = new BigDecimal(jsonObject.getJSONObject("data").get("balance").toString()).divide(new BigDecimal(1000000));
         return checkBanlance;
     }
 
