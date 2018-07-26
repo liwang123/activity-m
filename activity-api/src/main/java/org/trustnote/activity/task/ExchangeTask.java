@@ -42,7 +42,7 @@ public class ExchangeTask {
     /**
      * 每隔10分钟处理未支付订单
      */
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void handleOrders() {
         final ExchangeOrderExample exchangeOrderExample = new ExchangeOrderExample();
         exchangeOrderExample.createCriteria().andStatesEqualTo(1);
@@ -53,11 +53,11 @@ public class ExchangeTask {
                     final String body = OkHttpUtils.get(url, null);
                     if (body != null) {
                         try {
-                            final BigDecimal btcMoney = new BigDecimal(body).divide(new BigDecimal(100000000), 0, BigDecimal.ROUND_HALF_DOWN);
+                            final BigDecimal btcMoney = new BigDecimal(body).divide(new BigDecimal(100000000), 8, BigDecimal.ROUND_HALF_DOWN);
                             if (btcMoney.compareTo(new BigDecimal(0.01)) != -1) {
                                 order.setReceipt(btcMoney);
                                 order.setRate(this.exchangeOrderService.getRate());
-                                order.setQuantity(order.getReceipt().divide(order.getRate(), 0, BigDecimal.ROUND_HALF_DOWN));
+                                order.setQuantity(order.getReceipt().divide(order.getRate(), 8, BigDecimal.ROUND_HALF_DOWN));
                                 order.setStates(StatesEnum.NOT_CONFIRM.getCode());
                                 this.exchangeOrderMapper.updateByPrimaryKeySelective(order);
                             } else if (btcMoney.compareTo(new BigDecimal(0)) == 1) {
