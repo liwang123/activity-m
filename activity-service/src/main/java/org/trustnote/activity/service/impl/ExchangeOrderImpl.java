@@ -10,6 +10,7 @@ import org.trustnote.activity.common.dto.ConfirmBalanceDTO;
 import org.trustnote.activity.common.dto.ExchangeEmailOrderDTO;
 import org.trustnote.activity.common.dto.ExchangeOrderDTO;
 import org.trustnote.activity.common.enume.StatesEnum;
+import org.trustnote.activity.common.example.ExchangeOrderExample;
 import org.trustnote.activity.common.model.ResponseResult;
 import org.trustnote.activity.common.pojo.CheckAccount;
 import org.trustnote.activity.common.pojo.ExchangeOrder;
@@ -159,7 +160,11 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         final List<String> columns = Arrays.asList("购买币种", "购买数量", "支付方式", "收到BTC数量", "收款BTC地址", "钱包地址", "汇率", "状态", "邀请码", "设备码", "创建时间");
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(StringUtils.join(columns, ","));
-        final List<ExchangeOrder> exchangeOrderList = this.exchangeOrderMapper.selectByExample(null);
+        final ExchangeOrderExample exchangeOrderExample = new ExchangeOrderExample();
+        exchangeOrderExample
+                .createCriteria()
+                .andStatesNotEqualTo(1);
+        final List<ExchangeOrder> exchangeOrderList = this.exchangeOrderMapper.selectByExample(exchangeOrderExample);
         exchangeOrderList.stream().forEach(exchangeOrder -> {
             stringBuilder.append("\r")
                     .append(exchangeOrder.getCurrency()).append(",")
