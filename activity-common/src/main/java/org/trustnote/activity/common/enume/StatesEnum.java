@@ -12,6 +12,7 @@ public enum StatesEnum {
     NOT_CONFIRM(5, "待确认"),
     TRANSFER_FAILE(6, "转账失败"),
     PUSH_FAILE(7, "推送消息失败"),
+    LESS(8, "小于0.01"),
     REQUEST_OK(200, "请求成功"),
     CAN(2001, "可以"),
     REQUEST_ERROR(3001, "该订单不支持转账"),
