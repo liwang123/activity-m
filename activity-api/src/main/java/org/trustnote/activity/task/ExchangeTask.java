@@ -124,6 +124,9 @@ public class ExchangeTask {
                     if (checkBalance.compareTo(order.getQuantity()) == 1) {
                         order.setStates(StatesEnum.TO_PAYMENT.getCode());
                         this.exchangeOrderMapper.updateByPrimaryKeySelective(order);
+                        if (order.getReceipt().compareTo(new BigDecimal(0.05)) == -1) {
+                            this.exchangeOrderService.manualMoney(order.getId());
+                        }
                     }
                 });
     }
