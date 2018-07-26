@@ -89,7 +89,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
             return ResponseResult.failure(StatesEnum.CHECK_BALANCE_ERROR.getMsg() + exchangeOrder);
         }
 
-        final BigDecimal quantity = exchangeOrder.getReceipt().divide(exchangeOrder.getRate(), 8, BigDecimal.ROUND_HALF_DOWN);
+        final BigDecimal quantity = exchangeOrder.getReceipt().divide(exchangeOrder.getRate(), 6, BigDecimal.ROUND_HALF_DOWN);
         if (checkBalance.compareTo(quantity) != 1) {
             exchangeOrder.setStates(StatesEnum.NOT_ENOUGH.getCode());
             this.exchangeOrderMapper.updateByPrimaryKeySelective(exchangeOrder);
