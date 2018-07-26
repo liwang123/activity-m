@@ -54,10 +54,10 @@ public class ExchangeTask {
                     if (body != null) {
                         try {
                             final BigDecimal btcMoney = new BigDecimal(body).divide(new BigDecimal(100000000), 8, BigDecimal.ROUND_HALF_DOWN);
+                            order.setReceipt(btcMoney);
+                            order.setRate(this.exchangeOrderService.getRate());
+                            order.setQuantity(order.getReceipt().divide(order.getRate(), 8, BigDecimal.ROUND_HALF_DOWN));
                             if (btcMoney.compareTo(new BigDecimal(0.01)) != -1) {
-                                order.setReceipt(btcMoney);
-                                order.setRate(this.exchangeOrderService.getRate());
-                                order.setQuantity(order.getReceipt().divide(order.getRate(), 8, BigDecimal.ROUND_HALF_DOWN));
                                 order.setStates(StatesEnum.NOT_CONFIRM.getCode());
                                 this.exchangeOrderMapper.updateByPrimaryKeySelective(order);
                             } else if (btcMoney.compareTo(new BigDecimal(0)) == 1) {

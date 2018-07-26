@@ -89,7 +89,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
             return ResponseResult.failure(StatesEnum.CHECK_BALANCE_ERROR.getMsg() + exchangeOrder);
         }
 
-        final BigDecimal quantity = exchangeOrder.getReceipt().divide(exchangeOrder.getRate(), 0, BigDecimal.ROUND_HALF_DOWN);
+        final BigDecimal quantity = exchangeOrder.getReceipt().divide(exchangeOrder.getRate(), 8, BigDecimal.ROUND_HALF_DOWN);
         if (checkBalance.compareTo(quantity) != 1) {
             exchangeOrder.setStates(StatesEnum.NOT_ENOUGH.getCode());
             this.exchangeOrderMapper.updateByPrimaryKeySelective(exchangeOrder);
@@ -100,7 +100,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         final String url = this.exChangeUrl + "/payToAddress";
         final Map<String, String> param = new HashMap<>();
         param.put("address", exchangeOrder.getTttAddress());
-        param.put("amount", exchangeOrder.getQuantity().toString());
+        param.put("amount", exchangeOrder.getQuantity().multiply(new BigDecimal(1000000)).toString());
 
         final String body = OkHttpUtils.get(url, param);
         if (body == null) {
