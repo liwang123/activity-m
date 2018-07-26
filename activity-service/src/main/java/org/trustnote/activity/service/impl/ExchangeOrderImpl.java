@@ -10,6 +10,7 @@ import org.trustnote.activity.common.dto.ConfirmBalanceDTO;
 import org.trustnote.activity.common.dto.ExchangeEmailOrderDTO;
 import org.trustnote.activity.common.dto.ExchangeOrderDTO;
 import org.trustnote.activity.common.enume.StatesEnum;
+import org.trustnote.activity.common.example.ExchangeOrderExample;
 import org.trustnote.activity.common.model.ResponseResult;
 import org.trustnote.activity.common.pojo.CheckAccount;
 import org.trustnote.activity.common.pojo.ExchangeOrder;
@@ -89,7 +90,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
             return ResponseResult.failure(StatesEnum.CHECK_BALANCE_ERROR.getMsg() + exchangeOrder);
         }
 
-        final BigDecimal quantity = exchangeOrder.getReceipt().divide(exchangeOrder.getRate(), 0, BigDecimal.ROUND_HALF_DOWN);
+        final BigDecimal quantity = exchangeOrder.getReceipt().divide(exchangeOrder.getRate(), 6, BigDecimal.ROUND_HALF_DOWN);
         if (checkBalance.compareTo(quantity) != 1) {
             exchangeOrder.setStates(StatesEnum.NOT_ENOUGH.getCode());
             this.exchangeOrderMapper.updateByPrimaryKeySelective(exchangeOrder);
@@ -100,7 +101,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         final String url = this.exChangeUrl + "/payToAddress";
         final Map<String, String> param = new HashMap<>();
         param.put("address", exchangeOrder.getTttAddress());
-        param.put("amount", exchangeOrder.getQuantity().toString());
+        param.put("amount", exchangeOrder.getQuantity().multiply(new BigDecimal(1000000)).toString());
 
         final String body = OkHttpUtils.get(url, param);
         if (body == null) {
@@ -149,7 +150,7 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
             return new BigDecimal(-1);
         }
         final JSONObject jsonObject = (JSONObject) JSONObject.parse(body);
-        final BigDecimal checkBanlance = new BigDecimal(jsonObject.getJSONObject("data").get("balance").toString());
+        final BigDecimal checkBanlance = new BigDecimal(jsonObject.getJSONObject("data").get("balance").toString()).divide(new BigDecimal(1000000));
         return checkBanlance;
     }
 
@@ -159,7 +160,11 @@ public class ExchangeOrderImpl implements ExchangeOrderService {
         final List<String> columns = Arrays.asList("购买币种", "购买数量", "支付方式", "收到BTC数量", "收款BTC地址", "钱包地址", "汇率", "状态", "邀请码", "设备码", "创建时间");
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(StringUtils.join(columns, ","));
-        final List<ExchangeOrder> exchangeOrderList = this.exchangeOrderMapper.selectByExample(null);
+        final ExchangeOrderExample exchangeOrderExample = new ExchangeOrderExample();
+        exchangeOrderExample
+                .createCriteria()
+                .andStatesNotEqualTo(1);
+        final List<ExchangeOrder> exchangeOrderList = this.exchangeOrderMapper.selectByExample(exchangeOrderExample);
         exchangeOrderList.stream().forEach(exchangeOrder -> {
             stringBuilder.append("\r")
                     .append(exchangeOrder.getCurrency()).append(",")
