@@ -113,7 +113,7 @@ public class ExchangeTask {
     /**
      * 每隔10分钟处理余额不足订单
      */
-    @Scheduled(cron = "0 0/50 * * * ?")
+    @Scheduled(cron = "0 0/10 * * * ?")
     public void handleNotEnoughOrders() {
         final ExchangeOrderExample exchangeOrderExample = new ExchangeOrderExample();
         exchangeOrderExample.createCriteria().andStatesEqualTo(2);
