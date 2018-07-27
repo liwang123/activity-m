@@ -15,6 +15,7 @@ import org.trustnote.activity.skeleton.mybatis.mapper.ExchangeOrderMapper;
 import org.trustnote.activity.skeleton.mybatis.mapper.ExchangeRateMapper;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +44,7 @@ public class ExchangeTask {
     /**
      * 每隔10分钟处理未支付订单
      */
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/10 * * * ?")
     public void handleOrders() {
         final ExchangeOrderExample exchangeOrderExample = new ExchangeOrderExample();
         exchangeOrderExample.createCriteria().andStatesEqualTo(1);
@@ -74,7 +75,7 @@ public class ExchangeTask {
     /**
      * 每隔10分钟处理待确认订单
      */
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/10 * * * ?")
     public void unconfirmedOrders() {
         final ExchangeOrderExample exchangeOrderExample = new ExchangeOrderExample();
         exchangeOrderExample.createCriteria().andStatesEqualTo(5);
@@ -123,6 +124,7 @@ public class ExchangeTask {
                 .forEach(order -> {
                     final BigDecimal checkBalance = this.exchangeOrderService.checkBalance();
                     if (checkBalance.compareTo(order.getQuantity()) == 1) {
+                        System.out.println(LocalDateTime.now());
                         order.setStates(StatesEnum.TO_PAYMENT.getCode());
                         this.exchangeOrderMapper.updateByPrimaryKeySelective(order);
                         if (order.getReceipt().compareTo(new BigDecimal(0.5)) == -1) {
