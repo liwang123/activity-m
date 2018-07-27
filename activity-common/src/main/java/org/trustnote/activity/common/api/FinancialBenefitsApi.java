@@ -57,4 +57,6 @@ public class FinancialBenefitsApi {
     private BigDecimal alsoTempAmount;
     @NotNull(message = "请输入TFans数量")
     private Integer tFans;
+    private BigDecimal incomeTotal;
+    private Integer tFansTotal;
 }

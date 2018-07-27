@@ -5,9 +5,10 @@ package org.trustnote.activity.common.enume;
  * @since v0.3
  */
 public enum DownloadType {
-    Android("android"),IOS("ios"),Windows("windows"),Mac("mac"),Linux("linux"),Github("github");
-    private String value;
-    DownloadType(String value) {
+    Android("android"), IOS("ios"), Windows("windows"), Mac("mac"), Linux("linux"), Github("github");
+    private final String value;
+
+    DownloadType(final String value) {
         this.value = value;
     }
 
@@ -15,8 +16,8 @@ public enum DownloadType {
         return this.value;
     }
 
-    public static DownloadType getItem(String value) {
-        for (DownloadType type : DownloadType.values()) {
+    public static DownloadType getItem(final String value) {
+        for (final DownloadType type : DownloadType.values()) {
             if (type.getValue().equals(value)) {
                 return type;
             }
@@ -25,8 +26,8 @@ public enum DownloadType {
     }
 
     public static String getSupportedValue() {
-        StringBuffer ret = new StringBuffer();
-        for (DownloadType type : DownloadType.values()) {
+        final StringBuffer ret = new StringBuffer();
+        for (final DownloadType type : DownloadType.values()) {
             ret.append(type.getValue()).append(",");
         }
         return ret.substring(0, ret.length() - 1);

@@ -13,6 +13,7 @@
         <result column="temp_amount" jdbcType="DECIMAL" property="tempAmount"/>
         <result column="calaction_status" jdbcType="INTEGER" property="calactionStatus"/>
         <result column="tfans_amount" jdbcType="INTEGER" property="tFansAmount"/>
+        <result column="wallet_address" jdbcType="VARCHAR" property="walletAddress"/>
     </resultMap>
     <sql id="Example_Where_Clause">
         <where>
@@ -76,7 +77,7 @@
     </sql>
     <sql id="Base_Column_List">
     id, shared_address, device_address, financial_benefits_id, lock_up_amount, income_amount, 
-    operation_time, order_amount, temp_amount,calaction_status,tfans_amount
+    operation_time, order_amount, temp_amount,calaction_status, tfans_amount, wallet_address
   </sql>
     <select id="selectByExample" parameterType="org.trustnote.activity.common.example.FinancialLockUpExample"
             resultMap="BaseResultMap">
@@ -127,10 +128,11 @@
     <insert id="insert" parameterType="org.trustnote.activity.common.pojo.FinancialLockUp">
     insert into financial_lock_up (id, shared_address, device_address, 
       financial_benefits_id, lock_up_amount, income_amount, 
-      operation_time, order_amount, temp_amount, calaction_status, tfans_amount)
+      operation_time, order_amount, temp_amount, calaction_status, tfans_amount, wallet_address)
     values (#{id,jdbcType=INTEGER}, #{sharedAddress,jdbcType=VARCHAR}, #{deviceAddress,jdbcType=VARCHAR}, 
       #{financialBenefitsId,jdbcType=INTEGER}, #{lockUpAmount,jdbcType=DECIMAL}, #{incomeAmount,jdbcType=DECIMAL},
-      #{operationTime,jdbcType=TIMESTAMP}, #{orderAmount,jdbcType=INTEGER}, #{tempAmount,jdbcType=DECIMAL}, #{calactionStatus,jdbcType=INTEGER}, #{tFansAmount,jdbcType=INTEGER})
+      #{operationTime,jdbcType=TIMESTAMP}, #{orderAmount,jdbcType=INTEGER}, #{tempAmount,jdbcType=DECIMAL},
+      #{calactionStatus,jdbcType=INTEGER}, #{tFansAmount,jdbcType=INTEGER}, #{walletAddress,jdbcType=VARCHAR})
   </insert>
     <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.FinancialLockUp">
         insert into financial_lock_up
@@ -168,6 +170,9 @@
             <if test="tFansAmount != null">
                 tfans_amount,
             </if>
+            <if test="walletAddress != null">
+                wallet_address,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -202,6 +207,9 @@
             </if>
             <if test="tFansAmount != null">
                 #{tFansAmount,jdbcType=INTEGER},
+            </if>
+            <if test="walletAddress != null">
+                #{walletAddress,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -248,6 +256,9 @@
             <if test="record.tFansAmount != null">
                 tfans_amount = #{record.tFansAmount,jdbcType=INTEGER},
             </if>
+            <if test="record.walletAddress != null">
+                wallet_address = #{record.walletAddress,jdbcType=VARCHAR},
+            </if>
         </set>
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
@@ -265,7 +276,8 @@
         order_amount = #{record.orderAmount,jdbcType=INTEGER},
         temp_amount = #{record.tempAmount,jdbcType=DECIMAL},
         calaction_status = #{record.calactionStatus,jdbcType=INTEGER},
-        tfans_amount = #{record.tFansAmount,jdbcType=INTEGER}
+        tfans_amount = #{record.tFansAmount,jdbcType=INTEGER},
+        wallet_address = #{record.walletAddress,jdbcType=VARCHAR}
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
         </if>
@@ -303,6 +315,9 @@
             <if test="tFansAmount != null">
                 tfans_amount = #{tFansAmount,jdbcType=INTEGER},
             </if>
+            <if test="walletAddress != null">
+                wallet_address = #{walletAddress,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
@@ -317,7 +332,8 @@
       order_amount = #{orderAmount,jdbcType=INTEGER},
       temp_amount = #{tempAmount,jdbcType=DECIMAL},
       calaction_status = #{calactionStatus,jdbcType=INTEGER},
-      tfans_amount = #{tFansAmount,jdbcType=INTEGER}
+      tfans_amount = #{tFansAmount,jdbcType=INTEGER},
+      wallet_address = #{walletAddress,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
     </update>
     <select id="participate" resultType="Map">

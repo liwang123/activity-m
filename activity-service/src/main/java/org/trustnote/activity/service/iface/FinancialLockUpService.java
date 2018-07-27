@@ -21,6 +21,8 @@ public interface FinancialLockUpService {
 
     List<Map<String, String>> export(int benefitsId) throws Exception;
 
+    List<Map<String, String>> exportTFS(int benefitsId) throws Exception;
+
     void validationPayment();
 
     void saveInComeAmount();
@@ -38,4 +40,8 @@ public interface FinancialLockUpService {
      * @return
      */
     Map<String, BigDecimal> statisticalAmount(FinancialBenefitsApi financialBenefitsApi);
+
+    String readWalletAddress(final List list);
+
+    String manualTFans();
 }

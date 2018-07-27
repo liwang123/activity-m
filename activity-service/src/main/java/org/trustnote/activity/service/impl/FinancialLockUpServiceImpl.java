@@ -141,15 +141,15 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
     @Override
     public Map<String, BigDecimal> statisticalAmount(final FinancialBenefitsApi financialBenefitsApi) {
         final Map<String, BigDecimal> statistical = new HashMap<>(6);
-        final FinancialLockUpExample example = this.conditionsExample(financialBenefitsApi, 0, 0);
+        final FinancialLockUpExample example = this.conditionsExample(financialBenefitsApi, 0, 0, "all");
         //已锁总额度、已抢购总额度
         final Map<String, BigDecimal> mapAlso = this.financialLockUpMapper.statisticalAmount(example);
         this.inDataMap(mapAlso, statistical, 0);
         //当前已锁总额度、当前已抢购总额度
-        final Map<String, BigDecimal> mapCurr = this.financialLockUpMapper.statisticalAmount(this.conditionsExample(financialBenefitsApi, 1, 0));
+        final Map<String, BigDecimal> mapCurr = this.financialLockUpMapper.statisticalAmount(this.conditionsExample(financialBenefitsApi, 1, 0, "fix"));
         this.inDataMap(mapCurr, statistical, 1);
         //收益、tfans
-        final Map<String, BigDecimal> mapInComeTfans = this.financialLockUpMapper.statisticalInComeTfans(this.conditionsExample(financialBenefitsApi, 0, 1));
+        final Map<String, BigDecimal> mapInComeTfans = this.financialLockUpMapper.statisticalInComeTfans(this.conditionsExample(financialBenefitsApi, 0, 1, "fix"));
         this.inDataMap(mapInComeTfans, statistical, 2);
         return statistical;
     }
@@ -162,18 +162,19 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
      * @param status               0 不需要计算已发收益  1 需要计算已发收益
      * @return
      */
-    private FinancialLockUpExample conditionsExample(final FinancialBenefitsApi financialBenefitsApi, final int type, final int status) {
+    private FinancialLockUpExample conditionsExample(final FinancialBenefitsApi financialBenefitsApi, final int type, final int status, final String allOrFix) {
         final FinancialLockUpExample example = new FinancialLockUpExample();
         final FinancialLockUpExample.Criteria criteria = example.createCriteria();
+        final String fix = "fix";
         LocalDateTime now = null;
         if (type == 1) {
             now = LocalDateTime.now();
         }
         final List<Integer> ids = this.financialBenefitsService.queryFinancialFinancialId(financialBenefitsApi, now, status);
-        if (!CollectionUtils.isEmpty(ids)) {
-            criteria.andFinancialBenefitsIdIn(ids);
+        if (CollectionUtils.isEmpty(ids) && fix.equals(allOrFix)) {
+            ids.add(null);
         }
-
+        criteria.andFinancialBenefitsIdIn(ids);
         return example;
     }
 
@@ -221,7 +222,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         final FinancialLockUpExample example = new FinancialLockUpExample();
         final FinancialLockUpExample.Criteria criteria = example.createCriteria();
         criteria.andFinancialBenefitsIdEqualTo(benefitsId);
-        criteria.andLockUpAmountGreaterThan(new BigDecimal(0));
+        criteria.andIncomeAmountIsNotNull();
         example.setOrderByClause("operation_time DESC");
         final List<FinancialLockUp> financialLockUps = this.financialLockUpMapper.selectByExamplePage(page, example);
         final List<FinancialLockUp> lastFi = this.convertNonApi(financialLockUps, 0);
@@ -234,6 +235,25 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
             map.put("3", financialLockUp.getIncomeAmount() == null ? "" : financialLockUp.getIncomeAmount().toString());
             map.put("4", financialLockUp.getLockUpStatus());
             map.put("5", DateTimeUtils.formatDateTime(financialLockUp.getOperationTime(), "yyyy-MM-dd HH:mm:ss"));
+            contents.add(map);
+        }
+        return contents;
+    }
+
+    @Override
+    public List<Map<String, String>> exportTFS(final int benefitsId) throws Exception {
+        final Page<FinancialLockUp> page = new Page<>(1, Integer.MAX_VALUE);
+        final FinancialLockUpExample example = new FinancialLockUpExample();
+        final FinancialLockUpExample.Criteria criteria = example.createCriteria();
+        criteria.andFinancialBenefitsIdEqualTo(benefitsId);
+        criteria.andTfansAmountIsNotNull();
+        example.setOrderByClause("operation_time DESC");
+        final List<FinancialLockUp> financialLockUps = this.financialLockUpMapper.selectByExamplePage(page, example);
+        final List<Map<String, String>> contents = new ArrayList<>();
+        for (final FinancialLockUp financialLockUp : financialLockUps) {
+            final Map<String, String> map = new HashMap<>(2);
+            map.put("0", financialLockUp.getWalletAddress());
+            map.put("1", financialLockUp.getTFansAmount().toString());
             contents.add(map);
         }
         return contents;
@@ -321,6 +341,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 if (remainLimit != null) {
                     fbRecord.setRemainLimit(remainLimit);
                 }
+
                 final int fbUpStatus = this.financialBenefitsMapper.updateByPrimaryKeySelective(fbRecord);
                 FinancialLockUpServiceImpl.logger.info("更新剩余金额状态： {}", fbUpStatus);
             }
@@ -384,6 +405,27 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 }
 
                 FinancialLockUpServiceImpl.logger.info("更新锁仓金额状态： {}", upStatus);
+            }
+
+            final FinancialLockUpExample example = new FinancialLockUpExample();
+            final FinancialLockUpExample.Criteria criteria = example.createCriteria();
+            criteria.andFinancialBenefitsIdEqualTo(financialBenefits.getId());
+            final Map<String, BigDecimal> mapInComeTfans = this.financialLockUpMapper.statisticalInComeTfans(example);
+            final FinancialBenefits fbRecord = FinancialBenefits.builder()
+                    .id(financialBenefits.getId())
+                    .build();
+            if (mapInComeTfans != null) {
+                if (mapInComeTfans.get("firstValue") != null) {
+                    fbRecord.setIncomeTotal(mapInComeTfans.get("firstValue"));
+                }
+                if (mapInComeTfans.get("secondValue") != null) {
+                    fbRecord.setTFansTotal(mapInComeTfans.get("secondValue").intValue());
+                }
+            }
+            FinancialLockUpServiceImpl.logger.info("更新总收益金额与总赠送TFS数量信息: {}", fbRecord.toString());
+            if (fbRecord.getIncomeTotal() != null || fbRecord.getTFansTotal() != null) {
+                final int fbUpStatus = this.financialBenefitsMapper.updateByPrimaryKeySelective(fbRecord);
+                FinancialLockUpServiceImpl.logger.info("数据库操作状态： {}", fbUpStatus);
             }
         }
         FinancialLockUpServiceImpl.logger.info("-----------------------------------计算收益结束---------------------------------");
@@ -570,4 +612,64 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         }
     }
 
+    @Override
+    public String readWalletAddress(final List list) {
+        int uS = 0;
+        int uF = 0;
+        int i;
+        for (i = 0; i < list.size(); i++) {
+            final String[] excelLine = (String[]) list.get(i);
+            final String sharedAddress = excelLine[0];
+            final String walletAddress = excelLine[1];
+            final FinancialLockUp record = FinancialLockUp.builder()
+                    .walletAddress(walletAddress)
+                    .build();
+            final FinancialLockUpExample example = new FinancialLockUpExample();
+            final FinancialLockUpExample.Criteria criteria = example.createCriteria();
+            criteria.andSharedAddressEqualTo(sharedAddress);
+            final int up = this.financialLockUpMapper.updateByExampleSelective(record, example);
+            if (up == 1) {
+                uS++;
+            } else {
+                uF++;
+            }
+        }
+        return "导入总计条数: " + list.size() + " 成功修改记录: " + uS + " 失败记录: " + uF;
+    }
+
+    @Override
+    public String manualTFans() {
+        final FinancialLockUpExample example = new FinancialLockUpExample();
+        final FinancialLockUpExample.Criteria criteria = example.createCriteria();
+        criteria.andIncomeAmountIsNotNull();
+        criteria.andTfansAmountIsNull();
+        final List<FinancialLockUp> financialLockUps = this.financialLockUpMapper.selectByExample(example);
+        int uS = 0;
+        int uF = 0;
+        for (final FinancialLockUp event : financialLockUps) {
+            final FinancialBenefits financialBenefits;
+            try {
+                financialBenefits = this.financialBenefitsService.queryOneFinancialBenefits(event
+                        .getFinancialBenefitsId());
+            } catch (final Exception e) {
+                FinancialLockUpServiceImpl.logger.error("根据financialBenefitsId: {} 查询financial 异常: {}", event.getFinancialBenefitsId(), e);
+                continue;
+            }
+            if (financialBenefits != null) {
+                final BigDecimal tFans = event.getIncomeAmount().multiply(new BigDecimal(financialBenefits.getTFans()));
+                final FinancialLockUp record = FinancialLockUp.builder()
+                        .id(event.getId())
+                        .tFansAmount(tFans.setScale(0, BigDecimal.ROUND_DOWN).intValue())
+                        .build();
+                final int status = this.financialLockUpMapper.updateByPrimaryKeySelective(record);
+                if (status == 1) {
+                    uS++;
+                } else {
+                    uF++;
+                }
+            }
+        }
+
+        return "处理合约总计条数: " + financialLockUps.size() + " 成功修改记录: " + uS + " 失败记录: " + uF;
+    }
 }

@@ -669,6 +669,16 @@ public class FinancialLockUpExample {
             return (Criteria) this;
         }
 
+        public Criteria andTfansAmountIsNull() {
+            this.addCriterion("tfans_amount is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTfansAmountIsNotNull() {
+            this.addCriterion("tfans_amount is not null");
+            return (Criteria) this;
+        }
+
     }
 
     public static class Criteria extends GeneratedCriteria {

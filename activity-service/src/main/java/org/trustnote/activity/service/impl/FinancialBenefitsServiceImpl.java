@@ -169,6 +169,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .alsoLockUpAmount(benefits.getAlsoLockUpAmount())
                     .alsoTempAmount(benefits.getAlsoTempAmount())
                     .tFans(benefits.getTFans())
+                    .incomeTotal(benefits.getIncomeTotal())
+                    .tFansTotal(benefits.getTFansTotal())
                     .build();
             if (!CollectionUtils.isEmpty(nextFinancialBenefits)) {
                 financialBenefitsApi.setNextPanicStartTime(DateTimeUtils.localDateTimeParseLong(nextFinancialBenefits.get(0).getPanicStartTime()));
@@ -198,6 +200,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .alsoLockUpAmount(benefits.getAlsoLockUpAmount())
                     .alsoTempAmount(benefits.getAlsoTempAmount())
                     .tFans(benefits.getTFans())
+                    .incomeTotal(benefits.getIncomeTotal())
+                    .tFansTotal(benefits.getTFansTotal())
                     .build();
             //查询未开启后续是否还有
             final List<FinancialBenefits> nextTwo = this.queryFinancialGreaterThanNow(financialId, benefits.getPanicEndTime());
@@ -230,6 +234,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .alsoLockUpAmount(benefits.getAlsoLockUpAmount())
                     .alsoTempAmount(benefits.getAlsoTempAmount())
                     .tFans(benefits.getTFans())
+                    .incomeTotal(benefits.getIncomeTotal())
+                    .tFansTotal(benefits.getTFansTotal())
                     .build();
 
             //查询抢购结束后续是否还有
@@ -282,6 +288,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                     .alsoLockUpAmount(financialBenefits.getAlsoLockUpAmount())
                     .alsoTempAmount(financialBenefits.getAlsoTempAmount())
                     .tFans(financialBenefits.getTFans())
+                    .incomeTotal(financialBenefits.getIncomeTotal())
+                    .tFansTotal(financialBenefits.getTFansTotal())
                     .build();
             return financialBenefitsApi;
         }
@@ -481,6 +489,8 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                 .alsoLockUpAmount(benefits.getAlsoLockUpAmount())
                 .alsoTempAmount(benefits.getAlsoTempAmount())
                 .tFans(benefits.getTFans())
+                .incomeTotal(benefits.getIncomeTotal())
+                .tFansTotal(benefits.getTFansTotal())
                 .build();
         return financialBenefitsApi;
     }

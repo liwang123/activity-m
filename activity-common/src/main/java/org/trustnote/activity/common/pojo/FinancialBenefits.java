@@ -54,4 +54,8 @@ public class FinancialBenefits {
     private BigDecimal alsoTempAmount;
 
     private Integer tFans;
+
+    private BigDecimal incomeTotal;
+
+    private Integer tFansTotal;
 }

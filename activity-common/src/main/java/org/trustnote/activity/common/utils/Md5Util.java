@@ -51,6 +51,7 @@ public class Md5Util {
 
 	public static void main(final String[] args) {
 		//7337e2f117b38edd90ef8ddd50c31406
-		System.out.println(Md5Util.getMd5Code("^YHN/.,mn" + "$gUA^u5$3EoHJ32O"));
+		//$gUA^u5$3EoHJ32O
+		System.out.println(Md5Util.getMd5Code("^YHN/.,mn" + "tDIU4XCand23^S!I"));
 	}
 }

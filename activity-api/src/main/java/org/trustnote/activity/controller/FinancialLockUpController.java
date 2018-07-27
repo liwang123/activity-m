@@ -10,10 +10,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.trustnote.activity.common.api.FinancialBenefitsApi;
 import org.trustnote.activity.common.enume.ResultEnum;
 import org.trustnote.activity.common.pojo.Financial;
 import org.trustnote.activity.common.pojo.FinancialLockUp;
+import org.trustnote.activity.common.utils.ExcelInviteUtils;
 import org.trustnote.activity.common.utils.ExcelUtils;
 import org.trustnote.activity.common.utils.Result;
 import org.trustnote.activity.service.iface.FinancialBenefitsService;
@@ -24,6 +26,7 @@ import org.trustnote.activity.stereotype.Frequency;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -176,6 +179,23 @@ public class FinancialLockUpController {
         return new ResponseEntity(export, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/exportTFs", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity exportTFs(@RequestParam(value = "benefitsId") final int benefitsId,
+                                    final HttpServletResponse response) {
+        final String export;
+        try {
+            final List<String> header = new ArrayList<>();
+            header.add("钱包地址");
+            header.add("获得TFS数量");
+            final List<Map<String, String>> contents = this.financialLockUpService.exportTFS(benefitsId);
+            export = ExcelUtils.exportExcel("TFS信息.xls", header, contents, 4, response);
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return new ResponseEntity(export, HttpStatus.OK);
+    }
+
     @ResponseBody
     @RequestMapping(value = "/participate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String participate(final HttpServletResponse response) {
@@ -190,6 +210,12 @@ public class FinancialLockUpController {
         return result.getString(result);
     }
 
+    /**
+     * 手动调用接口执行计算收益
+     *
+     * @param response
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "/manual", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String manual(final HttpServletResponse response) {
@@ -200,6 +226,54 @@ public class FinancialLockUpController {
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
             result.setEntity("计算中，请查看日志...");
+        } catch (final Exception e) {
+            return universalExceptionReturn(FinancialLockUpController.logger, e, response, result);
+        }
+        return result.getString(result);
+    }
+
+    /**
+     * 手动导入钱包地址
+     *
+     * @param file
+     * @return
+     */
+    @RequestMapping(value = "/uploadFileWalletAddress", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public String uploadFileWalletAddress(@RequestParam("file") final MultipartFile file) {
+        final Result result = new Result();
+        if (!file.isEmpty()) {
+            try {
+                final String rootPath = System.getProperty("user.home");
+                final File dir = new File(rootPath + File.separator + "tmpFiles");
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                // 写文件到服务器
+                final File serverFile = new File(dir.getAbsolutePath() + File.separator + file.getOriginalFilename());
+                file.transferTo(serverFile);
+                FinancialLockUpController.logger.info("path {}" + dir.getAbsolutePath() + File.separator + file.getOriginalFilename());
+                final List list = ExcelInviteUtils.readExcel(dir.getAbsolutePath() + File.separator + file.getOriginalFilename());
+                result.setCode(ResultEnum.OK.getCode());
+                result.setMsg(ResultEnum.OK.getMsg());
+                result.setEntity(this.financialLockUpService.readWalletAddress(list));
+                return result.getString(result);
+            } catch (final Exception e) {
+                return "You failed to upload " + file.getOriginalFilename() + " => " + e.getMessage();
+            }
+        } else {
+            return "You failed to upload " + file.getOriginalFilename() + " because the file was empty.";
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/manualTFans", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String manualTFans(final HttpServletResponse response) {
+        final Result result = new Result();
+        try {
+            result.setCode(ResultEnum.OK.getCode());
+            result.setMsg(ResultEnum.OK.getMsg());
+            result.setEntity(this.financialLockUpService.manualTFans());
         } catch (final Exception e) {
             return universalExceptionReturn(FinancialLockUpController.logger, e, response, result);
         }
