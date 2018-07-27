@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.trustnote.activity.common.dto.ConfirmBalanceDTO;
 import org.trustnote.activity.common.dto.ExchangeOrderDTO;
 import org.trustnote.activity.common.model.ResponseResult;
 import org.trustnote.activity.common.utils.DateTimeUtils;
@@ -28,11 +29,13 @@ public class ExchangeOrderController {
      * @param exchangeOrderDTO
      * @return
      */
-    @RequestMapping(value = "/save-order", method = RequestMethod.POST)
+    @RequestMapping(value = "/save-order", method = RequestMethod.GET)
     public ResponseResult createOrder(final ExchangeOrderDTO exchangeOrderDTO) {
         this.exchangeOrderService.insertExchangeOrder(exchangeOrderDTO);
         return ResponseResult.success();
     }
+
+
 
 
     /**
@@ -43,8 +46,8 @@ public class ExchangeOrderController {
      * @return
      */
     @RequestMapping(value = "/query-order", method = RequestMethod.GET)
-    public ResponseResult queryOrder(final int pageIndex, final int pageSize, final int status) {
-        final Page allOrder = this.exchangeOrderService.getAllOrder(pageIndex, pageSize, status);
+    public ResponseResult queryOrder(final int pageIndex, final int pageSize, final int status, final String condition) {
+        final Page allOrder = this.exchangeOrderService.getAllOrder(pageIndex, pageSize, status, condition);
         return ResponseResult.success(allOrder);
     }
 
@@ -69,6 +72,18 @@ public class ExchangeOrderController {
     public ResponseResult checkBalance() {
         final BigDecimal checkBalance = this.exchangeOrderService.checkBalance();
         return ResponseResult.success(checkBalance);
+    }
+
+    /**
+     * 确认余额
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/confirm-balance", method = RequestMethod.GET)
+    public ResponseResult confirmBalance(final Long id) {
+        final ConfirmBalanceDTO confirmBalanceDTO = this.exchangeOrderService.confirmBalance(id);
+        return ResponseResult.success(confirmBalanceDTO);
     }
 
 
