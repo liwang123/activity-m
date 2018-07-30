@@ -88,7 +88,7 @@ public class FinancialLockUpController {
     @RequestMapping(value = "/queryLockUp", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String queryFinancialLockUpBySe(@RequestParam(value = "limit") final int limit,
                                            @RequestParam(value = "offset") final int offset,
-                                           @RequestParam(value = "financialId") final int financialId,
+                                           @RequestParam(value = "financialId", required = false) final Integer financialId,
                                            @RequestParam(value = "type") final int type,
                                            @RequestParam(value = "value") final String value,
                                            final HttpServletResponse response) {
