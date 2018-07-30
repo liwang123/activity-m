@@ -37,6 +37,7 @@
         <filter-name>refererFilter</filter-name>
         <url-pattern>*.htm</url-pattern>
     </filter-mapping>
+
     <context-param>
         <param-name>isLog4jAutoInitializationDisabled</param-name>
         <param-value>true</param-value>

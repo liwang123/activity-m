@@ -8,7 +8,6 @@ import org.trustnote.activity.common.intercpter.OkhttpIntercepter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -91,12 +90,7 @@ public class OkHttpUtils {
     }
 
     public static String rpcRequestBodyPost(final String url, final Map<String, ? extends Object> paramMap) {
-        final Map map = new HashMap();
-        map.put("id", "1");
-        map.put("jsonrpc", "2.0");
-        map.putAll(paramMap);
-
-        final RequestBody body = RequestBody.create(OkHttpUtils.JSON_TYPE, JSON.toJSONString(map));
+        final RequestBody body = RequestBody.create(OkHttpUtils.JSON_TYPE, JSON.toJSONString(paramMap));
         final Request request = new Request.Builder()
                 .header("referer", "https://trustnote.org")
                 .url(url)
