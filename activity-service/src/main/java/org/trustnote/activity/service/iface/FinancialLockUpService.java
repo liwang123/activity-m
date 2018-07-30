@@ -1,6 +1,7 @@
 package org.trustnote.activity.service.iface;
 
 import org.trustnote.activity.common.api.FinancialBenefitsApi;
+import org.trustnote.activity.common.api.FinancialLockSearchApi;
 import org.trustnote.activity.common.api.FinancialLockUpApi;
 import org.trustnote.activity.common.pojo.FinancialLockUp;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
@@ -14,6 +15,8 @@ import java.util.Map;
  */
 public interface FinancialLockUpService {
     List<FinancialLockUpApi> queryFinancialLockUp(Page<FinancialLockUp> page, int benefitsId) throws Exception;
+
+    List<FinancialLockSearchApi> queryFinancialLockUp(Page<FinancialLockUp> page, FinancialBenefitsApi financialBenefitsApi, int type, String value) throws Exception;
 
     int saveFinancialLockUp(FinancialLockUp financialLockUp) throws Exception;
 

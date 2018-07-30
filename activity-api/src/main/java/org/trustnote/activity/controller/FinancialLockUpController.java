@@ -56,7 +56,7 @@ public class FinancialLockUpController {
     @RequestMapping(value = "/query", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String queryFinancialLockUp(@RequestParam(value = "limit") final int limit,
                                        @RequestParam(value = "offset") final int offset,
-                                       @RequestParam(value = "benefitsId") final int benefitsId,
+                                       @RequestParam(value = "benefitsId", required = false) final Integer benefitsId,
                                        final HttpServletResponse response) {
         FinancialLockUpController.logger.info("parameter: {} {} {}", limit, offset, benefitsId);
         final Result result = new Result();
@@ -74,6 +74,42 @@ public class FinancialLockUpController {
                 hasMore = true;
             }
             result.setEntity(this.financialLockUpService.queryFinancialLockUp(page, benefitsId));
+            result.setTotalCount(page.getTotalCount());
+            result.setCode(ResultEnum.OK.getCode());
+            result.setMsg(ResultEnum.OK.getMsg());
+        } catch (final Exception e) {
+            return universalExceptionReturn(FinancialLockUpController.logger, e, response, result);
+        }
+        result.setHasMore(hasMore);
+        return result.getString(result);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryLockUp", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String queryFinancialLockUpBySe(@RequestParam(value = "limit") final int limit,
+                                           @RequestParam(value = "offset") final int offset,
+                                           @RequestParam(value = "financialId") final int financialId,
+                                           @RequestParam(value = "type") final int type,
+                                           @RequestParam(value = "value") final String value,
+                                           final HttpServletResponse response) {
+        FinancialLockUpController.logger.info("parameter: {} {} {} {} {}", limit, offset, financialId, type, value);
+        final Result result = new Result();
+        final int pageNo;
+        if (offset == 0) {
+            pageNo = 1;
+        } else {
+            pageNo = offset / limit + 1;
+        }
+        final Page<FinancialLockUp> page = new Page<>(pageNo, limit);
+        boolean hasMore = false;
+
+        try {
+            if (null != page && pageNo < page.getTotalPages()) {
+                hasMore = true;
+            }
+            result.setEntity(this.financialLockUpService.queryFinancialLockUp(page, FinancialBenefitsApi.builder()
+                    .financialId(financialId)
+                    .build(), type, value));
             result.setTotalCount(page.getTotalCount());
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());

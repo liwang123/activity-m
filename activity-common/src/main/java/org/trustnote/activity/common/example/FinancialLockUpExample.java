@@ -679,6 +679,11 @@ public class FinancialLockUpExample {
             return (Criteria) this;
         }
 
+        public Criteria andWalletAddressEqualTo(final String value) {
+            this.addCriterion("wallet_address =", value, "walletAddress");
+            return (Criteria) this;
+        }
+
     }
 
     public static class Criteria extends GeneratedCriteria {

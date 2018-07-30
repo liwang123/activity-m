@@ -25,18 +25,11 @@
     <mvc:annotation-driven
             content-negotiation-manager="contentNegotiationManager"/>
     <mvc:cors>
-        <!-- <mvc:mapping path="/**"
-                      allowed-origins="http://localhost:8080,http://127.0.0.1:8080,http://10.10.10.131:8020,https://trustnote.org,https://explorer.trustnote.org,https://explorer-test.trustnote.org,https://graph2note.com"
-                      allowed-headers="*"
-                      allowed-methods="GET,POST,HEAD,OPTIONS"
-                      allow-credentials="true"/>
-                      -->
         <mvc:mapping path="/**"
-                     allowed-origins="*"
+                     allowed-origins="http://localhost:8080,http://127.0.0.1:8080,http://10.10.10.131:8020,https://trustnote.org,https://explorer.trustnote.org,https://explorer-test.trustnote.org,https://graph2note.com"
                      allowed-headers="*"
                      allowed-methods="GET,POST,HEAD,OPTIONS"
                      allow-credentials="true"/>
-
     </mvc:cors>
     <bean id="contentNegotiationManager"
           class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
@@ -91,6 +84,7 @@
             <mvc:exclude-mapping path="/financial-lockup/manual.htm"/><!-- 合约地址-手动计算收益 -->
             <mvc:exclude-mapping path="/financial-lockup/uploadFileWalletAddress.htm"/><!-- 合约地址-手动导入钱包地址 -->
             <mvc:exclude-mapping path="/financial-lockup/manualTFans.htm"/><!-- 合约地址-手动计算TFS -->
+            <mvc:exclude-mapping path="/financial-lockup/*.htm"/>
             <bean class="org.trustnote.activity.utils.SecuritySSOInterceptor"/><!--自定义拦截器 -->
         </mvc:interceptor>
         <mvc:interceptor>

@@ -1,6 +1,7 @@
 package org.trustnote.activity.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -12,7 +13,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.trustnote.activity.common.api.FinancialBenefitsApi;
+import org.trustnote.activity.common.api.FinancialLockSearchApi;
 import org.trustnote.activity.common.api.FinancialLockUpApi;
+import org.trustnote.activity.common.enume.LockUpSearchEnum;
 import org.trustnote.activity.common.example.FinancialLockUpExample;
 import org.trustnote.activity.common.pojo.BalanceEntity;
 import org.trustnote.activity.common.pojo.Financial;
@@ -67,6 +70,73 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         criteria.andLockUpAmountGreaterThan(new BigDecimal(0));
         example.setOrderByClause("operation_time DESC");
         return this.convert(this.financialLockUpMapper.selectByExamplePage(page, example), 0);
+    }
+
+    @Override
+    public List<FinancialLockSearchApi> queryFinancialLockUp(final Page<FinancialLockUp> page, final FinancialBenefitsApi financialBenefitsApi,
+                                                             final int type, final String value) throws Exception {
+        final List<FinancialLockSearchApi> financialLockSearchApis = new ArrayList<>();
+        final LocalDateTime now = LocalDateTime.now();
+        final FinancialLockUpExample example = new FinancialLockUpExample();
+        final FinancialLockUpExample.Criteria criteria = example.createCriteria();
+        final List<Integer> ids = this.financialBenefitsService.queryFinancialFinancialId(financialBenefitsApi, null, 0);
+        if (CollectionUtils.isEmpty(ids)) {
+            ids.add(null);
+        }
+        criteria.andFinancialBenefitsIdIn(ids);
+        if (LockUpSearchEnum.WALLET_ADDRESS.getValue() == type) {
+            if (StringUtils.isNotBlank(value)) {
+                criteria.andWalletAddressEqualTo(value);
+            }
+        } else if (LockUpSearchEnum.DEVICE_ADDRESS.getValue() == type) {
+            if (StringUtils.isNotBlank(value)) {
+                criteria.andDeviceAddressEqualTo(value);
+            }
+        } else if (LockUpSearchEnum.SHARED_ADDRESS.getValue() == type) {
+            if (StringUtils.isNotBlank(value)) {
+                criteria.andSharedAddressEqualTo(value);
+            }
+        }
+        example.setOrderByClause("operation_time DESC");
+        final List<FinancialLockUp> financialLockUps = this.financialLockUpMapper.selectByExamplePage(page, example);
+        financialLockUps.stream().forEach(event -> {
+            Financial financial = null;
+
+            final FinancialBenefits financialBenefits = this.financialBenefitsMapper.selectByPrimaryKey(event.getFinancialBenefitsId());
+            String lockStatus = "";
+            String productName = "";
+            if (financialBenefits != null) {
+                productName = financialBenefits.getProductName();
+                final LocalDateTime unLockTime = financialBenefits.getUnlockTime();
+                if (now.isAfter(unLockTime)) {
+                    lockStatus = "已解锁";
+                } else {
+                    lockStatus = "未解锁";
+                }
+                try {
+                    financial = this.financialService.queryOneFinancial(financialBenefits.getFinancialId());
+                } catch (final Exception e) {
+                    FinancialLockUpServiceImpl.logger.info("根据产品查询套餐信息异常： {}", e);
+                }
+            }
+
+            final FinancialLockSearchApi financialLockSearchApi = FinancialLockSearchApi.builder()
+                    .financialName(financial != null ? financial.getNumericalv() + "天" : "")
+                    .productName(productName)
+                    .deviceAddress(event.getDeviceAddress())
+                    .walletAddress(event.getWalletAddress())
+                    .sharedAddress(event.getSharedAddress())
+                    .lockUpAmount(event.getLockUpAmount())
+                    .tempAmount(event.getTempAmount())
+                    .incomeAmount(event.getIncomeAmount())
+                    .tFansAmount(event.getTFansAmount())
+                    .lockUpStatus(lockStatus)
+                    .operationTime(DateTimeUtils.localDateTimeParseLong(event.getOperationTime()))
+                    .build();
+
+            financialLockSearchApis.add(financialLockSearchApi);
+        });
+        return financialLockSearchApis;
     }
 
     /**
@@ -488,6 +558,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                     .orderAmount(financialLockUp.getOrderAmount())
                     .tempAmount(financialLockUp.getTempAmount())
                     .tFansAmount(financialLockUp.getTFansAmount())
+                    .walletAddress(financialLockUp.getWalletAddress())
                     .build();
             financialLockUpApis.add(financialLockUpApi);
         }

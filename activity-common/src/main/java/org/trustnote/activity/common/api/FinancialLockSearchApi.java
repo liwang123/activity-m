@@ -14,28 +14,16 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FinancialLockUpApi {
-    private Integer id;
-
+public class FinancialLockSearchApi {
+    private String financialName;
+    private String productName;
     private String sharedAddress;
-
     private String deviceAddress;
-
-    private Integer financialBenefitsId;
-
-    private BigDecimal lockUpAmount;
-
-    private BigDecimal incomeAmount;
-
-    private Long operationTime;
-
-    private String lockUpStatus;
-
-    private Integer orderAmount;
-
-    private BigDecimal tempAmount;
-
-    private Integer tFansAmount;
-
     private String walletAddress;
+    private BigDecimal lockUpAmount;
+    private BigDecimal incomeAmount;
+    private Long operationTime;
+    private String lockUpStatus;
+    private BigDecimal tempAmount;
+    private Integer tFansAmount;
 }
