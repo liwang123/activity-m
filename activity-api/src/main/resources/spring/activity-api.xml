@@ -84,7 +84,6 @@
             <mvc:exclude-mapping path="/financial-lockup/manual.htm"/><!-- 合约地址-手动计算收益 -->
             <mvc:exclude-mapping path="/financial-lockup/uploadFileWalletAddress.htm"/><!-- 合约地址-手动导入钱包地址 -->
             <mvc:exclude-mapping path="/financial-lockup/manualTFans.htm"/><!-- 合约地址-手动计算TFS -->
-            <mvc:exclude-mapping path="/financial-lockup/*.htm"/>
             <bean class="org.trustnote.activity.utils.SecuritySSOInterceptor"/><!--自定义拦截器 -->
         </mvc:interceptor>
         <mvc:interceptor>
