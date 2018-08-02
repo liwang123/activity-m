@@ -355,12 +355,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
 
     @Override
     public List<FinancialBenefits> queryFinancialNotCalactionLockUp(final LocalDateTime now) {
-        final FinancialBenefitsExample example = new FinancialBenefitsExample();
-        final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
-        criteria.andPanicEndTimeLessThan(now);
-        criteria.andFinancialStatusEqualTo(0);
-        criteria.andUnlockTimeGreaterThan(now);
-        return this.financialBenefitsMapper.selectByExample(example);
+        return this.financialBenefitsMapper.selectByPanicAndStatus(now);
     }
 
     /**
@@ -372,11 +367,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
      */
     @Override
     public List<FinancialBenefits> queryFinancialInPanic(final LocalDateTime now, final int financialId) {
-        final FinancialBenefitsExample example = new FinancialBenefitsExample();
-        final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
-        criteria.andPanicStartTimeLessThan(now);
-        criteria.andPanicEndTimeGreaterThan(now);
-        return this.financialBenefitsMapper.selectByExample(example);
+        return this.financialBenefitsMapper.selectByPanic(now);
     }
 
     @Override

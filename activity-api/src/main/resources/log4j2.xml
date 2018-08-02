@@ -25,11 +25,14 @@
             <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
         </RandomAccessFile>
 
+        <Console name="cs" target="SYSTEM_OUT"/>
+
     </Appenders>
 
     <Loggers>
         <AsyncLogger name="org.trustnote.activity" level="INFO" includeLocation="true" additivity="false">
             <AppenderRef ref="RandomAccessFileInfo"/>
+            <!--<AppenderRef ref="cs"/>-->
         </AsyncLogger>
         <Root level="WARN" includeLocation="true">
             <AppenderRef ref="RandomAccessFileWarn"/>

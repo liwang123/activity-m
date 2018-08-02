@@ -5,6 +5,7 @@ import org.trustnote.activity.common.example.FinancialBenefitsExample;
 import org.trustnote.activity.common.pojo.FinancialBenefits;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -35,4 +36,7 @@ public interface FinancialBenefitsMapper {
 
     int updateByPrimaryKey(FinancialBenefits record);
 
+    List<FinancialBenefits> selectByPanic(LocalDateTime now);
+
+    List<FinancialBenefits> selectByPanicAndStatus(LocalDateTime now);
 }

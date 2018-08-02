@@ -1,9 +1,11 @@
 package org.trustnote.activity.skeleton.mybatis.orm;
 
-import org.apache.ibatis.executor.resultset.FastResultSetHandler;
+import org.apache.ibatis.executor.resultset.DefaultResultSetHandler;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.plugin.*;
+import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.ReflectorFactory;
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.factory.ObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
@@ -22,12 +24,15 @@ public class PaginationResultSetHandlerInterceptor implements Interceptor {
 
     private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
     private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
-//    private static final ReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
+    private static final ReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
 
     @Override
     public Object intercept(final Invocation invocation) throws Throwable {
-        final FastResultSetHandler resultSetHandler = (FastResultSetHandler) invocation.getTarget();
-        final MetaObject metaStatementHandler = MetaObject.forObject(resultSetHandler, PaginationResultSetHandlerInterceptor.DEFAULT_OBJECT_FACTORY, PaginationResultSetHandlerInterceptor.DEFAULT_OBJECT_WRAPPER_FACTORY);
+        final DefaultResultSetHandler resultSetHandler = (DefaultResultSetHandler) invocation.getTarget();
+        final MetaObject metaStatementHandler = MetaObject.forObject(resultSetHandler,
+                PaginationResultSetHandlerInterceptor.DEFAULT_OBJECT_FACTORY,
+                PaginationResultSetHandlerInterceptor.DEFAULT_OBJECT_WRAPPER_FACTORY,
+                PaginationResultSetHandlerInterceptor.DEFAULT_REFLECTOR_FACTORY);
         final RowBounds rowBounds = (RowBounds) metaStatementHandler.getValue("rowBounds");
 
         final Object result = invocation.proceed();

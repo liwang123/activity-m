@@ -4,7 +4,9 @@ import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.plugin.*;
+import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.ReflectorFactory;
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.factory.ObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
@@ -23,13 +25,13 @@ import java.util.Properties;
  * @author 
  * @since 2014年5月18日 下午1:36:31
  **/
-@Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class})})
+@Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public class PaginationStatementHandlerInterceptor implements Interceptor {
 	private static final Logger logger = LogManager.getLogger(PaginationStatementHandlerInterceptor.class);
 
     private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
     private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
-//    private static final ReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
+    private static final ReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
 
     @Override
     public Object intercept(final Invocation invocation) throws Throwable {
@@ -37,7 +39,10 @@ public class PaginationStatementHandlerInterceptor implements Interceptor {
         final ParameterHandler parameterHandler = statementHandler.getParameterHandler();
         final BoundSql boundSql = statementHandler.getBoundSql();
 
-        final MetaObject metaStatementHandler = MetaObject.forObject(statementHandler, PaginationStatementHandlerInterceptor.DEFAULT_OBJECT_FACTORY, PaginationStatementHandlerInterceptor.DEFAULT_OBJECT_WRAPPER_FACTORY);
+        final MetaObject metaStatementHandler = MetaObject.forObject(statementHandler,
+                PaginationStatementHandlerInterceptor.DEFAULT_OBJECT_FACTORY,
+                PaginationStatementHandlerInterceptor.DEFAULT_OBJECT_WRAPPER_FACTORY,
+                PaginationStatementHandlerInterceptor.DEFAULT_REFLECTOR_FACTORY);
         final RowBounds rowBounds = (RowBounds) metaStatementHandler.getValue("delegate.rowBounds");
         // 没有分页参数
         if (rowBounds == null || rowBounds == RowBounds.DEFAULT) {

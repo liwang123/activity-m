@@ -479,4 +479,22 @@
       tfans_total = #{tFansTotal,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
     </update>
+    <select id="selectByPanic" parameterType="java.time.LocalDateTime"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from financial_benefits
+        where panic_start_time &lt; #{now,jdbcType=TIMESTAMP}
+        and #{now,jdbcType=TIMESTAMP} &lt; TIMESTAMPADD(MINUTE, 5, panic_end_time);
+    </select>
+    <select id="selectByPanicAndStatus" parameterType="java.time.LocalDateTime"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from financial_benefits
+        where
+        TIMESTAMPADD(MINUTE, 5, panic_end_time) &lt; #{now,jdbcType=TIMESTAMP}
+        AND #{now,jdbcType=TIMESTAMP} &lt; unlock_time
+        AND financial_status = 0;
+    </select>
 </mapper>
