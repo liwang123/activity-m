@@ -399,6 +399,11 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
         return financialBenefitsIds;
     }
 
+    @Override
+    public List<FinancialBenefits> queryAll() {
+        return this.financialBenefitsMapper.selectByExample(new FinancialBenefitsExample());
+    }
+
     /**
      * 根据panic判断是否存在抢购时间段内的数据
      * @param panicStart

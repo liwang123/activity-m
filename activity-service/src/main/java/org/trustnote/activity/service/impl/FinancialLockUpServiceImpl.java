@@ -477,28 +477,37 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 FinancialLockUpServiceImpl.logger.info("更新锁仓金额状态： {}", upStatus);
             }
 
-            final FinancialLockUpExample example = new FinancialLockUpExample();
-            final FinancialLockUpExample.Criteria criteria = example.createCriteria();
-            criteria.andFinancialBenefitsIdEqualTo(financialBenefits.getId());
-            final Map<String, BigDecimal> mapInComeTfans = this.financialLockUpMapper.statisticalInComeTfans(example);
-            final FinancialBenefits fbRecord = FinancialBenefits.builder()
-                    .id(financialBenefits.getId())
-                    .build();
-            if (mapInComeTfans != null) {
-                if (mapInComeTfans.get("firstValue") != null) {
-                    fbRecord.setIncomeTotal(mapInComeTfans.get("firstValue"));
-                }
-                if (mapInComeTfans.get("secondValue") != null) {
-                    fbRecord.setTFansTotal(mapInComeTfans.get("secondValue").intValue());
-                }
-            }
-            FinancialLockUpServiceImpl.logger.info("更新总收益金额与总赠送TFS数量信息: {}", fbRecord.toString());
-            if (fbRecord.getIncomeTotal() != null || fbRecord.getTFansTotal() != null) {
-                final int fbUpStatus = this.financialBenefitsMapper.updateByPrimaryKeySelective(fbRecord);
-                FinancialLockUpServiceImpl.logger.info("数据库操作状态： {}", fbUpStatus);
-            }
+            this.calculateFinancialBenefits(financialBenefits);
         }
         FinancialLockUpServiceImpl.logger.info("-----------------------------------计算收益结束---------------------------------");
+    }
+
+    /**
+     * 根据产品ID计算产品的总收益与总赠送TFans数量
+     *
+     * @param financialBenefits
+     */
+    private void calculateFinancialBenefits(final FinancialBenefits financialBenefits) {
+        final FinancialLockUpExample example = new FinancialLockUpExample();
+        final FinancialLockUpExample.Criteria criteria = example.createCriteria();
+        criteria.andFinancialBenefitsIdEqualTo(financialBenefits.getId());
+        final Map<String, BigDecimal> mapInComeTfans = this.financialLockUpMapper.statisticalInComeTfans(example);
+        final FinancialBenefits fbRecord = FinancialBenefits.builder()
+                .id(financialBenefits.getId())
+                .build();
+        if (mapInComeTfans != null) {
+            if (mapInComeTfans.get("firstValue") != null) {
+                fbRecord.setIncomeTotal(mapInComeTfans.get("firstValue"));
+            }
+            if (mapInComeTfans.get("secondValue") != null) {
+                fbRecord.setTFansTotal(mapInComeTfans.get("secondValue").intValue());
+            }
+        }
+        FinancialLockUpServiceImpl.logger.info("更新总收益金额与总赠送TFS数量信息: {}", fbRecord.toString());
+        if (fbRecord.getIncomeTotal() != null || fbRecord.getTFansTotal() != null) {
+            final int fbUpStatus = this.financialBenefitsMapper.updateByPrimaryKeySelective(fbRecord);
+            FinancialLockUpServiceImpl.logger.info("数据库操作状态： {}", fbUpStatus);
+        }
     }
 
     /**
@@ -743,6 +752,10 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
             }
         }
 
+        //计算总tfans数量
+        final List<FinancialBenefits> financialBenefits = this.financialBenefitsService.queryAll();
+        financialBenefits.stream().forEach(this::calculateFinancialBenefits);
         return "处理合约总计条数: " + financialLockUps.size() + " 成功修改记录: " + uS + " 失败记录: " + uF;
     }
+
 }

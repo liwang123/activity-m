@@ -49,4 +49,6 @@ public interface FinancialBenefitsService {
      * @return
      */
     List<Integer> queryFinancialFinancialId(FinancialBenefitsApi financialBenefitsApi, LocalDateTime now, int type);
+
+    List<FinancialBenefits> queryAll();
 }
