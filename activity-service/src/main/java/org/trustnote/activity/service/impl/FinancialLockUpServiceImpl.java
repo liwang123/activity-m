@@ -688,6 +688,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         int uS = 0;
         int uF = 0;
         int i;
+        final StringBuilder failMsg = new StringBuilder();
         for (i = 0; i < list.size(); i++) {
             final String[] excelLine = (String[]) list.get(i);
             final String sharedAddress = excelLine[0];
@@ -703,9 +704,10 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 uS++;
             } else {
                 uF++;
+                failMsg.append(sharedAddress);
             }
         }
-        return "导入总计条数: " + list.size() + " 成功修改记录: " + uS + " 失败记录: " + uF;
+        return "导入总计条数: " + list.size() + " 成功修改记录: " + uS + " 失败记录: " + uF + ": " + failMsg.toString();
     }
 
     @Override
@@ -726,7 +728,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 FinancialLockUpServiceImpl.logger.error("根据financialBenefitsId: {} 查询financial 异常: {}", event.getFinancialBenefitsId(), e);
                 continue;
             }
-            if (financialBenefits != null) {
+            if (financialBenefits != null && event.getIncomeAmount() != null && financialBenefits.getTFans() != null) {
                 final BigDecimal tFans = event.getIncomeAmount().multiply(new BigDecimal(financialBenefits.getTFans()));
                 final FinancialLockUp record = FinancialLockUp.builder()
                         .id(event.getId())
