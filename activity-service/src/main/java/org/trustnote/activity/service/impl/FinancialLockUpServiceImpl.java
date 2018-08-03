@@ -211,15 +211,15 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
     @Override
     public Map<String, BigDecimal> statisticalAmount(final FinancialBenefitsApi financialBenefitsApi) {
         final Map<String, BigDecimal> statistical = new HashMap<>(6);
-        final FinancialLockUpExample example = this.conditionsExample(financialBenefitsApi, 0, 0, "all");
+        final FinancialLockUpExample example = this.conditionsExample(financialBenefitsApi, 0, 0);
         //已锁总额度、已抢购总额度
         final Map<String, BigDecimal> mapAlso = this.financialLockUpMapper.statisticalAmount(example);
         this.inDataMap(mapAlso, statistical, 0);
         //当前已锁总额度、当前已抢购总额度
-        final Map<String, BigDecimal> mapCurr = this.financialLockUpMapper.statisticalAmount(this.conditionsExample(financialBenefitsApi, 1, 0, "fix"));
+        final Map<String, BigDecimal> mapCurr = this.financialLockUpMapper.statisticalAmount(this.conditionsExample(financialBenefitsApi, 1, 0));
         this.inDataMap(mapCurr, statistical, 1);
         //收益、tfans
-        final Map<String, BigDecimal> mapInComeTfans = this.financialLockUpMapper.statisticalInComeTfans(this.conditionsExample(financialBenefitsApi, 0, 1, "fix"));
+        final Map<String, BigDecimal> mapInComeTfans = this.financialLockUpMapper.statisticalInComeTfans(this.conditionsExample(financialBenefitsApi, 0, 1));
         this.inDataMap(mapInComeTfans, statistical, 2);
         return statistical;
     }
@@ -232,7 +232,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
      * @param status               0 不需要计算已发收益  1 需要计算已发收益
      * @return
      */
-    private FinancialLockUpExample conditionsExample(final FinancialBenefitsApi financialBenefitsApi, final int type, final int status, final String allOrFix) {
+    private FinancialLockUpExample conditionsExample(final FinancialBenefitsApi financialBenefitsApi, final int type, final int status) {
         final FinancialLockUpExample example = new FinancialLockUpExample();
         final FinancialLockUpExample.Criteria criteria = example.createCriteria();
         final String fix = "fix";
@@ -241,7 +241,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
             now = LocalDateTime.now();
         }
         final List<Integer> ids = this.financialBenefitsService.queryFinancialFinancialId(financialBenefitsApi, now, status);
-        if (CollectionUtils.isEmpty(ids) && fix.equals(allOrFix)) {
+        if (CollectionUtils.isEmpty(ids)) {
             ids.add(null);
         }
         criteria.andFinancialBenefitsIdIn(ids);
