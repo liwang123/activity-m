@@ -38,7 +38,7 @@ public class FinancialLockUp {
 
     private Integer calactionStatus;
 
-    private Integer tFansAmount;
+    private Integer tfansAmount;
 
     private String walletAddress;
 

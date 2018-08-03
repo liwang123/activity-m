@@ -129,7 +129,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                     .lockUpAmount(event.getLockUpAmount())
                     .tempAmount(event.getTempAmount())
                     .incomeAmount(event.getIncomeAmount())
-                    .tFansAmount(event.getTFansAmount())
+                    .tFansAmount(event.getTfansAmount())
                     .lockUpStatus(lockStatus)
                     .operationTime(DateTimeUtils.localDateTimeParseLong(event.getOperationTime()))
                     .build();
@@ -323,7 +323,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         for (final FinancialLockUp financialLockUp : financialLockUps) {
             final Map<String, String> map = new HashMap<>(2);
             map.put("0", financialLockUp.getWalletAddress());
-            map.put("1", financialLockUp.getTFansAmount().toString());
+            map.put("1", financialLockUp.getTfansAmount().toString());
             contents.add(map);
         }
         return contents;
@@ -463,7 +463,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 final FinancialLockUp record = new FinancialLockUp();
                 record.setId(financialLockUp.getId());
                 record.setIncomeAmount(income);
-                record.setTFansAmount(tfans.intValue());
+                record.setTfansAmount(tfans.intValue());
                 record.setCalactionStatus(1);
 
                 final int upStatus;
@@ -557,7 +557,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                     .lockUpStatus(financialLockUp.getLockUpStatus())
                     .orderAmount(financialLockUp.getOrderAmount())
                     .tempAmount(financialLockUp.getTempAmount())
-                    .tFansAmount(financialLockUp.getTFansAmount())
+                    .tFansAmount(financialLockUp.getTfansAmount())
                     .walletAddress(financialLockUp.getWalletAddress())
                     .build();
             financialLockUpApis.add(financialLockUpApi);
@@ -730,7 +730,7 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
                 final BigDecimal tFans = event.getIncomeAmount().multiply(new BigDecimal(financialBenefits.getTFans()));
                 final FinancialLockUp record = FinancialLockUp.builder()
                         .id(event.getId())
-                        .tFansAmount(tFans.setScale(0, BigDecimal.ROUND_DOWN).intValue())
+                        .tfansAmount(tFans.setScale(0, BigDecimal.ROUND_DOWN).intValue())
                         .build();
                 final int status = this.financialLockUpMapper.updateByPrimaryKeySelective(record);
                 if (status == 1) {
