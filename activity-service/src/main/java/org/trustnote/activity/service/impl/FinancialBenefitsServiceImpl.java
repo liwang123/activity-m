@@ -85,7 +85,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                 .financialRate(financialBenefitsApi.getFinancialRate())
                 .tFans(financialBenefitsApi.getTFans())
                 .build();
-        return this.financialBenefitsMapper.updateByPrimaryKeySelective(record);
+        return this.financialBenefitsMapper.updateByPrimaryKey(record);
     }
 
     @Override
