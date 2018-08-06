@@ -152,7 +152,7 @@ public class FinancialLockUpController {
                 //理财周期
                 final BigDecimal numericalv = BigDecimal.valueOf(financial.getNumericalv());
                 //年化利率
-                final BigDecimal rate = BigDecimal.valueOf(financialBenefitsApi.getFinancialRate()).setScale(2, BigDecimal.ROUND_DOWN);
+                final BigDecimal rate = BigDecimal.valueOf(financialBenefitsApi.getFinancialRate());
                 //计算收益
                 final BigDecimal all = new BigDecimal(financialLockUp.getOrderAmount()).multiply(numericalv).multiply(rate);
                 inComeAmount = all.divide(new BigDecimal(360), 1, BigDecimal.ROUND_DOWN);
