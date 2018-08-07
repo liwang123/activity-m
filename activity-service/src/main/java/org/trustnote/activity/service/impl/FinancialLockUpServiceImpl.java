@@ -16,6 +16,7 @@ import org.trustnote.activity.common.api.FinancialBenefitsApi;
 import org.trustnote.activity.common.api.FinancialLockSearchApi;
 import org.trustnote.activity.common.api.FinancialLockUpApi;
 import org.trustnote.activity.common.enume.LockUpSearchEnum;
+import org.trustnote.activity.common.example.FinancialBenefitsExample;
 import org.trustnote.activity.common.example.FinancialLockUpExample;
 import org.trustnote.activity.common.pojo.BalanceEntity;
 import org.trustnote.activity.common.pojo.Financial;
@@ -758,4 +759,52 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         return "处理合约总计条数: " + financialLockUps.size() + " 成功修改记录: " + uS + " 失败记录: " + uF;
     }
 
+    @Override
+    public void manual30InComeAndTFans() {
+        final FinancialBenefitsExample example = new FinancialBenefitsExample();
+        final FinancialBenefitsExample.Criteria criteria = example.createCriteria();
+        final List<Integer> ids = new ArrayList<>();
+        ids.add(42);
+        ids.add(45);
+        ids.add(48);
+        criteria.andIdIn(ids);
+        final List<FinancialBenefits> financialBenefits = this.financialBenefitsMapper.selectByExample(example);
+        for (final FinancialBenefits fb : financialBenefits) {
+            final FinancialLockUpExample example1 = new FinancialLockUpExample();
+            final FinancialLockUpExample.Criteria criteria1 = example1.createCriteria();
+            criteria1.andFinancialBenefitsIdEqualTo(fb.getId());
+            criteria1.andLockUpAmountIsNotNull();
+            final List<FinancialLockUp> financialLockUps = this.financialLockUpMapper.selectByExample(example1);
+            financialLockUps.stream().forEach(fl -> {
+                //本金
+                final BigDecimal principal = fl.getLockUpAmount();
+                //理财周期
+                final BigDecimal numericalv = BigDecimal.valueOf(30);
+                //年化利率
+                final BigDecimal rate = BigDecimal.valueOf(fb.getFinancialRate());
+                //计算收益
+                final BigDecimal all = principal.multiply(numericalv).multiply(rate);
+                final BigDecimal income = all.divide(new BigDecimal(360), 1, BigDecimal.ROUND_DOWN);
+                final BigDecimal tfans = income.multiply(new BigDecimal(fb.getTFans()))
+                        .setScale(0, BigDecimal.ROUND_DOWN);
+                FinancialLockUpServiceImpl.logger.info("合约ID: {} 本金：{} 理财周期： {} 年化利率： {} 收益： {} tfans: {}", fl
+                        .getId(), principal, numericalv, rate, income, tfans);
+
+                final FinancialLockUp record = new FinancialLockUp();
+                record.setId(fl.getId());
+                record.setIncomeAmount(income);
+                record.setTfansAmount(tfans.intValue());
+
+                int upStatus = 0;
+                try {
+                    upStatus = this.financialLockUpMapper.updateByPrimaryKeySelective(record);
+                } catch (final Exception e) {
+                    FinancialLockUpServiceImpl.logger.error("计算收益金额异常: {}", e);
+                }
+
+                FinancialLockUpServiceImpl.logger.info("更新锁仓金额状态： {}", upStatus);
+            });
+            this.calculateFinancialBenefits(fb);
+        }
+    }
 }

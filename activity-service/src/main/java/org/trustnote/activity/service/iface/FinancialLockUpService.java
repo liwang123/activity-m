@@ -47,4 +47,6 @@ public interface FinancialLockUpService {
     String readWalletAddress(final List list);
 
     String manualTFans();
+
+    void manual30InComeAndTFans();
 }

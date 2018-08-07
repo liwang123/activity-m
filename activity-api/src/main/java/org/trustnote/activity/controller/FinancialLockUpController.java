@@ -302,6 +302,12 @@ public class FinancialLockUpController {
         }
     }
 
+    /**
+     * 手动计算TFans
+     *
+     * @param response
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "/manualTFans", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String manualTFans(final HttpServletResponse response) {
@@ -310,6 +316,26 @@ public class FinancialLockUpController {
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
             result.setEntity(this.financialLockUpService.manualTFans());
+        } catch (final Exception e) {
+            return universalExceptionReturn(FinancialLockUpController.logger, e, response, result);
+        }
+        return result.getString(result);
+    }
+
+    /**
+     * 重新计算30天的收益与TFans
+     *
+     * @param response
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/manual30", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String manual30InComeAndTFans(final HttpServletResponse response) {
+        final Result result = new Result();
+        try {
+            this.financialLockUpService.manual30InComeAndTFans();
+            result.setCode(ResultEnum.OK.getCode());
+            result.setMsg(ResultEnum.OK.getMsg());
         } catch (final Exception e) {
             return universalExceptionReturn(FinancialLockUpController.logger, e, response, result);
         }
