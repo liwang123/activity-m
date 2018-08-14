@@ -145,7 +145,7 @@ public class CoinServiceImpl implements CoinService {
                 }
                 final boolean flag = RegexUtil.checkTTTAdress(trim);
                 final double num = Double.parseDouble(str[3]);
-                if (num > 0 && flag == true && num <= 5000) {
+                if (num > 0 && flag == true) {
                     map.put(trim, str[3]);
                 }
             }
