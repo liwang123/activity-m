@@ -6,18 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author zhuxl 18-1-2
- * @since v0.3
+ * @author zhuxl
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserApi {
-    private String phone;
+public class SysUserRole {
+    private Integer id;
 
-    private String password;
+    private Integer userId;
 
-    private String code;
+    private Integer roleId;
 
 }

@@ -41,50 +41,51 @@
     <aop:aspectj-autoproxy/>
     <mvc:default-servlet-handler/>
     <mvc:interceptors>
-        <mvc:interceptor><!--配置局部拦截器，需要满足下列路径条件 -->
-            <mvc:mapping path="/**"/>
-            <!-- 以下配置排除过滤规则配置 -->
-            <mvc:exclude-mapping path="/user/*"/><!-- 用户操作 -->
-            <mvc:exclude-mapping path="/exchange-order/*"/>
-            <mvc:exclude-mapping path="/download/record.htm"/><!-- 下载统计 -->
-            <mvc:exclude-mapping path="/media/queryMedia.htm"/>
-            <mvc:exclude-mapping path="/feedback/*"/>
-            <mvc:exclude-mapping path="/explorerManager/*"/>
-            <mvc:exclude-mapping path="/channel/queryOne.htm"/>
-            <mvc:exclude-mapping path="/coin/queryByAdress.htm"/>
-            <mvc:exclude-mapping path="/coin/sendTotoken.htm"/>
-            <mvc:exclude-mapping path="/coin/queryTokenBalance.htm"/>
-            <mvc:exclude-mapping path="/question/insert.htm"/>
-            <mvc:exclude-mapping path="/question/update.htm"/>
-            <mvc:exclude-mapping path="/activity/queryOrder.htm"/>
-            <mvc:exclude-mapping path="/activity/queryLink.htm"/>
-            <mvc:exclude-mapping path="/activity/queryAll.htm"/>
-            <mvc:exclude-mapping path="/activity/queryOne.htm"/>
-            <mvc:exclude-mapping path="/activity/queryActivity.htm"/>
-            <mvc:exclude-mapping path="/activity/queryOder.htm"/>
-            <mvc:exclude-mapping path="/exchange/conversion.htm"/><!-- 汇率查询不需要拦截 -->
-            <mvc:exclude-mapping path="/transaction/save.htm"/><!-- 交易记录保存 -->
-            <mvc:exclude-mapping path="/transaction/query.htm"/><!-- 查看交易-->
-            <mvc:exclude-mapping path="/ann/show.htm"/><!-- 官网通知公告查询 -->
-            <mvc:exclude-mapping path="/ann/read.htm"/><!-- 增加阅读数 -->
-            <mvc:exclude-mapping path="/ann/showOne.htm"/><!-- 查询一个通知公告 -->
-            <mvc:exclude-mapping path="/sms/*"/><!-- 短信 -->
-            <mvc:exclude-mapping path="/invite/verification.htm"/><!-- 邀请页面验证码 -->
-            <mvc:exclude-mapping path="/invite/mobileCheck.htm"/><!-- 邀请页面手机号校验 -->
-            <mvc:exclude-mapping path="/invite/trustnoteAddressCheck.htm"/><!-- 邀请页面ttt地址校验 -->
-            <mvc:exclude-mapping path="/invite/hasInvited.htm"/><!-- 查询已邀请信息 -->
-            <mvc:exclude-mapping path="/invite/search.htm"/><!-- 查询邀请码 -->
-            <mvc:exclude-mapping path="/gift/query.htm"/><!-- 赠送设置查询 -->
-            <mvc:exclude-mapping path="/financial/home.htm"/><!-- 持仓收益-理财套餐 -->
-            <mvc:exclude-mapping path="/financial-benefits/push.htm"/><!-- 持仓收益-理财产品 -->
-            <mvc:exclude-mapping path="/financial-benefits/push_benefitid.htm"/><!-- 持仓收益-理财产品 -->
-            <mvc:exclude-mapping path="/financial-lockup/save.htm"/><!-- 合约地址-保存 -->
-            <mvc:exclude-mapping path="/financial-lockup/all.htm"/><!-- 合约地址-设备地址查询 -->
-            <mvc:exclude-mapping path="/financial-lockup/participate.htm"/><!-- 合约地址-设备地址查询 -->
-            <mvc:exclude-mapping path="/financial-lockup/manual.htm"/><!-- 合约地址-手动计算收益 -->
-            <mvc:exclude-mapping path="/financial-lockup/manual30.htm"/><!-- 手动计算30天的收益与TFans -->
-            <bean class="org.trustnote.activity.utils.SecuritySSOInterceptor"/><!--自定义拦截器 -->
-        </mvc:interceptor>
+        <!--<mvc:interceptor>
+        <mvc:mapping path="/**"/>
+         以下配置排除过滤规则配置
+        <mvc:exclude-mapping path="/user/login.htm"/>
+        <mvc:exclude-mapping path="/user/verification.htm"/>
+        <mvc:exclude-mapping path="/user/rejson.htm"/>
+        <mvc:exclude-mapping path="/exchange-order/*"/>
+        <mvc:exclude-mapping path="/download/record.htm"/>
+        <mvc:exclude-mapping path="/media/queryMedia.htm"/>
+        <mvc:exclude-mapping path="/feedback/*"/>
+        <mvc:exclude-mapping path="/explorerManager/*"/>
+        <mvc:exclude-mapping path="/channel/queryOne.htm"/>
+        <mvc:exclude-mapping path="/coin/queryByAdress.htm"/>
+        <mvc:exclude-mapping path="/coin/sendTotoken.htm"/>
+        <mvc:exclude-mapping path="/coin/queryTokenBalance.htm"/>
+        <mvc:exclude-mapping path="/question/insert.htm"/>
+        <mvc:exclude-mapping path="/question/update.htm"/>
+        <mvc:exclude-mapping path="/activity/queryOrder.htm"/>
+        <mvc:exclude-mapping path="/activity/queryLink.htm"/>
+        <mvc:exclude-mapping path="/activity/queryAll.htm"/>
+        <mvc:exclude-mapping path="/activity/queryOne.htm"/>
+        <mvc:exclude-mapping path="/activity/queryActivity.htm"/>
+        <mvc:exclude-mapping path="/activity/queryOder.htm"/>
+        <mvc:exclude-mapping path="/exchange/conversion.htm"/>
+        <mvc:exclude-mapping path="/transaction/save.htm"/>
+        <mvc:exclude-mapping path="/transaction/query.htm"/>
+        <mvc:exclude-mapping path="/ann/show.htm"/>
+        <mvc:exclude-mapping path="/ann/read.htm"/>
+        <mvc:exclude-mapping path="/ann/showOne.htm"/>
+        <mvc:exclude-mapping path="/sms/*"/>
+        <mvc:exclude-mapping path="/invite/verification.htm"/>
+        <mvc:exclude-mapping path="/invite/mobileCheck.htm"/>
+        <mvc:exclude-mapping path="/invite/trustnoteAddressCheck.htm"/>
+        <mvc:exclude-mapping path="/invite/hasInvited.htm"/>
+        <mvc:exclude-mapping path="/invite/search.htm"/>
+        <mvc:exclude-mapping path="/gift/query.htm"/>
+        <mvc:exclude-mapping path="/financial/home.htm"/>
+        <mvc:exclude-mapping path="/financial-benefits/push.htm"/>
+        <mvc:exclude-mapping path="/financial-benefits/push_benefitid.htm"/>
+        <mvc:exclude-mapping path="/financial-lockup/save.htm"/>
+        <mvc:exclude-mapping path="/financial-lockup/all.htm"/>
+        <mvc:exclude-mapping path="/financial-lockup/participate.htm"/>
+        <mvc:exclude-mapping path="/financial-lockup/manual.htm"/>
+        <bean class="org.trustnote.activity.utils.SecuritySSOInterceptor"/>
+    </mvc:interceptor>-->
         <mvc:interceptor>
             <mvc:mapping path="*.htm"/>
             <bean class="org.trustnote.activity.utils.FrequencyHandlerInterceptor"/>

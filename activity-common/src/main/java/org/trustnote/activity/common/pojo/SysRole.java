@@ -5,7 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 /**
@@ -15,25 +16,18 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class SysRole {
     private Integer id;
-
-    private String realname;
-
-    private String password;
-
-    private String phone;
-
-    private String walletAddress;
+    @NotBlank(message = "请输入角色名称")
+    @Size(message = "角色名称不能超过50个字符", max = 50)
+    private String roleName;
 
     private Integer state;
-
-    private String userDesc;
+    @Size(message = "角色描述不能超过200个字符", max = 200)
+    private String roleDesc;
 
     private Date crtTime;
 
     private Date uptTime;
-
-    private LocalDateTime lastLoginTime;
 
 }

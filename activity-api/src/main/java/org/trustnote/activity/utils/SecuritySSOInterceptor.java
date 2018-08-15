@@ -1,13 +1,13 @@
 package org.trustnote.activity.utils;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.trustnote.activity.common.constant.Globa;
 import org.trustnote.activity.common.enume.ResultEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  * @author zhuxl 18-1-8
@@ -17,9 +17,8 @@ public class SecuritySSOInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse, final Object o) throws Exception {
-        final HttpSession session = httpServletRequest.getSession();
-        final String username = (String) session.getAttribute(Globa.USER_SESSION_KEY);
-        if (username != null) {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getName() != null) {
             return true;
         }else {
             httpServletRequest.setAttribute("code", ResultEnum.NOTLOGIN.getCode());

@@ -1,10 +1,15 @@
 package org.trustnote.activity.skeleton.mybatis.mapper;
 
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
-import org.trustnote.activity.common.pojo.User;
 import org.trustnote.activity.common.example.UserExample;
+import org.trustnote.activity.common.pojo.User;
+import org.trustnote.activity.skeleton.mybatis.orm.Page;
 
+import java.util.List;
+
+/**
+ * @author zhuxl
+ */
 public interface UserMapper {
     long countByExample(UserExample example);
 
@@ -17,6 +22,8 @@ public interface UserMapper {
     int insertSelective(User record);
 
     List<User> selectByExample(UserExample example);
+
+    List<User> selectByExampleByPage(UserExample example, Page<User> page);
 
     User selectByPrimaryKey(Integer id);
 

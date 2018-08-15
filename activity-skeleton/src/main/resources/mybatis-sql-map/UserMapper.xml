@@ -3,8 +3,15 @@
 <mapper namespace="org.trustnote.activity.skeleton.mybatis.mapper.UserMapper">
   <resultMap id="BaseResultMap" type="org.trustnote.activity.common.pojo.User">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="realname" jdbcType="VARCHAR" property="realname"/>
     <result column="password" jdbcType="CHAR" property="password" />
+    <result column="phone" jdbcType="VARCHAR" property="phone"/>
+    <result column="wallet_address" jdbcType="VARCHAR" property="walletAddress"/>
+    <result column="state" jdbcType="INTEGER" property="state"/>
+    <result column="user_desc" jdbcType="VARCHAR" property="userDesc"/>
+    <result column="crt_time" jdbcType="TIMESTAMP" property="crtTime"/>
+    <result column="upt_time" jdbcType="TIMESTAMP" property="uptTime"/>
+    <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime"/>
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -65,7 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, username, password
+    id, realname, password, phone, wallet_address, state, user_desc, crt_time, upt_time, last_login_time
   </sql>
   <select id="selectByExample" parameterType="org.trustnote.activity.common.example.UserExample" resultMap="BaseResultMap">
     select
@@ -81,8 +88,23 @@
       order by ${orderByClause}
     </if>
   </select>
+  <select id="selectByExampleByPage" parameterType="org.trustnote.activity.common.example.UserExample"
+          resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List"/>
+    from user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from user
     where id = #{id,jdbcType=INTEGER}
@@ -98,37 +120,85 @@
     </if>
   </delete>
   <insert id="insert" parameterType="org.trustnote.activity.common.pojo.User">
-    insert into user (id, username, password
-      )
-    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=CHAR}
-      )
+    insert into user (id, realname, password,
+      phone, wallet_address, state,
+      user_desc, crt_time, upt_time,
+      last_login_time)
+    values (#{id,jdbcType=INTEGER}, #{realname,jdbcType=VARCHAR}, #{password,jdbcType=CHAR},
+      #{phone,jdbcType=VARCHAR}, #{walletAddress,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER},
+      #{userDesc,jdbcType=VARCHAR}, #{crtTime,jdbcType=TIMESTAMP}, #{uptTime,jdbcType=TIMESTAMP},
+      #{lastLoginTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.User">
+  <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.User" useGeneratedKeys="true"
+          keyProperty="id">
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="username != null">
-        username,
+      <if test="realname != null">
+        realname,
       </if>
       <if test="password != null">
         password,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="walletAddress != null">
+        wallet_address,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="userDesc != null">
+        user_desc,
+      </if>
+      <if test="crtTime != null">
+        crt_time,
+      </if>
+      <if test="uptTime != null">
+        upt_time,
+      </if>
+      <if test="lastLoginTime != null">
+        last_login_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="username != null">
-        #{username,jdbcType=VARCHAR},
+      <if test="realname != null">
+        #{realname,jdbcType=VARCHAR},
       </if>
       <if test="password != null">
         #{password,jdbcType=CHAR},
       </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="walletAddress != null">
+        #{walletAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="userDesc != null">
+        #{userDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="crtTime != null">
+        #{crtTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uptTime != null">
+        #{uptTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastLoginTime != null">
+        #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="org.trustnote.activity.common.example.UserExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="org.trustnote.activity.common.example.UserExample"
+          resultType="java.lang.Long">
     select count(*) from user
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -140,11 +210,32 @@
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.username != null">
-        username = #{record.username,jdbcType=VARCHAR},
+      <if test="record.realname != null">
+        realname = #{record.realname,jdbcType=VARCHAR},
       </if>
       <if test="record.password != null">
         password = #{record.password,jdbcType=CHAR},
+      </if>
+      <if test="record.phone != null">
+        phone = #{record.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.walletAddress != null">
+        wallet_address = #{record.walletAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.state != null">
+        state = #{record.state,jdbcType=INTEGER},
+      </if>
+      <if test="record.userDesc != null">
+        user_desc = #{record.userDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.crtTime != null">
+        crt_time = #{record.crtTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.uptTime != null">
+        upt_time = #{record.uptTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.lastLoginTime != null">
+        last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null">
@@ -154,8 +245,15 @@
   <update id="updateByExample" parameterType="map">
     update user
     set id = #{record.id,jdbcType=INTEGER},
-      username = #{record.username,jdbcType=VARCHAR},
-      password = #{record.password,jdbcType=CHAR}
+    realname = #{record.realname,jdbcType=VARCHAR},
+    password = #{record.password,jdbcType=CHAR},
+    phone = #{record.phone,jdbcType=VARCHAR},
+    wallet_address = #{record.walletAddress,jdbcType=VARCHAR},
+    state = #{record.state,jdbcType=INTEGER},
+    user_desc = #{record.userDesc,jdbcType=VARCHAR},
+    crt_time = #{record.crtTime,jdbcType=TIMESTAMP},
+    upt_time = #{record.uptTime,jdbcType=TIMESTAMP},
+    last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -163,19 +261,47 @@
   <update id="updateByPrimaryKeySelective" parameterType="org.trustnote.activity.common.pojo.User">
     update user
     <set>
-      <if test="username != null">
-        username = #{username,jdbcType=VARCHAR},
+      <if test="realname != null">
+        realname = #{realname,jdbcType=VARCHAR},
       </if>
       <if test="password != null">
         password = #{password,jdbcType=CHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="walletAddress != null">
+        wallet_address = #{walletAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="userDesc != null">
+        user_desc = #{userDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="crtTime != null">
+        crt_time = #{crtTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uptTime != null">
+        upt_time = #{uptTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastLoginTime != null">
+        last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="org.trustnote.activity.common.pojo.User">
     update user
-    set username = #{username,jdbcType=VARCHAR},
-      password = #{password,jdbcType=CHAR}
+    set realname = #{realname,jdbcType=VARCHAR},
+      password = #{password,jdbcType=CHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      wallet_address = #{walletAddress,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      user_desc = #{userDesc,jdbcType=VARCHAR},
+      crt_time = #{crtTime,jdbcType=TIMESTAMP},
+      upt_time = #{uptTime,jdbcType=TIMESTAMP},
+      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,12 +17,12 @@ import org.trustnote.activity.common.utils.Result;
 import org.trustnote.activity.service.iface.FinancialBenefitsService;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
 import org.trustnote.activity.stereotype.Frequency;
+import org.trustnote.activity.utils.ErrorsUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.trustnote.activity.controller.ResultUtil.universalExceptionReturn;
 
@@ -80,7 +79,7 @@ public class FinancialBenefitsController {
                                           final Errors errors,
                                           final HttpServletResponse response) {
         final Result result = new Result();
-        final Result errorsResult = this.errors(errors);
+        final Result errorsResult = ErrorsUtils.errors(errors);
         if (errorsResult != null) {
             return result.getString(errorsResult);
         }
@@ -113,7 +112,7 @@ public class FinancialBenefitsController {
                                           final Errors errors,
                                           final HttpServletResponse response) {
         final Result result = new Result();
-        final Result errorsResult = this.errors(errors);
+        final Result errorsResult = ErrorsUtils.errors(errors);
         if (errorsResult != null) {
             return result.getString(errorsResult);
         }
@@ -150,25 +149,6 @@ public class FinancialBenefitsController {
             return universalExceptionReturn(FinancialBenefitsController.logger, e, response, result);
         }
         return result.getString(result);
-    }
-
-    /**
-     * 根据套餐ＩＤ获取当前理财产品
-     *
-     * @param errors
-     * @return
-     */
-    private Result errors(final Errors errors) {
-        final Result result = new Result();
-        if (errors.hasErrors()) {
-            final List<ObjectError> errorList = errors.getAllErrors();
-            for (final ObjectError e : errorList) {
-                result.setCode(ResultEnum.BAD_REQUEST.getCode());
-                result.setMsg(e.getDefaultMessage());
-                return result;
-            }
-        }
-        return null;
     }
 
     @ResponseBody
