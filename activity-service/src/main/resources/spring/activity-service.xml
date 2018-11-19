@@ -11,7 +11,7 @@
                            http://www.springframework.org/schema/tx/spring-tx-4.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
        default-autowire="byName" default-lazy-init="false">
     <context:component-scan base-package="org.trustnote.activity">
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+        <!--<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />-->
     </context:component-scan>
     <!-- 对dataSource 数据源进行事物管理 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
