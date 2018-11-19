@@ -26,7 +26,6 @@ import org.trustnote.activity.common.pojo.UserErrorLogin;
 import org.trustnote.activity.common.utils.Result;
 import org.trustnote.activity.service.iface.UserService;
 import org.trustnote.activity.skeleton.mybatis.orm.Page;
-import org.trustnote.activity.stereotype.Frequency;
 import org.trustnote.activity.utils.CreateImageCode;
 import org.trustnote.activity.utils.ErrorsUtils;
 
@@ -70,7 +69,7 @@ public class UserController {
         return result.getString(result);
     }
 
-    @Frequency(name = "user-login", limit = 300, time = 60)
+    //    @Frequency(name = "user-login", limit = 300, time = 60)
     @RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String login(@RequestBody final String login, final HttpServletResponse response, final HttpSession session) {
         UserController.logger.info("parameter {}", login);
@@ -180,7 +179,7 @@ public class UserController {
 
     }
 
-    @Frequency(name = "user-verification", limit = 300, time = 60)
+    //    @Frequency(name = "user-verification", limit = 300, time = 60)
     @RequestMapping(value = "/verification",method = RequestMethod.GET)
     public void getValidate(final HttpServletRequest request, final HttpServletResponse response, final HttpSession session) {
         response.setContentType("image/png");

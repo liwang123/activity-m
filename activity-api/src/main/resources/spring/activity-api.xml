@@ -26,7 +26,7 @@
             content-negotiation-manager="contentNegotiationManager"/>
     <mvc:cors>
         <mvc:mapping path="/**"
-                     allowed-origins="http://localhost:8080,http://127.0.0.1:8080,http://10.10.10.131:8020,https://trustnote.org,https://explorer.trustnote.org,https://explorer-test.trustnote.org,https://graph2note.com"
+                     allowed-origins="*"
                      allowed-headers="*"
                      allowed-methods="GET,POST,HEAD,OPTIONS"
                      allow-credentials="true"/>
@@ -40,7 +40,7 @@
     </bean>
     <aop:aspectj-autoproxy/>
     <mvc:default-servlet-handler/>
-    <mvc:interceptors>
+    <!--<mvc:interceptors>-->
         <!--<mvc:interceptor>
         <mvc:mapping path="/**"/>
          以下配置排除过滤规则配置
@@ -86,12 +86,12 @@
         <mvc:exclude-mapping path="/financial-lockup/manual.htm"/>
         <bean class="org.trustnote.activity.utils.SecuritySSOInterceptor"/>
     </mvc:interceptor>-->
-        <mvc:interceptor>
-            <mvc:mapping path="*.htm"/>
-            <bean class="org.trustnote.activity.utils.FrequencyHandlerInterceptor"/>
-        </mvc:interceptor>
-        <!-- 我们可以直接在者注册自定义拦截器Bean来配置全局拦截器，会对所有请求拦截 -->
-    </mvc:interceptors>
+    <!--<mvc:interceptor>-->
+    <!--&lt;!&ndash;<mvc:mapping path="*.htm"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;<bean class="org.trustnote.activity.utils.FrequencyHandlerInterceptor"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;</mvc:interceptor>&ndash;&gt;-->
+    <!--&lt;!&ndash; 我们可以直接在者注册自定义拦截器Bean来配置全局拦截器，会对所有请求拦截 &ndash;&gt;-->
+    <!--</mvc:interceptors>-->
     <context:component-scan base-package="org.trustnote.activity.controller" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>

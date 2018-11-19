@@ -1,40 +1,30 @@
 package org.trustnote.activity.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
-import com.googlecode.jsonrpc4j.JsonRpcClientException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.trustnote.activity.common.constant.Globa;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.trustnote.activity.common.enume.ResultEnum;
 import org.trustnote.activity.common.pojo.Activity;
-import org.trustnote.activity.common.pojo.Announce;
-import org.trustnote.activity.common.pojo.User;
 import org.trustnote.activity.common.utils.Result;
 import org.trustnote.activity.service.iface.ActivityService;
-import org.trustnote.activity.service.iface.CoinService;
-import org.trustnote.activity.stereotype.Frequency;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 /**
  * @author zhuxl 18-2-6
  * @since v0.3
  */
-@Frequency(name = "activity", limit = 300, time = 60)
+//@Frequency(name = "activity", limit = 300, time = 60)
 @Controller
 @RequestMapping(value = "/activity")
 public class ActivityController {
@@ -50,19 +40,21 @@ public class ActivityController {
      */
     @ResponseBody
     @RequestMapping(value = "/insert", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String insertActivity(@RequestParam(value = "activity") String activity, HttpServletResponse response) {
-        logger.info("parameters: {}", activity);
-        Result result = new Result();
-        if (StringUtils.isBlank(activity)) return ResultUtil.universalBlankReturn(response, result);
-           Activity act = JSON.parseObject(activity, Activity.class);
+    public String insertActivity(@RequestParam(value = "activity") final String activity, final HttpServletResponse response) {
+        ActivityController.logger.info("parameters: {}", activity);
+        final Result result = new Result();
+        if (StringUtils.isBlank(activity)) {
+            return ResultUtil.universalBlankReturn(response, result);
+        }
+        final Activity act = JSON.parseObject(activity, Activity.class);
         try {
-            int saveResult = activityService.insert(act);
+            final int saveResult = this.activityService.insert(act);
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
             result.setEntity(saveResult);
             return result.getString(result);
-        } catch (Exception e) {
-            return ResultUtil.universalExceptionReturn(logger , e, response, result);
+        } catch (final Exception e) {
+            return ResultUtil.universalExceptionReturn(ActivityController.logger, e, response, result);
         }
     }
 
@@ -74,19 +66,21 @@ public class ActivityController {
      */
     @ResponseBody
     @RequestMapping(value = "/updateActivity", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String updateActivity(@RequestParam(value = "activity") String activity, HttpServletResponse response) {
-        logger.info("parameters: {}", activity);
-        Result result = new Result();
-        if (StringUtils.isBlank(activity)) return ResultUtil.universalBlankReturn(response, result);
-        Activity act = JSON.parseObject(activity, Activity.class);
+    public String updateActivity(@RequestParam(value = "activity") final String activity, final HttpServletResponse response) {
+        ActivityController.logger.info("parameters: {}", activity);
+        final Result result = new Result();
+        if (StringUtils.isBlank(activity)) {
+            return ResultUtil.universalBlankReturn(response, result);
+        }
+        final Activity act = JSON.parseObject(activity, Activity.class);
         try {
-            int saveResult = activityService.update(act);
+            final int saveResult = this.activityService.update(act);
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
             result.setEntity(saveResult);
             return result.getString(result);
-        } catch (Exception e) {
-            return ResultUtil.universalExceptionReturn(logger , e, response, result);
+        } catch (final Exception e) {
+            return ResultUtil.universalExceptionReturn(ActivityController.logger, e, response, result);
         }
     }
 
@@ -99,15 +93,15 @@ public class ActivityController {
      */
     @ResponseBody
     @RequestMapping(value = "/queryAll", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String queryByDay(HttpServletResponse response,int page,int length) {
-        Result result = new Result();
+    public String queryByDay(final HttpServletResponse response, final int page, final int length) {
+        final Result result = new Result();
         try {
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
-            result.setEntity(activityService.selectAll(page,length));
+            result.setEntity(this.activityService.selectAll(page, length));
             return result.getString(result);
-        } catch (Exception e) {
-            return ResultUtil.universalExceptionReturn(logger , e, response, result);
+        } catch (final Exception e) {
+            return ResultUtil.universalExceptionReturn(ActivityController.logger, e, response, result);
         }
     }
 
@@ -124,23 +118,23 @@ public class ActivityController {
      */
     @ResponseBody
     @RequestMapping(value = "/queryBySelective", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String queryBySelective(HttpServletResponse response
-                                   ,String time
-            ,String label, int page, int length,String condition) {
-        logger.info("parameters: {} label{} condition{}", time, label, condition);
-        Result result = new Result();
+    public String queryBySelective(final HttpServletResponse response
+            , final String time
+            , final String label, final int page, final int length, final String condition) {
+        ActivityController.logger.info("parameters: {} label{} condition{}", time, label, condition);
+        final Result result = new Result();
         LocalDateTime ldt=null;
         try {
             if(!"".equals(time)){
-            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             ldt = LocalDateTime.parse(time,df);
             }
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
-            result.setEntity(activityService.getBySelective(ldt, label, page, length,condition));
+            result.setEntity(this.activityService.getBySelective(ldt, label, page, length, condition));
             return result.getString(result);
-        } catch (Exception e) {
-            return ResultUtil.universalExceptionReturn(logger , e, response, result);
+        } catch (final Exception e) {
+            return ResultUtil.universalExceptionReturn(ActivityController.logger, e, response, result);
         }
     }
 
@@ -153,15 +147,15 @@ public class ActivityController {
      */
     @ResponseBody
     @RequestMapping(value = "/queryOder", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String queryOder(HttpServletResponse response,@RequestParam(value = "type") int type) {
-        Result result = new Result();
+    public String queryOder(final HttpServletResponse response, @RequestParam(value = "type") final int type) {
+        final Result result = new Result();
         try {
-            result.setEntity(activityService.getByOrder(type));
+            result.setEntity(this.activityService.getByOrder(type));
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
             return result.getString(result);
-        } catch (Exception e) {
-            return ResultUtil.universalExceptionReturn(logger , e, response, result);
+        } catch (final Exception e) {
+            return ResultUtil.universalExceptionReturn(ActivityController.logger, e, response, result);
         }
     }
 
@@ -172,15 +166,15 @@ public class ActivityController {
      */
     @ResponseBody
     @RequestMapping(value = "/queryOne", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String queryOne(HttpServletResponse response) {
-        Result result = new Result();
+    public String queryOne(final HttpServletResponse response) {
+        final Result result = new Result();
         try {
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
-            result.setEntity(activityService.getNewest());
+            result.setEntity(this.activityService.getNewest());
             return result.getString(result);
-        } catch (Exception e) {
-            return ResultUtil.universalExceptionReturn(logger , e, response, result);
+        } catch (final Exception e) {
+            return ResultUtil.universalExceptionReturn(ActivityController.logger, e, response, result);
         }
     }
 
@@ -192,15 +186,15 @@ public class ActivityController {
      */
     @ResponseBody
     @RequestMapping(value = "/selectOne", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String selectOne(HttpServletResponse response,Integer id) {
-        Result result = new Result();
+    public String selectOne(final HttpServletResponse response, final Integer id) {
+        final Result result = new Result();
         try {
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
-            result.setEntity(activityService.getOne(id));
+            result.setEntity(this.activityService.getOne(id));
             return result.getString(result);
-        } catch (Exception e) {
-            return ResultUtil.universalExceptionReturn(logger , e, response, result);
+        } catch (final Exception e) {
+            return ResultUtil.universalExceptionReturn(ActivityController.logger, e, response, result);
         }
     }
 
@@ -212,15 +206,15 @@ public class ActivityController {
      */
     @ResponseBody
     @RequestMapping(value = "/queryActivity", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String queryActivity(HttpServletResponse response) {
-        Result result = new Result();
+    public String queryActivity(final HttpServletResponse response) {
+        final Result result = new Result();
         try {
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
-            result.setEntity(activityService.queryActivity());
+            result.setEntity(this.activityService.queryActivity());
             return result.getString(result);
-        } catch (Exception e) {
-            return ResultUtil.universalExceptionReturn(logger , e, response, result);
+        } catch (final Exception e) {
+            return ResultUtil.universalExceptionReturn(ActivityController.logger, e, response, result);
         }
     }
 
@@ -232,15 +226,15 @@ public class ActivityController {
      */
     @ResponseBody
     @RequestMapping(value = "/queryLink", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String queryENLink(HttpServletResponse response,@RequestParam(value = "type") int type) {
-        Result result = new Result();
+    public String queryENLink(final HttpServletResponse response, @RequestParam(value = "type") final int type) {
+        final Result result = new Result();
         try {
             result.setCode(ResultEnum.OK.getCode());
             result.setMsg(ResultEnum.OK.getMsg());
-            result.setEntity(activityService.queryLink(type));
+            result.setEntity(this.activityService.queryLink(type));
             return result.getString(result);
-        } catch (Exception e) {
-            return ResultUtil.universalExceptionReturn(logger , e, response, result);
+        } catch (final Exception e) {
+            return ResultUtil.universalExceptionReturn(ActivityController.logger, e, response, result);
         }
     }
 
