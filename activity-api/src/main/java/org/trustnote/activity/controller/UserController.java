@@ -10,7 +10,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -160,11 +159,11 @@ public class UserController {
             }
             if (user != null) {
                 UserController.LOG_MAP.remove(loginu.getPhone());
-                final UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userDao.getPhone(), userDao
-                        .getPassword());
-                final Authentication authentication = this.zxlAuthenticationManager.authenticate(authRequest);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                session.setAttribute(Globa.USER_SESSION_KEY, SecurityContextHolder.getContext());
+//                final UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userDao.getPhone(), userDao
+//                        .getPassword());
+//                final Authentication authentication = this.zxlAuthenticationManager.authenticate(authRequest);
+//                SecurityContextHolder.getContext().setAuthentication(authentication);
+                session.setAttribute(Globa.USER_SESSION_KEY, loginu.getPhone());
                 result.setCode(ResultEnum.OK.getCode());
                 result.setMsg(ResultEnum.OK.getMsg());
                 result.setEntity(user.getPhone());
