@@ -77,6 +77,6 @@ public class Md5Util {
 		//$gUA^u5$3EoHJ32O
 		//tDIU4XCand23^S!I
 		System.out.println(Md5Util.getMd5Code("^YHN/.,mn" + "111111"));
-		System.out.println(Md5Util.getMd5ByObjAndSalt("111111"));
+		System.out.println(Md5Util.getMd5ByObjAndSalt("222222"));
 	}
 }
