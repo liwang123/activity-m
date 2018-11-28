@@ -1,8 +1,9 @@
 package org.trustnote.activity.skeleton.mybatis.orm;
 
+import org.apache.ibatis.session.RowBounds;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.ibatis.session.RowBounds;
 
 /**
  * Mybatis分页参数及查询结果封装. 注意所有序号从1开始.
@@ -15,10 +16,10 @@ public class Page<T> extends RowBounds {
     private int inviteeNum;
 
     public int getInviteeNum() {
-        return inviteeNum;
+        return this.inviteeNum;
     }
 
-    public void setInviteeNum(int inviteeNum) {
+    public void setInviteeNum(final int inviteeNum) {
         this.inviteeNum = inviteeNum;
     }
     // --分页参数 --//
@@ -45,7 +46,7 @@ public class Page<T> extends RowBounds {
     /**
      * 查询结果
      */
-    protected List<T> result = new ArrayList<T>();
+    protected List<T> result = new ArrayList<>();
 
     /**
      * 总条数
@@ -62,14 +63,14 @@ public class Page<T> extends RowBounds {
      * 计算偏移量
      */
     private void calcOffset() {
-        this.offset = ((pageNo - 1) * pageSize);
+        this.offset = ((this.pageNo - 1) * this.pageSize);
     }
 
     /**
      * 计算限定数
      */
     private void calcLimit() {
-        this.limit = pageSize;
+        this.limit = this.pageSize;
     }
 
     // -- 构造函数 --//
@@ -78,7 +79,7 @@ public class Page<T> extends RowBounds {
         this.calcLimit();
     }
 
-    public Page(int pageNo, int pageSize) {
+    public Page(final int pageNo, final int pageSize) {
         this.pageNo = pageNo;
         this.pageSize = pageSize;
         this.calcOffset();
@@ -90,40 +91,34 @@ public class Page<T> extends RowBounds {
      * 获得当前页的页号,序号从1开始,默认为1.
      */
     public int getPageNo() {
-        return pageNo;
+        return this.pageNo;
     }
 
     /**
      * 获得每页的记录数量,默认为1.
      */
     public int getPageSize() {
-        return pageSize;
+        return this.pageSize;
     }
 
     /**
      * 根据pageNo和pageSize计算当前页第一条记录在总结果集中的位置,序号从1开始.
      */
     public int getFirst() {
-        return ((pageNo - 1) * pageSize) + 1;
+        return ((this.pageNo - 1) * this.pageSize) + 1;
     }
 
     /**
      * 根据pageNo和pageSize计算当前页第一条记录在总结果集中的位置,序号从0开始.
      */
-    public int getOffset() {
-        return offset;
-    }
 
-    public int getLimit() {
-        return limit;
-    }
 
     // -- 访问查询结果函数 --//
     /**
      * 取得页内的记录列表.
      */
     public List<T> getResult() {
-        return result;
+        return this.result;
     }
 
     /**
@@ -137,7 +132,7 @@ public class Page<T> extends RowBounds {
      * 取得总记录数, 默认值为-1.
      */
     public int getTotalCount() {
-        return totalCount;
+        return this.totalCount;
     }
 
     /**
@@ -152,14 +147,14 @@ public class Page<T> extends RowBounds {
      * 根据pageSize与totalCount计算总页数, 默认值为-1.
      */
     public int getTotalPages() {
-        if (totalCount < 0) {
+        if (this.totalCount < 0) {
             return -1;
         }
-        int pages = totalCount / pageSize;
-        return totalCount % pageSize > 0 ? ++pages : pages;
+        int pages = this.totalCount / this.pageSize;
+        return this.totalCount % this.pageSize > 0 ? ++pages : pages;
     }
 
-    public void setTotalPages(int totalPages) {
+    public void setTotalPages(final int totalPages) {
         this.totalPages = totalPages;
     }
 

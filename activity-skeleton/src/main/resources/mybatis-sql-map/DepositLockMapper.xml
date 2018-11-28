@@ -209,7 +209,7 @@
         </trim>
     </insert>
     <select id="countByExample" parameterType="org.trustnote.activity.common.example.DepositLockExample"
-            resultType="java.lang.Long">
+            resultType="java.lang.Integer">
         select count(*) from deposit_lock
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
@@ -339,4 +339,10 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+    <select id="selectByPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from deposit_lock ORDER BY id DESC LIMIT #{offset},#{length}
+    </select>
 </mapper>

@@ -27,7 +27,7 @@ public class FinancialTask {
     /**
      * 每隔10分钟执行计算收益
      */
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void calculateLockUpAmount() {
         this.financialLockUpService.saveInComeAmount();
     }

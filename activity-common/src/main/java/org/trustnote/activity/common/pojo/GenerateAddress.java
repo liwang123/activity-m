@@ -5,6 +5,8 @@ public class GenerateAddress {
 
     private String address;
 
+    private Integer status;
+
     public Integer getId() {
         return id;
     }
@@ -19,5 +21,13 @@ public class GenerateAddress {
 
     public void setAddress(String address) {
         this.address = address == null ? null : address.trim();
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

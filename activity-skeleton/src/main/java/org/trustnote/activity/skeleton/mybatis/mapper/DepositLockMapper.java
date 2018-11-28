@@ -7,7 +7,7 @@ import org.trustnote.activity.common.pojo.DepositLock;
 import java.util.List;
 
 public interface DepositLockMapper {
-    long countByExample(DepositLockExample example);
+    int countByExample(DepositLockExample example);
 
     int deleteByExample(DepositLockExample example);
 
@@ -28,4 +28,7 @@ public interface DepositLockMapper {
     int updateByPrimaryKeySelective(DepositLock record);
 
     int updateByPrimaryKey(DepositLock record);
+
+    List<DepositLock> selectByPage(@Param("offset") int offset, @Param("length") int length);
+
 }

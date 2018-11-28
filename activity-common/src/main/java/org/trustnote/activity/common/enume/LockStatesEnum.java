@@ -19,6 +19,10 @@ public enum LockStatesEnum {
         this.msg = msg;
     }
 
+    public String msg(final int code) {
+        return null;
+    }
+
     public int getCode() {
         return this.code;
     }
@@ -38,4 +42,14 @@ public enum LockStatesEnum {
     public String appendMsg(final String msg) {
         return this.getMsg() + ":" + msg;
     }
+
+    public static String getName(final int code) {
+        for (final LockStatesEnum c : LockStatesEnum.values()) {
+            if (c.getCode() == code) {
+                return c.getMsg();
+            }
+        }
+        return null;
+    }
+
 }

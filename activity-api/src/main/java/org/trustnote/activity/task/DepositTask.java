@@ -31,7 +31,7 @@ public class DepositTask {
     /**
      * 处理押金锁仓
      */
-    @Scheduled(cron = "0 0 0/5 * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void getExchangeRate() {
         final DepositLockExample depositLockExample = new DepositLockExample();
         depositLockExample.createCriteria()
