@@ -17,7 +17,6 @@ import org.trustnote.activity.common.utils.Result;
 import org.trustnote.activity.service.iface.CoinService;
 import org.trustnote.activity.service.iface.GiftSetService;
 import org.trustnote.activity.service.iface.QuestionnaireService;
-import org.trustnote.activity.stereotype.Frequency;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +29,7 @@ import java.util.Map;
  * @author zhuxl 18-2-6
  * @since v0.3
  */
-@Frequency(name = "coin", limit = 300, time = 60)
+//@Frequency(name = "coin", limit = 300, time = 60)
 @Controller
 @RequestMapping(value = "/coin")
 public class CoinController {
@@ -194,7 +193,7 @@ public class CoinController {
         if (StringUtils.isBlank(address)) {
             return ResultUtil.universalBlankReturn(response, result);
         }
-        final String parse = "[\"EHRG6AWSQLRAH2W5KNVEAZJJ3YKBTXT2\",[{address:\"" + address + "\",amount:10000000}]]";
+        final String parse = "[\"A3TEKUPJMRKNKJBO2NOKLGKONMFWLR7P\",[{address:\"" + address + "\",amount:10000000}]]";
         final JSONArray array = JSON.parseArray(parse);
         try {
             this.coinService.getbalanceAll(address);

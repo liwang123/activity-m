@@ -433,6 +433,8 @@ public class FinancialLockUpServiceImpl implements FinancialLockUpService {
         } catch (final Exception e) {
             FinancialLockUpServiceImpl.logger.info("查询产品异常： {}", e);
         }
+        System.out.println("---------benefits集合");
+        System.out.println(benefits.size() + "---" + benefits);
         //第二步　遍历产品下的合约；根据合约地址查询lock_up_amount
         for (final FinancialBenefits financialBenefits : benefits) {
             FinancialLockUpServiceImpl.logger.info("产品ID: {}", financialBenefits.getId());
