@@ -72,17 +72,21 @@ public class DepositServiceImpl implements DepositService {
                     if (dataBigDecimal.compareTo(new BigDecimal(0)) != 0) {
                         BigDecimal rate = null;
                         BigDecimal numericalv = null;
+                        BigDecimal tfs = null;
+
                         if (packageType == 1) {
                             rate = new BigDecimal(0.3);
                             numericalv = new BigDecimal(180);
+                            tfs = new BigDecimal(30);
                         } else {
                             rate = new BigDecimal(0.4);
                             numericalv = new BigDecimal(360);
+                            tfs = new BigDecimal(40);
                         }
                         //计算收益
                         final BigDecimal all = dataBigDecimal.multiply(numericalv).multiply(rate);
                         final BigDecimal income = all.divide(new BigDecimal(360), 1, BigDecimal.ROUND_DOWN);
-                        final BigDecimal tfans = income.multiply(new BigDecimal(10));
+                        final BigDecimal tfans = income.multiply(tfs);
                         depositLock.setIncomeAmount(income);
                         depositLock.setTfsAmount(tfans);
                         depositLock.setLockStatus(LockStatesEnum.LOCKING.getCode());
