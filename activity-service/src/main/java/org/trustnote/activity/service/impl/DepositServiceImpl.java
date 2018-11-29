@@ -41,6 +41,7 @@ public class DepositServiceImpl implements DepositService {
                 .receiptAddress(address)
                 .lockStatus(LockStatesEnum.PENDING_LOCK.getCode())
                 .lockTime(LocalDateTime.now())
+                .lockAmount(new BigDecimal(0))
                 .createTime(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
                 .build();
@@ -110,7 +111,7 @@ public class DepositServiceImpl implements DepositService {
                     BeanUtils.copyProperties(depositLock, depositLockDTO);
                     depositLockDTO.setLockStatus(LockStatesEnum.getName(depositLock.getLockStatus()));
                     depositLockDTO.setLockTime(depositLock.getLockTime().toString().replaceAll("T", " "));
-                    depositLockDTO.setUnlockTime(depositLock.getUnlockTime().toString().replaceAll("T", " "));
+                    depositLockDTO.setUnlockTime(depositLock.getUnlockTime() == null ? null : depositLock.getUnlockTime().toString().replaceAll("T", " "));
                     depositLockDTO.setPackageType(depositLock.getPackageType() == 1 ? "180天" : "360天");
                     depositLockDTOArrayList.add(depositLockDTO);
                 });
