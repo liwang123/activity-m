@@ -70,7 +70,7 @@ public class DepositServiceImpl implements DepositService {
                     final BigDecimal dataBigDecimal = this.query(depositLock.getWalletAddress());
                     depositLock.setLockAmount(dataBigDecimal);
                     final Integer packageType = depositLock.getPackageType();
-                    if (dataBigDecimal.compareTo(new BigDecimal(0)) != 0) {
+                    if (dataBigDecimal.compareTo(new BigDecimal(0)) != 0 && dataBigDecimal.compareTo(new BigDecimal(25000)) != -1) {
                         BigDecimal rate = null;
                         BigDecimal numericalv = null;
                         BigDecimal tfs = null;
@@ -95,6 +95,7 @@ public class DepositServiceImpl implements DepositService {
                         depositLock.setLockTime(LocalDateTime.now());
                         depositLock.setUpdateTime(LocalDateTime.now());
                     }
+                    depositLock.setLockAmount(dataBigDecimal);
                     depositLock.setUnlockTime(depositLock.getLockTime().plusDays(packageType == 1 ? 180 : 360));
                     this.depositLockMapper.updateByPrimaryKeySelective(depositLock);
                 });
