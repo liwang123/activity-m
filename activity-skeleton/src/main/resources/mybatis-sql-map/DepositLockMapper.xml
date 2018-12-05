@@ -1,329 +1,341 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.trustnote.activity.skeleton.mybatis.mapper.DepositLockMapper">
-    <resultMap id="BaseResultMap" type="org.trustnote.activity.common.pojo.DepositLock">
-        <id column="id" jdbcType="INTEGER" property="id"/>
-        <result column="wallet_address" jdbcType="VARCHAR" property="walletAddress"/>
-        <result column="receipt_address" jdbcType="VARCHAR" property="receiptAddress"/>
-        <result column="lock_amount" jdbcType="DECIMAL" property="lockAmount"/>
-        <result column="income_amount" jdbcType="DECIMAL" property="incomeAmount"/>
-        <result column="return_amount" jdbcType="DECIMAL" property="returnAmount"/>
-        <result column="tfs_amount" jdbcType="DECIMAL" property="tfsAmount"/>
-        <result column="package_type" jdbcType="INTEGER" property="packageType"/>
-        <result column="lock_status" jdbcType="INTEGER" property="lockStatus"/>
-        <result column="lock_time" jdbcType="TIMESTAMP" property="lockTime"/>
-        <result column="unlock_time" jdbcType="TIMESTAMP" property="unlockTime"/>
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
-    </resultMap>
-    <sql id="Example_Where_Clause">
-        <where>
-            <foreach collection="oredCriteria" item="criteria" separator="or">
-                <if test="criteria.valid">
-                    <trim prefix="(" prefixOverrides="and" suffix=")">
-                        <foreach collection="criteria.criteria" item="criterion">
-                            <choose>
-                                <when test="criterion.noValue">
-                                    and ${criterion.condition}
-                                </when>
-                                <when test="criterion.singleValue">
-                                    and ${criterion.condition} #{criterion.value}
-                                </when>
-                                <when test="criterion.betweenValue">
-                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                                </when>
-                                <when test="criterion.listValue">
-                                    and ${criterion.condition}
-                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
-                                             separator=",">
-                                        #{listItem}
-                                    </foreach>
-                                </when>
-                            </choose>
-                        </foreach>
-                    </trim>
-                </if>
+  <resultMap id="BaseResultMap" type="org.trustnote.activity.common.pojo.DepositLock">
+    <id column="id" jdbcType="INTEGER" property="id"/>
+    <result column="wallet_address" jdbcType="VARCHAR" property="walletAddress"/>
+    <result column="receipt_address" jdbcType="VARCHAR" property="receiptAddress"/>
+    <result column="lock_amount" jdbcType="DECIMAL" property="lockAmount"/>
+    <result column="income_amount" jdbcType="DECIMAL" property="incomeAmount"/>
+    <result column="return_amount" jdbcType="DECIMAL" property="returnAmount"/>
+    <result column="tfs_amount" jdbcType="DECIMAL" property="tfsAmount"/>
+    <result column="package_type" jdbcType="INTEGER" property="packageType"/>
+    <result column="lock_status" jdbcType="INTEGER" property="lockStatus"/>
+    <result column="lock_time" jdbcType="TIMESTAMP" property="lockTime"/>
+    <result column="unlock_time" jdbcType="TIMESTAMP" property="unlockTime"/>
+    <result column="public_key" jdbcType="VARCHAR" property="publicKey"/>
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
             </foreach>
-        </where>
-    </sql>
-    <sql id="Update_By_Example_Where_Clause">
-        <where>
-            <foreach collection="example.oredCriteria" item="criteria" separator="or">
-                <if test="criteria.valid">
-                    <trim prefix="(" prefixOverrides="and" suffix=")">
-                        <foreach collection="criteria.criteria" item="criterion">
-                            <choose>
-                                <when test="criterion.noValue">
-                                    and ${criterion.condition}
-                                </when>
-                                <when test="criterion.singleValue">
-                                    and ${criterion.condition} #{criterion.value}
-                                </when>
-                                <when test="criterion.betweenValue">
-                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                                </when>
-                                <when test="criterion.listValue">
-                                    and ${criterion.condition}
-                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
-                                             separator=",">
-                                        #{listItem}
-                                    </foreach>
-                                </when>
-                            </choose>
-                        </foreach>
-                    </trim>
-                </if>
-            </foreach>
-        </where>
-    </sql>
-    <sql id="Base_Column_List">
-    id, wallet_address, receipt_address, lock_amount, income_amount, return_amount, tfs_amount, 
-    package_type, lock_status, lock_time, unlock_time, create_time, update_time
+          </trim>
+        </if>
+      </foreach>
+    </where>
   </sql>
-    <select id="selectByExample" parameterType="org.trustnote.activity.common.example.DepositLockExample"
-            resultMap="BaseResultMap">
-        select
-        <if test="distinct">
-            distinct
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
         </if>
-        <include refid="Base_Column_List"/>
-        from deposit_lock
-        <if test="_parameter != null">
-            <include refid="Example_Where_Clause"/>
-        </if>
-        <if test="orderByClause != null">
-            order by ${orderByClause}
-        </if>
-    </select>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from deposit_lock
-        where id = #{id,jdbcType=INTEGER}
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, wallet_address, receipt_address, lock_amount, income_amount, return_amount, tfs_amount, 
+    package_type, lock_status, lock_time, unlock_time, public_key, create_time, update_time
+  </sql>
+  <select id="selectByExample" parameterType="org.trustnote.activity.common.example.DepositLockExample"
+          resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List"/>
+    from deposit_lock
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from deposit_lock
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from deposit_lock
     where id = #{id,jdbcType=INTEGER}
   </delete>
-    <delete id="deleteByExample" parameterType="org.trustnote.activity.common.example.DepositLockExample">
-        delete from deposit_lock
-        <if test="_parameter != null">
-            <include refid="Example_Where_Clause"/>
-        </if>
-    </delete>
-    <insert id="insert" parameterType="org.trustnote.activity.common.pojo.DepositLock">
+  <delete id="deleteByExample" parameterType="org.trustnote.activity.common.example.DepositLockExample">
+    delete from deposit_lock
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.trustnote.activity.common.pojo.DepositLock">
     insert into deposit_lock (id, wallet_address, receipt_address, 
       lock_amount, income_amount, return_amount, 
       tfs_amount, package_type, lock_status, 
-      lock_time, unlock_time, create_time, 
-      update_time)
+      lock_time, unlock_time, public_key, 
+      create_time, update_time)
     values (#{id,jdbcType=INTEGER}, #{walletAddress,jdbcType=VARCHAR}, #{receiptAddress,jdbcType=VARCHAR}, 
       #{lockAmount,jdbcType=DECIMAL}, #{incomeAmount,jdbcType=DECIMAL}, #{returnAmount,jdbcType=DECIMAL}, 
       #{tfsAmount,jdbcType=DECIMAL}, #{packageType,jdbcType=INTEGER}, #{lockStatus,jdbcType=INTEGER}, 
-      #{lockTime,jdbcType=TIMESTAMP}, #{unlockTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{lockTime,jdbcType=TIMESTAMP}, #{unlockTime,jdbcType=TIMESTAMP}, #{publicKey,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-    <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.DepositLock">
-        insert into deposit_lock
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
-            <if test="walletAddress != null">
-                wallet_address,
-            </if>
-            <if test="receiptAddress != null">
-                receipt_address,
-            </if>
-            <if test="lockAmount != null">
-                lock_amount,
-            </if>
-            <if test="incomeAmount != null">
-                income_amount,
-            </if>
-            <if test="returnAmount != null">
-                return_amount,
-            </if>
-            <if test="tfsAmount != null">
-                tfs_amount,
-            </if>
-            <if test="packageType != null">
-                package_type,
-            </if>
-            <if test="lockStatus != null">
-                lock_status,
-            </if>
-            <if test="lockTime != null">
-                lock_time,
-            </if>
-            <if test="unlockTime != null">
-                unlock_time,
-            </if>
-            <if test="createTime != null">
-                create_time,
-            </if>
-            <if test="updateTime != null">
-                update_time,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=INTEGER},
-            </if>
-            <if test="walletAddress != null">
-                #{walletAddress,jdbcType=VARCHAR},
-            </if>
-            <if test="receiptAddress != null">
-                #{receiptAddress,jdbcType=VARCHAR},
-            </if>
-            <if test="lockAmount != null">
-                #{lockAmount,jdbcType=DECIMAL},
-            </if>
-            <if test="incomeAmount != null">
-                #{incomeAmount,jdbcType=DECIMAL},
-            </if>
-            <if test="returnAmount != null">
-                #{returnAmount,jdbcType=DECIMAL},
-            </if>
-            <if test="tfsAmount != null">
-                #{tfsAmount,jdbcType=DECIMAL},
-            </if>
-            <if test="packageType != null">
-                #{packageType,jdbcType=INTEGER},
-            </if>
-            <if test="lockStatus != null">
-                #{lockStatus,jdbcType=INTEGER},
-            </if>
-            <if test="lockTime != null">
-                #{lockTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="unlockTime != null">
-                #{unlockTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="createTime != null">
-                #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updateTime != null">
-                #{updateTime,jdbcType=TIMESTAMP},
-            </if>
-        </trim>
-    </insert>
-    <select id="countByExample" parameterType="org.trustnote.activity.common.example.DepositLockExample"
-            resultType="java.lang.Integer">
-        select count(*) from deposit_lock
-        <if test="_parameter != null">
-            <include refid="Example_Where_Clause"/>
-        </if>
-    </select>
-    <update id="updateByExampleSelective" parameterType="map">
-        update deposit_lock
-        <set>
-            <if test="record.id != null">
-                id = #{record.id,jdbcType=INTEGER},
-            </if>
-            <if test="record.walletAddress != null">
-                wallet_address = #{record.walletAddress,jdbcType=VARCHAR},
-            </if>
-            <if test="record.receiptAddress != null">
-                receipt_address = #{record.receiptAddress,jdbcType=VARCHAR},
-            </if>
-            <if test="record.lockAmount != null">
-                lock_amount = #{record.lockAmount,jdbcType=DECIMAL},
-            </if>
-            <if test="record.incomeAmount != null">
-                income_amount = #{record.incomeAmount,jdbcType=DECIMAL},
-            </if>
-            <if test="record.returnAmount != null">
-                return_amount = #{record.returnAmount,jdbcType=DECIMAL},
-            </if>
-            <if test="record.tfsAmount != null">
-                tfs_amount = #{record.tfsAmount,jdbcType=DECIMAL},
-            </if>
-            <if test="record.packageType != null">
-                package_type = #{record.packageType,jdbcType=INTEGER},
-            </if>
-            <if test="record.lockStatus != null">
-                lock_status = #{record.lockStatus,jdbcType=INTEGER},
-            </if>
-            <if test="record.lockTime != null">
-                lock_time = #{record.lockTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="record.unlockTime != null">
-                unlock_time = #{record.unlockTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="record.createTime != null">
-                create_time = #{record.createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="record.updateTime != null">
-                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-            </if>
-        </set>
-        <if test="_parameter != null">
-            <include refid="Update_By_Example_Where_Clause"/>
-        </if>
-    </update>
-    <update id="updateByExample" parameterType="map">
-        update deposit_lock
-        set id = #{record.id,jdbcType=INTEGER},
+  <insert id="insertSelective" parameterType="org.trustnote.activity.common.pojo.DepositLock">
+    insert into deposit_lock
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="walletAddress != null">
+        wallet_address,
+      </if>
+      <if test="receiptAddress != null">
+        receipt_address,
+      </if>
+      <if test="lockAmount != null">
+        lock_amount,
+      </if>
+      <if test="incomeAmount != null">
+        income_amount,
+      </if>
+      <if test="returnAmount != null">
+        return_amount,
+      </if>
+      <if test="tfsAmount != null">
+        tfs_amount,
+      </if>
+      <if test="packageType != null">
+        package_type,
+      </if>
+      <if test="lockStatus != null">
+        lock_status,
+      </if>
+      <if test="lockTime != null">
+        lock_time,
+      </if>
+      <if test="unlockTime != null">
+        unlock_time,
+      </if>
+      <if test="publicKey != null">
+        public_key,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="walletAddress != null">
+        #{walletAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="receiptAddress != null">
+        #{receiptAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="lockAmount != null">
+        #{lockAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="incomeAmount != null">
+        #{incomeAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="returnAmount != null">
+        #{returnAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="tfsAmount != null">
+        #{tfsAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="packageType != null">
+        #{packageType,jdbcType=INTEGER},
+      </if>
+      <if test="lockStatus != null">
+        #{lockStatus,jdbcType=INTEGER},
+      </if>
+      <if test="lockTime != null">
+        #{lockTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="unlockTime != null">
+        #{unlockTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publicKey != null">
+        #{publicKey,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.trustnote.activity.common.example.DepositLockExample"
+          resultType="java.lang.Integer">
+    select count(*) from deposit_lock
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update deposit_lock
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.walletAddress != null">
         wallet_address = #{record.walletAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.receiptAddress != null">
         receipt_address = #{record.receiptAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lockAmount != null">
         lock_amount = #{record.lockAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.incomeAmount != null">
         income_amount = #{record.incomeAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.returnAmount != null">
         return_amount = #{record.returnAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.tfsAmount != null">
         tfs_amount = #{record.tfsAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.packageType != null">
         package_type = #{record.packageType,jdbcType=INTEGER},
+      </if>
+      <if test="record.lockStatus != null">
         lock_status = #{record.lockStatus,jdbcType=INTEGER},
+      </if>
+      <if test="record.lockTime != null">
         lock_time = #{record.lockTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.unlockTime != null">
         unlock_time = #{record.unlockTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.publicKey != null">
+        public_key = #{record.publicKey,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
-        update_time = #{record.updateTime,jdbcType=TIMESTAMP}
-        <if test="_parameter != null">
-            <include refid="Update_By_Example_Where_Clause"/>
-        </if>
-    </update>
-    <update id="updateByPrimaryKeySelective" parameterType="org.trustnote.activity.common.pojo.DepositLock">
-        update deposit_lock
-        <set>
-            <if test="walletAddress != null">
-                wallet_address = #{walletAddress,jdbcType=VARCHAR},
-            </if>
-            <if test="receiptAddress != null">
-                receipt_address = #{receiptAddress,jdbcType=VARCHAR},
-            </if>
-            <if test="lockAmount != null">
-                lock_amount = #{lockAmount,jdbcType=DECIMAL},
-            </if>
-            <if test="incomeAmount != null">
-                income_amount = #{incomeAmount,jdbcType=DECIMAL},
-            </if>
-            <if test="returnAmount != null">
-                return_amount = #{returnAmount,jdbcType=DECIMAL},
-            </if>
-            <if test="tfsAmount != null">
-                tfs_amount = #{tfsAmount,jdbcType=DECIMAL},
-            </if>
-            <if test="packageType != null">
-                package_type = #{packageType,jdbcType=INTEGER},
-            </if>
-            <if test="lockStatus != null">
-                lock_status = #{lockStatus,jdbcType=INTEGER},
-            </if>
-            <if test="lockTime != null">
-                lock_time = #{lockTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="unlockTime != null">
-                unlock_time = #{unlockTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
-            </if>
-        </set>
-        where id = #{id,jdbcType=INTEGER}
-    </update>
-    <update id="updateByPrimaryKey" parameterType="org.trustnote.activity.common.pojo.DepositLock">
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause"/>
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update deposit_lock
+    set id = #{record.id,jdbcType=INTEGER},
+    wallet_address = #{record.walletAddress,jdbcType=VARCHAR},
+    receipt_address = #{record.receiptAddress,jdbcType=VARCHAR},
+    lock_amount = #{record.lockAmount,jdbcType=DECIMAL},
+    income_amount = #{record.incomeAmount,jdbcType=DECIMAL},
+    return_amount = #{record.returnAmount,jdbcType=DECIMAL},
+    tfs_amount = #{record.tfsAmount,jdbcType=DECIMAL},
+    package_type = #{record.packageType,jdbcType=INTEGER},
+    lock_status = #{record.lockStatus,jdbcType=INTEGER},
+    lock_time = #{record.lockTime,jdbcType=TIMESTAMP},
+    unlock_time = #{record.unlockTime,jdbcType=TIMESTAMP},
+    public_key = #{record.publicKey,jdbcType=VARCHAR},
+    create_time = #{record.createTime,jdbcType=TIMESTAMP},
+    update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause"/>
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.trustnote.activity.common.pojo.DepositLock">
+    update deposit_lock
+    <set>
+      <if test="walletAddress != null">
+        wallet_address = #{walletAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="receiptAddress != null">
+        receipt_address = #{receiptAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="lockAmount != null">
+        lock_amount = #{lockAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="incomeAmount != null">
+        income_amount = #{incomeAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="returnAmount != null">
+        return_amount = #{returnAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="tfsAmount != null">
+        tfs_amount = #{tfsAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="packageType != null">
+        package_type = #{packageType,jdbcType=INTEGER},
+      </if>
+      <if test="lockStatus != null">
+        lock_status = #{lockStatus,jdbcType=INTEGER},
+      </if>
+      <if test="lockTime != null">
+        lock_time = #{lockTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="unlockTime != null">
+        unlock_time = #{unlockTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publicKey != null">
+        public_key = #{publicKey,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.trustnote.activity.common.pojo.DepositLock">
     update deposit_lock
     set wallet_address = #{walletAddress,jdbcType=VARCHAR},
       receipt_address = #{receiptAddress,jdbcType=VARCHAR},
@@ -335,14 +347,16 @@
       lock_status = #{lockStatus,jdbcType=INTEGER},
       lock_time = #{lockTime,jdbcType=TIMESTAMP},
       unlock_time = #{unlockTime,jdbcType=TIMESTAMP},
+      public_key = #{publicKey,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-    <select id="selectByPage" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from deposit_lock ORDER BY id DESC LIMIT #{offset},#{length}
-    </select>
+  <select id="selectByPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from deposit_lock ORDER BY id DESC LIMIT #{offset},#{length}
+
+  </select>
 </mapper>

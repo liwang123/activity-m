@@ -35,9 +35,10 @@ public class DepositServiceImpl implements DepositService {
     private GenerateAddressMapper generateAddressMapper;
 
     @Override
-    public String insert(final String address, final int status) {
+    public String insert(final String address, final int status, final String publicKey) {
         final DepositLock depositLock = DepositLock.builder()
                 .packageType(status)
+                .publicKey(publicKey)
                 .receiptAddress(address)
                 .lockStatus(LockStatesEnum.PENDING_LOCK.getCode())
                 .lockTime(LocalDateTime.now())

@@ -38,7 +38,7 @@ public class DepositController {
      */
     @ResponseBody
     @RequestMapping(value = "/insertMessage", method = RequestMethod.POST)
-    public String queryCoin(final String address, final int status, final HttpServletResponse response) {
+    public String queryCoin(final String address, final int status, final String publicKey, final HttpServletResponse response) {
         DepositController.logger.info("paramers: {}", address);
         final Result result = new Result();
         if (StringUtils.isBlank(address) || StringUtils.isEmpty(address)) {
@@ -47,7 +47,7 @@ public class DepositController {
             result.setMsg(ResultEnum.BAD_REQUEST.appendMsg("The address is mandatory."));
             return result.getString(result);
         }
-        final String addressEntity = this.depositService.insert(address, status);
+        final String addressEntity = this.depositService.insert(address, status, publicKey);
         response.setStatus(HttpServletResponse.SC_OK);
         result.setCode(ResultEnum.OK.getCode());
         result.setEntity(addressEntity);

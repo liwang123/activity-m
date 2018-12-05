@@ -11,7 +11,7 @@ import java.util.List;
  * @since v0.3
  */
 public interface DepositService {
-    String insert(String address, int status);
+    String insert(String address, int status, String publicKey);
 
     boolean querybalance(String address);
 

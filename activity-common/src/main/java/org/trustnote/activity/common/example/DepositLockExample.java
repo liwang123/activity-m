@@ -786,6 +786,76 @@ public class DepositLockExample {
             return (Criteria) this;
         }
 
+        public Criteria andPublicKeyIsNull() {
+            this.addCriterion("public_key is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPublicKeyIsNotNull() {
+            this.addCriterion("public_key is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPublicKeyEqualTo(final String value) {
+            this.addCriterion("public_key =", value, "publicKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPublicKeyNotEqualTo(final String value) {
+            this.addCriterion("public_key <>", value, "publicKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPublicKeyGreaterThan(final String value) {
+            this.addCriterion("public_key >", value, "publicKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPublicKeyGreaterThanOrEqualTo(final String value) {
+            this.addCriterion("public_key >=", value, "publicKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPublicKeyLessThan(final String value) {
+            this.addCriterion("public_key <", value, "publicKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPublicKeyLessThanOrEqualTo(final String value) {
+            this.addCriterion("public_key <=", value, "publicKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPublicKeyLike(final String value) {
+            this.addCriterion("public_key like", value, "publicKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPublicKeyNotLike(final String value) {
+            this.addCriterion("public_key not like", value, "publicKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPublicKeyIn(final List<String> values) {
+            this.addCriterion("public_key in", values, "publicKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPublicKeyNotIn(final List<String> values) {
+            this.addCriterion("public_key not in", values, "publicKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPublicKeyBetween(final String value1, final String value2) {
+            this.addCriterion("public_key between", value1, value2, "publicKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andPublicKeyNotBetween(final String value1, final String value2) {
+            this.addCriterion("public_key not between", value1, value2, "publicKey");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             this.addCriterion("create_time is null");
             return (Criteria) this;

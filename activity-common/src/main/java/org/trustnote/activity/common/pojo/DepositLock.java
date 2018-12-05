@@ -5,6 +5,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -31,6 +32,8 @@ public class DepositLock {
     private LocalDateTime lockTime;
 
     private LocalDateTime unlockTime;
+
+    private String publicKey;
 
     private LocalDateTime createTime;
 
