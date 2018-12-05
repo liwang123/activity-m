@@ -51,7 +51,6 @@ public class DepositServiceImpl implements DepositService {
         depositLock.setWalletAddress(generateAddress.getAddress());
         this.depositLockMapper.insert(depositLock);
         generateAddress.setStatus(2);
-
         this.generateAddressMapper.updateByPrimaryKey(generateAddress);
         return generateAddress.getAddress();
     }
