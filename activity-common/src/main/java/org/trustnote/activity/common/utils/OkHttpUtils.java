@@ -92,7 +92,7 @@ public class OkHttpUtils {
     public static String rpcRequestBodyPost(final String url, final Map<String, ? extends Object> paramMap) {
         final RequestBody body = RequestBody.create(OkHttpUtils.JSON_TYPE, JSON.toJSONString(paramMap));
         final Request request = new Request.Builder()
-                .header("referer", "https://trustnote.org")
+                // .header("referer", "https://trustnote.org")
                 .url(url)
                 .post(body)
                 .build();

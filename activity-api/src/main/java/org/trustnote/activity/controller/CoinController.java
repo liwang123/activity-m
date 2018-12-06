@@ -193,26 +193,18 @@ public class CoinController {
         if (StringUtils.isBlank(address)) {
             return ResultUtil.universalBlankReturn(response, result);
         }
-        final String parse = "[\"A3TEKUPJMRKNKJBO2NOKLGKONMFWLR7P\",[{address:\"" + address + "\",amount:10000000}]]";
-        final JSONArray array = JSON.parseArray(parse);
-        try {
-            this.coinService.getbalanceAll(address);
-            final String sendResult = this.giftSetService.sendToken(array);
-            result.setCode(ResultEnum.OK.getCode());
-            result.setMsg(ResultEnum.OK.getMsg());
+        final String sendResult = this.giftSetService.sendToken(address);
+        System.out.println(sendResult);
+        if ("null".equals(sendResult)) {
+            result.setCode(ResultEnum.MISSION_FAIL.getCode());
+            result.setMsg(ResultEnum.MISSION_FAIL.getMsg());
             result.setEntity(sendResult);
             return result.getString(result);
-        } catch (final JsonRpcClientException e) {
-            CoinController.logger.error("exception: {}", e);
-            result.setCode(ResultEnum.MISSION_FAIL.getCode());
-            result.setMsg(e.getMessage());
-            result.setEntity("地址错误.");
-            return result.getString(result);
-        } catch (final Exception e) {
-            return ResultUtil.universalExceptionReturn(CoinController.logger, e, response, result);
-        } catch (final Throwable throwable) {
-            return ResultUtil.universalThrowableReturn(CoinController.logger, throwable, response, result);
         }
+        result.setCode(ResultEnum.OK.getCode());
+        result.setMsg(ResultEnum.OK.getMsg());
+        result.setEntity(sendResult);
+        return result.getString(result);
     }
 
     /**

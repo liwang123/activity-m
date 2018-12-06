@@ -1,6 +1,5 @@
 package org.trustnote.activity.service.iface;
 
-import com.alibaba.fastjson.JSONArray;
 import org.trustnote.activity.common.jsonrpc.JsonRpcTotal;
 import org.trustnote.activity.common.pojo.GiftSet;
 
@@ -13,6 +12,6 @@ public interface GiftSetService {
     GiftSet queryGiftset(int type) throws Exception;
 
     //token发布测试
-    String sendToken(JSONArray array) throws Throwable;
+    String sendToken(String address);
     JsonRpcTotal getTokenbalance(String address) throws Throwable;
 }
