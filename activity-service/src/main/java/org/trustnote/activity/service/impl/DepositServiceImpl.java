@@ -124,7 +124,7 @@ public class DepositServiceImpl implements DepositService {
     }
 
     public BigDecimal query(final String address) {
-        final String url = "http://150.109.50.199:6002/api/v1/asset/balance/" + address + "/TTT";
+        final String url = "http://150.109.57.242:6002/api/v1/asset/balance/" + address + "/TTT";
         final String result = OkHttpUtils.get(url, null);
         final JSONObject parse = (JSONObject) JSONObject.parse(result);
         final JSONObject data = parse.getJSONObject("data");
