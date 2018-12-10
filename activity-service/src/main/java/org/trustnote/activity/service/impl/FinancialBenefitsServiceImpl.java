@@ -103,6 +103,7 @@ public class FinancialBenefitsServiceImpl implements FinancialBenefitsService {
                 remainLimit = new BigDecimal(financialBenefitsApi.getPanicTotalLimit());
             }
         }
+        
         final FinancialBenefits financialBenefits = FinancialBenefits.builder()
                 .financialId(financialBenefitsApi.getFinancialId())
                 .productName(financialBenefitsApi.getProductName())
