@@ -74,7 +74,7 @@ public class GiftSetServiceImpl implements GiftSetService {
                 .address(address)
                 .build();
         this.sendAddressMapper.insertSelective(build);
-        final String url = "http://119.28.133.253:6552";
+        final String url = "http://119.28.17.101:6552";
         final Map<String, Object> map = new HashMap<>();
         final List<Object> list = new ArrayList<>();
         list.add(address);
